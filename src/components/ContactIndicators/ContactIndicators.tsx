@@ -22,19 +22,16 @@ export default function ContactIndicators({
     <div className={`contact-indicators contact-indicators-${size}`}>
       <div 
         className={`contact-icon contact-icon-entry contact-icon-${entryState}`}
-        title={`Записи: ${entryDays}/7 дней`}
       >
         📝
       </div>
       <div 
         className={`contact-icon contact-icon-step contact-icon-${stepState}`}
-        title={`Шаги: ${stepDays}/7 дней`}
       >
         👣
       </div>
       <div 
         className={`contact-icon contact-icon-thought contact-icon-${thoughtState}`}
-        title={`Мысли: ${thoughtDays}/7 дней`}
       >
         💭
       </div>

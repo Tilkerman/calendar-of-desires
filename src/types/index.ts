@@ -3,9 +3,10 @@
 export interface Desire {
   id: string;
   title: string;
-  deadline: string | null; // ISO date или null (ориентир по времени)
+  deadline: string | null; // ISO date или null (ориентир по времени) - устаревшее, оставлено для совместимости
   imageUrl: string | null; // base64 или URL (можно несколько, храним как строку с разделителями)
   description: string; // эмоциональное описание "Как ты хочешь себя чувствовать?"
+  details: string | null; // подробное описание желания "Опиши своё желание"
   createdAt: string; // ISO date
   isActive: boolean; // желание в фокусе сегодня
 }

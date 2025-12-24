@@ -11,6 +11,11 @@ class CalendarOfDesiresDB extends Dexie {
       desires: 'id, isActive, createdAt',
       contacts: 'id, desireId, date, type, [desireId+date], createdAt',
     });
+    // Версия 3: добавляем составной индекс [desireId+date+type] для оптимизации запросов
+    this.version(3).stores({
+      desires: 'id, isActive, createdAt',
+      contacts: 'id, desireId, date, type, [desireId+date], [desireId+date+type], createdAt',
+    });
   }
 }
 
@@ -52,6 +57,7 @@ export const desireService = {
       await db.open();
       const newDesire: Desire = {
         ...desire,
+        details: desire.details || null, // Поддержка нового поля
         id: crypto.randomUUID(),
         createdAt: new Date().toISOString(),
       };

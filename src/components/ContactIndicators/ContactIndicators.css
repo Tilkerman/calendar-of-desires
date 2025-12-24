@@ -24,29 +24,40 @@
   font-size: 1.5rem;
 }
 
-/* Состояния индикаторов */
+/* Состояния индикаторов согласно ТЗ */
+/* 0/7 - Серый цвет, opacity ~25%, тонкий контур */
 .contact-icon-empty {
-  opacity: 0.3;
+  opacity: 0.25;
   filter: grayscale(100%);
-  color: #999999; /* Светло-серый цвет для пустых иконок */
+  color: #999999;
 }
 
+/* 1-3/7 - Основной цвет, тонкий контур */
 .contact-icon-low {
   opacity: 1;
   filter: none;
-  color: #646cff; /* Основной цвет для иконок с контактом */
+  color: #646cff;
+  /* Для эмодзи используем text-shadow как имитацию тонкого контура */
+  text-shadow: 0 0 0.5px currentColor;
 }
 
+/* 4-6/7 - Основной цвет, жирный контур */
 .contact-icon-medium {
   opacity: 1;
   filter: none;
-  transform: scale(1.1);
+  color: #646cff;
+  /* Для эмодзи используем более выраженный text-shadow как имитацию жирного контура */
+  text-shadow: 0 0 1px currentColor, 0 0 2px currentColor;
 }
 
+/* 7/7 - Основной цвет, полная заливка */
 .contact-icon-full {
   opacity: 1;
   filter: none;
-  transform: scale(1.15);
+  color: #646cff;
+  /* Для эмодзи используем более насыщенный вид как имитацию полной заливки */
+  filter: drop-shadow(0 0 2px currentColor);
+  transform: scale(1.05);
 }
 
 /* Темная тема */

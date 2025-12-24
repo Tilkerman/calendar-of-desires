@@ -90,7 +90,7 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
         <div className="desires-info-block">
           {/* Количество желаний */}
           <p className="desires-count">
-            У тебя {desires.length} {desires.length === 1 ? 'желание' : desires.length < 5 ? 'желания' : 'желаний'}
+            Сейчас у тебя {desires.length} {desires.length === 1 ? 'желание' : desires.length < 5 ? 'желания' : 'желаний'}
           </p>
 
           {/* Пояснение фокуса */}
@@ -118,7 +118,7 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
               >
                 {/* Верхняя часть: название и бейдж */}
                 <div className="desire-card-header">
-                  {/* Название желания - сверху слева */}
+                  {/* Название желания - главный визуальный якорь */}
                   <h2 className="desire-card-title">{desire.title}</h2>
                   
                   {/* Метка "Сегодня в фокусе" - сверху справа */}
@@ -155,8 +155,10 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
             ))
           )}
         </div>
+      </div>
 
-        {/* Кнопка добавления желания */}
+      {/* Кнопка добавления желания - закреплена внизу */}
+      <div className="desires-list-add-button-container">
         <button className="desires-list-add-button" onClick={onAddDesire}>
           Добавить желание
         </button>

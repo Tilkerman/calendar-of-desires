@@ -36,8 +36,15 @@ function App() {
     setCurrentView('form');
   };
 
-  const handleDesireSaved = () => {
-    setCurrentView('list');
+  const handleDesireSaved = (desireId?: string) => {
+    if (desireId) {
+      // Переход на экран созданного желания
+      setSelectedDesireId(desireId);
+      setCurrentView('detail');
+    } else {
+      // Редактирование - возврат в список
+      setCurrentView('list');
+    }
     setEditingDesire(undefined);
   };
 
@@ -81,27 +88,11 @@ function App() {
 
   if (currentView === 'form') {
     return (
-      <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', padding: '2rem' }}>
-        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-          <button
-            onClick={() => setCurrentView('list')}
-            style={{
-              marginBottom: '1rem',
-              background: 'none',
-              border: 'none',
-              fontSize: '1.5rem',
-              cursor: 'pointer',
-              color: 'var(--text-primary)',
-              padding: '0.5rem',
-              borderRadius: '0.5rem',
-            }}
-            aria-label="Назад"
-          >
-            ←
-          </button>
-          <DesireForm onSave={handleDesireSaved} initialDesire={editingDesire} />
-        </div>
-      </div>
+      <DesireForm 
+        onSave={handleDesireSaved} 
+        initialDesire={editingDesire}
+        onBack={() => setCurrentView('list')}
+      />
     );
   }
 
