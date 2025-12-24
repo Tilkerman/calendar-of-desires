@@ -4,6 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/calendar-of-desires/', // Для GitHub Pages
   plugins: [
     react(),
     VitePWA({
@@ -17,8 +18,8 @@ export default defineConfig({
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait',
-        scope: '/',
-        start_url: '/',
+        scope: '/calendar-of-desires/',
+        start_url: '/calendar-of-desires/',
         icons: [
           {
             src: '/apple-touch-icon.svg',
