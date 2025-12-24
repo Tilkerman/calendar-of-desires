@@ -1,4 +1,3 @@
-import type { ContactIndicatorState } from '../../types';
 import { getContactIndicatorState } from '../../utils/contactIndicators';
 import './ContactIndicators.css';
 
