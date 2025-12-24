@@ -1,0 +1,56 @@
+.contact-indicators {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.contact-icon {
+  font-size: 1.25rem;
+  transition: opacity 0.2s, transform 0.2s;
+  user-select: none;
+  pointer-events: none; /* Иконки не кликабельны согласно ТЗ */
+}
+
+/* Размеры */
+.contact-indicators-small .contact-icon {
+  font-size: 1rem;
+}
+
+.contact-indicators-medium .contact-icon {
+  font-size: 1.25rem;
+}
+
+.contact-indicators-large .contact-icon {
+  font-size: 1.5rem;
+}
+
+/* Состояния индикаторов */
+.contact-icon-empty {
+  opacity: 0.3;
+  filter: grayscale(100%);
+  color: #999999; /* Светло-серый цвет для пустых иконок */
+}
+
+.contact-icon-low {
+  opacity: 1;
+  filter: none;
+  color: #646cff; /* Основной цвет для иконок с контактом */
+}
+
+.contact-icon-medium {
+  opacity: 1;
+  filter: none;
+  transform: scale(1.1);
+}
+
+.contact-icon-full {
+  opacity: 1;
+  filter: none;
+  transform: scale(1.15);
+}
+
+/* Темная тема */
+[data-theme='dark'] .contact-icon-empty {
+  opacity: 0.3;
+}
+

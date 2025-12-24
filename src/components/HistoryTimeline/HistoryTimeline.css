@@ -1,0 +1,112 @@
+.history-timeline {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+@media (max-width: 768px) {
+  .history-timeline {
+    padding: 1rem 0.5rem;
+  }
+  
+  .history-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .history-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .export-button {
+    width: 100%;
+  }
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.history-timeline h2 {
+  font-size: 2rem;
+  margin: 0;
+  color: #333;
+}
+
+.export-button {
+  padding: 0.75rem 1.5rem;
+  background: #646cff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.export-button:hover {
+  background: #535bf2;
+}
+
+.loading,
+.no-desire,
+.no-entries {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.timeline-entry {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border-left: 4px solid #646cff;
+}
+
+.entry-date {
+  font-weight: 600;
+  color: #646cff;
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.entry-content {
+  color: #333;
+}
+
+.entry-text {
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+  white-space: pre-wrap;
+}
+
+.entry-rating {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 0.5rem;
+}
+
+.view-entry {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #666;
+  font-style: italic;
+}
+
+.view-icon {
+  font-size: 1.2rem;
+}
+

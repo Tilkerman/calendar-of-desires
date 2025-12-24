@@ -1,0 +1,152 @@
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+  backdrop-filter: blur(10px);
+  background: var(--bg-primary);
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  margin: -0.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.header-logo:hover {
+  background: var(--bg-hover);
+}
+
+.logo-icon {
+  font-size: 1.5rem;
+}
+
+.logo-text {
+  font-size: 1rem;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Toggle Switch для темы */
+.theme-toggle-switch {
+  position: relative;
+  width: 56px;
+  height: 32px;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.3s ease;
+  outline: none;
+  flex-shrink: 0;
+}
+
+.theme-toggle-light {
+  background: #e0e0e0;
+}
+
+.theme-toggle-dark {
+  background: #5a7ba7; /* Мuted blue как в описании */
+}
+
+.theme-toggle-switch:hover {
+  opacity: 0.9;
+}
+
+.theme-toggle-switch:active {
+  transform: scale(0.95);
+}
+
+.theme-toggle-slider {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.theme-toggle-light .theme-toggle-slider {
+  transform: translateX(0);
+  background: #ffffff;
+}
+
+.theme-toggle-dark .theme-toggle-slider {
+  transform: translateX(24px);
+  background: #3a4a6a; /* Темно-синий для кнопки в темной теме */
+}
+
+.theme-toggle-icon {
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.1));
+}
+
+/* Настройки */
+.header-settings {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+  font-size: 1.25rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+}
+
+.header-settings:hover {
+  background: var(--bg-hover);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .header-content {
+    padding: 0.75rem 1rem;
+  }
+
+  .logo-text {
+    display: none;
+  }
+
+  .logo-icon {
+    font-size: 1.25rem;
+  }
+}
+

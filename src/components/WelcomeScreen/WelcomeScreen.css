@@ -1,0 +1,91 @@
+.welcome-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1.5rem;
+  max-width: 600px;
+  margin: 0 auto;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.welcome-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  margin-top: 0;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.welcome-subtitle {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 3rem;
+  text-align: center;
+  font-weight: 400;
+}
+
+.welcome-text {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-primary);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.welcome-text p {
+  margin-bottom: 1rem;
+}
+
+.welcome-hint {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-tertiary);
+  margin-bottom: 3rem;
+  text-align: center;
+  font-weight: 300;
+}
+
+.welcome-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.welcome-button {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--button-text);
+  background: var(--button-bg);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  min-width: 240px;
+  width: 100%;
+  max-width: 320px;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.welcome-button:hover {
+  background: var(--button-bg-hover);
+}
+
+.welcome-button:active {
+  transform: scale(0.98);
+}
+
+.welcome-button-hint {
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  text-align: center;
+  font-weight: 300;
+  margin: 0;
+}
+
