@@ -36,6 +36,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           publish_branch: gh-pages
-          force_orphan: false
-          cname: false
+          force_orphan: true
+          enable_jekyll: false
 
