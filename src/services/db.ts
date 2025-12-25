@@ -1,5 +1,6 @@
 import Dexie, { type Table } from 'dexie';
 import type { Desire, Contact, ContactType } from '../types';
+import { getTodayDateString, toLocalDateString } from '../utils/date';
 
 class CalendarOfDesiresDB extends Dexie {
   desires!: Table<Desire>;
@@ -107,17 +108,20 @@ export const desireService = {
 // Методы для работы с контактами
 export const contactService = {
   // Получить контакт определенного типа за сегодня
+  // Поддержка 'note' как алиаса для 'entry' для обратной совместимости
   async getTodayContact(desireId: string, type: ContactType): Promise<Contact | undefined> {
-    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const today = getTodayDateString(); // YYYY-MM-DD (локальная дата)
+    // 'note' и 'entry' - это одно и то же
+    const normalizedType = type === 'note' ? 'entry' : type;
     return await db.contacts
       .where('[desireId+date+type]')
-      .equals([desireId, today, type])
+      .equals([desireId, today, normalizedType])
       .first();
   },
 
   // Получить все контакты определенного типа за сегодня
   async getTodayContacts(desireId: string): Promise<Contact[]> {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getTodayDateString();
     return await db.contacts
       .where('[desireId+date]')
       .equals([desireId, today])
@@ -130,31 +134,51 @@ export const contactService = {
     type: ContactType,
     text: string | null = null
   ): Promise<string> {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getTodayDateString();
+    // 'note' и 'entry' - это одно и то же, используем 'entry' в базе
+    const normalizedType = type === 'note' ? 'entry' : type;
     
     // Проверяем, есть ли уже контакт этого типа за сегодня
     const existing = await this.getTodayContact(desireId, type);
     
+    let contactId: string;
     if (existing) {
       // Обновляем существующий
       await db.contacts.update(existing.id, {
         text,
-        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       });
-      return existing.id;
+      contactId = existing.id;
     } else {
       // Создаем новый
       const newContact: Contact = {
         id: crypto.randomUUID(),
         desireId,
         date: today,
-        type,
+        type: normalizedType,
         text,
         createdAt: new Date().toISOString(),
       };
       await db.contacts.add(newContact);
-      return newContact.id;
+      contactId = newContact.id;
     }
+
+    // Автоматически устанавливаем желание "в фокусе" при создании контакта (если время до 23:00)
+    const now = new Date();
+    const currentHour = now.getHours();
+    if (currentHour < 23) {
+      // Деактивируем все остальные желания
+      const allDesires = await db.desires.toArray();
+      await Promise.all(
+        allDesires
+          .filter((d) => d.id !== desireId && d.isActive)
+          .map((d) => db.desires.update(d.id, { isActive: false }))
+      );
+      // Активируем текущее желание
+      await db.desires.update(desireId, { isActive: true });
+    }
+
+    return contactId;
   },
 
   // Получить количество дней с контактом определенного типа за последние 7 дней
@@ -172,17 +196,55 @@ export const contactService = {
         .equals(desireId)
         .toArray();
       
-      // Фильтруем по типу
-      const filteredContacts = allContacts.filter((c) => c.type === type);
+      // Фильтруем по типу (поддержка 'note' как алиаса для 'entry')
+      const normalizedType = type === 'note' ? 'entry' : type;
+      const filteredContacts = allContacts.filter((c) => c.type === normalizedType || (type === 'note' && c.type === 'entry'));
 
       // Проверяем каждый из последних 7 дней
       for (let i = 0; i < 7; i++) {
         const checkDate = new Date(today);
         checkDate.setDate(checkDate.getDate() - i);
-        const dateStr = checkDate.toISOString().split('T')[0];
+        const dateStr = toLocalDateString(checkDate);
 
         // Проверяем, есть ли контакт этого типа в этот день
         const hasContact = filteredContacts.some((contact) => contact.date === dateStr);
+        
+        if (hasContact) {
+          datesWithContact.add(dateStr);
+        }
+      }
+
+      return datesWithContact.size;
+    } catch (error) {
+      console.error('Ошибка при подсчете контактов:', error);
+      return 0;
+    }
+  },
+
+  // Получить количество дней с любым контактом за последние 7 дней
+  // Контакт засчитывается, если в день был хотя бы один контакт (entry, thought или step)
+  async getTotalContactDaysLast7Days(desireId: string): Promise<number> {
+    try {
+      await db.open();
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      const datesWithContact = new Set<string>();
+
+      // Получаем все контакты желания
+      const allContacts = await db.contacts
+        .where('desireId')
+        .equals(desireId)
+        .toArray();
+
+      // Проверяем каждый из последних 7 дней
+      for (let i = 0; i < 7; i++) {
+        const checkDate = new Date(today);
+        checkDate.setDate(checkDate.getDate() - i);
+        const dateStr = toLocalDateString(checkDate);
+
+        // Проверяем, есть ли хотя бы один контакт (любого типа) в этот день
+        const hasContact = allContacts.some((contact) => contact.date === dateStr);
         
         if (hasContact) {
           datesWithContact.add(dateStr);
@@ -215,7 +277,9 @@ export const contactService = {
       .equals(desireId)
       .toArray();
 
-    const filtered = contacts.filter((c) => c.type === type);
+    // Поддержка 'note' как алиаса для 'entry'
+    const normalizedType = type === 'note' ? 'entry' : type;
+    const filtered = contacts.filter((c) => c.type === normalizedType || (type === 'note' && c.type === 'entry'));
     filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     return filtered;
   },

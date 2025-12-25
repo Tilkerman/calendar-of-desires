@@ -1,10 +1,17 @@
 // Типы для Calendar of Desires
 
+export interface DesireImage {
+  id: string;
+  url: string; // base64 или URL
+  order: number; // порядок отображения (0, 1, 2, ...)
+}
+
 export interface Desire {
   id: string;
   title: string;
   deadline: string | null; // ISO date или null (ориентир по времени) - устаревшее, оставлено для совместимости
-  imageUrl: string | null; // base64 или URL (можно несколько, храним как строку с разделителями)
+  imageUrl?: string | null; // base64 или URL (legacy, для обратной совместимости)
+  images?: DesireImage[]; // массив изображений (до 6)
   description: string; // эмоциональное описание "Как ты хочешь себя чувствовать?"
   details: string | null; // подробное описание желания "Опиши своё желание"
   createdAt: string; // ISO date
@@ -16,16 +23,18 @@ export interface Contact {
   id: string;
   desireId: string;
   date: string; // ISO date (YYYY-MM-DD)
-  type: 'entry' | 'thought' | 'step'; // тип контакта: запись, мысли, шаг
+  type: 'entry' | 'note' | 'thought' | 'step'; // тип контакта: entry (legacy) = note (записи), мысли, шаг
   text: string | null; // текст записи или комментарий к шагу (опционально)
   createdAt: string; // ISO timestamp
+  updatedAt?: string; // ISO timestamp (для отслеживания обновлений)
 }
 
 // Тип контакта для отображения
-export type ContactType = 'entry' | 'thought' | 'step';
+export type ContactType = 'entry' | 'note' | 'thought' | 'step';
 
 // Состояние индикатора контакта за 7 дней
-export type ContactIndicatorState = 'empty' | 'low' | 'medium' | 'full';
+// Все 3 иконки заполняются синхронно в зависимости от общего количества дней контакта
+export type ContactIndicatorState = 'empty' | 'light' | 'medium' | 'strong' | 'filled';
 
 
 

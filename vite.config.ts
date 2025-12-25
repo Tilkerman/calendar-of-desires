@@ -3,23 +3,27 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
-export default defineConfig({
-  base: '/calendar-of-desires/', // Для GitHub Pages
-  plugins: [
-    react(),
-    VitePWA({
-      registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.svg', 'vite.svg'],
-      manifest: {
-        name: 'Calendar of Desires',
-        short_name: 'CoD',
-        description: 'Календарь желаний - ежедневный ритуал работы с желаниями',
-        theme_color: '#646cff',
-        background_color: '#ffffff',
-        display: 'standalone',
-        orientation: 'portrait',
-        scope: '/calendar-of-desires/',
-        start_url: '/calendar-of-desires/',
+export default defineConfig(({ mode }) => {
+  const isProduction = mode === 'production';
+  const base = isProduction ? '/calendar-of-desires/' : '/';
+  
+  return {
+    base,
+    plugins: [
+      react(),
+      VitePWA({
+        registerType: 'autoUpdate',
+        includeAssets: ['favicon.ico', 'apple-touch-icon.svg', 'vite.svg'],
+        manifest: {
+          name: 'Calendar of Desires',
+          short_name: 'CoD',
+          description: 'Календарь желаний - ежедневный ритуал работы с желаниями',
+          theme_color: '#646cff',
+          background_color: '#ffffff',
+          display: 'standalone',
+          orientation: 'portrait',
+          scope: isProduction ? '/calendar-of-desires/' : '/',
+          start_url: isProduction ? '/calendar-of-desires/' : '/',
         icons: [
           {
             src: '/apple-touch-icon.svg',
@@ -49,5 +53,6 @@ export default defineConfig({
         ]
       }
     })
-  ],
-})
+  ]
+  };
+});

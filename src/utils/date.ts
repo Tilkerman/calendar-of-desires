@@ -25,7 +25,17 @@ export function formatDate(date: string): string {
 }
 
 export function getTodayDateString(): string {
-  return new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  return toLocalDateString(new Date()); // YYYY-MM-DD (локальная дата)
+}
+
+/**
+ * Возвращает YYYY-MM-DD в локальном времени (без UTC-сдвигов).
+ */
+export function toLocalDateString(d: Date): string {
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
 }
 
 export function formatDateTime(date: string): string {

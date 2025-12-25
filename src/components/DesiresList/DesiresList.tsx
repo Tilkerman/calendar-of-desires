@@ -11,9 +11,8 @@ interface DesiresListProps {
 }
 
 interface DesireWithContacts extends Desire {
-  entryDays: number;
-  thoughtDays: number;
-  stepDays: number;
+  contactDays: number; // общее количество дней с контактом за 7 дней
+  hasTodayContact: boolean; // есть ли контакт за сегодня
 }
 
 export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListProps) {
@@ -23,19 +22,57 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
   const loadDesires = async () => {
     setIsLoading(true);
     try {
-      const allDesires = await desireService.getAllDesires();
+      let allDesires = await desireService.getAllDesires();
       
+      // Проверяем время - если после 23:00, сбрасываем все isActive
+      const now = new Date();
+      const currentHour = now.getHours();
+      if (currentHour >= 23) {
+        // После 23:00 сбрасываем все флаги isActive
+        await Promise.all(
+          allDesires
+            .filter((d) => d.isActive)
+            .map((d) => desireService.updateDesire(d.id, { isActive: false }))
+        );
+        // Перезагружаем желания после сброса
+        allDesires = await desireService.getAllDesires();
+      }
+
       // Загружаем контакты для каждого желания
       const desiresWithContacts = await Promise.all(
         allDesires.map(async (desire) => {
-          const entryDays = await contactService.getContactDaysLast7Days(desire.id, 'entry');
-          const thoughtDays = await contactService.getContactDaysLast7Days(desire.id, 'thought');
-          const stepDays = await contactService.getContactDaysLast7Days(desire.id, 'step');
+          // Получаем общее количество дней с контактом за 7 дней
+          const contactDays = await contactService.getTotalContactDaysLast7Days(desire.id);
+          
+          // Проверяем, есть ли контакт за сегодня (любой тип)
+          const todayEntry = await contactService.getTodayContact(desire.id, 'entry');
+          const todayThought = await contactService.getTodayContact(desire.id, 'thought');
+          const todayStep = await contactService.getTodayContact(desire.id, 'step');
+          const hasTodayContact = !!(todayEntry || todayThought || todayStep);
+          
+          // Если есть контакт сегодня и время до 23:00, автоматически устанавливаем isActive
+          if (hasTodayContact && currentHour < 23 && !desire.isActive) {
+            // Деактивируем все остальные желания
+            await Promise.all(
+              allDesires
+                .filter((d) => d.id !== desire.id && d.isActive)
+                .map((d) => desireService.updateDesire(d.id, { isActive: false }))
+            );
+            // Активируем текущее желание
+            await desireService.updateDesire(desire.id, { isActive: true });
+            desire.isActive = true;
+          }
+          
+          // Если желание активно (в фокусе) и нет контакта за сегодня - создаём контакт типа "thought"
+          // Выбор желания "в фокусе" считается контактом согласно ТЗ
+          if (desire.isActive && currentHour < 23 && !hasTodayContact) {
+            await contactService.createOrUpdateContact(desire.id, 'thought', null);
+          }
+          
           return { 
             ...desire, 
-            entryDays,
-            thoughtDays,
-            stepDays,
+            contactDays,
+            hasTodayContact,
           };
         })
       );
@@ -53,10 +90,34 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
   }, []);
 
   const handleDesireClick = async (desire: Desire) => {
-    // Устанавливаем фокус на желание
-    await desireService.setFocusDesire(desire.id);
-    // Обновляем список для отображения нового фокуса
-    await loadDesires();
+    // При клике на желание устанавливаем его "в фокусе" (если время до 23:00)
+    // Это считается контактом согласно ТЗ
+    const now = new Date();
+    const currentHour = now.getHours();
+    
+    if (currentHour < 23) {
+      // Деактивируем все остальные желания
+      const allDesires = await desireService.getAllDesires();
+      await Promise.all(
+        allDesires
+          .filter((d) => d.id !== desire.id && d.isActive)
+          .map((d) => desireService.updateDesire(d.id, { isActive: false }))
+      );
+      
+      // Активируем текущее желание
+      await desireService.updateDesire(desire.id, { isActive: true });
+      
+      // Создаём контакт типа "thought", если его ещё нет за сегодня
+      // Выбор желания "в фокусе" считается контактом
+      const todayThought = await contactService.getTodayContact(desire.id, 'thought');
+      if (!todayThought) {
+        await contactService.createOrUpdateContact(desire.id, 'thought', null);
+      }
+      
+      // Перезагружаем список для обновления индикаторов
+      await loadDesires();
+    }
+    
     // Открываем детальный экран желания
     onDesireClick(desire);
   };
@@ -132,21 +193,27 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
 
                 <div className="desire-card-content">
                   {/* Превью-изображение - слева */}
-                  <div className="desire-card-image">
-                    {desire.imageUrl ? (
-                      <img src={desire.imageUrl} alt={desire.title} />
-                    ) : (
-                      <div className="desire-card-image-placeholder"></div>
-                    )}
-                  </div>
+            <div className="desire-card-image">
+              {(() => {
+                // Получаем первое изображение из массива images или из imageUrl (legacy)
+                const firstImage = desire.images && desire.images.length > 0
+                  ? desire.images.sort((a, b) => a.order - b.order)[0]
+                  : null;
+                const imageUrl = firstImage?.url || desire.imageUrl;
+                
+                return imageUrl ? (
+                  <img src={imageUrl} alt={desire.title} />
+                ) : (
+                  <div className="desire-card-image-placeholder"></div>
+                );
+              })()}
+            </div>
 
                   {/* Блок "Контакт за 7 дней" - справа */}
                   <div className="desire-card-contacts-block">
                     <p className="desire-card-contacts-label">Контакт за 7 дней:</p>
                     <ContactIndicators
-                      entryDays={desire.entryDays}
-                      thoughtDays={desire.thoughtDays}
-                      stepDays={desire.stepDays}
+                      contactDays={desire.contactDays}
                       size="small"
                     />
                   </div>

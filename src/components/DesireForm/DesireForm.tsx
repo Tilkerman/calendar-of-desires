@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import type { Desire } from '../../types';
+import type { Desire, DesireImage } from '../../types';
 import { desireService } from '../../services/db';
 import './DesireForm.css';
 
@@ -13,7 +13,7 @@ export default function DesireForm({ onSave, initialDesire, onBack }: DesireForm
   const [title, setTitle] = useState(initialDesire?.title || '');
   const [details, setDetails] = useState(initialDesire?.details || '');
   const [description, setDescription] = useState(initialDesire?.description || '');
-  const [imageUrl, setImageUrl] = useState(initialDesire?.imageUrl || null);
+  const [images, setImages] = useState<DesireImage[]>(initialDesire?.images || []);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -22,11 +22,33 @@ export default function DesireForm({ onSave, initialDesire, onBack }: DesireForm
     const file = e.target.files?.[0];
     if (!file) return;
 
+    if (images.length >= 6) {
+      alert('Максимум 6 изображений');
+      return;
+    }
+
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImageUrl(reader.result as string);
+      const newImage: DesireImage = {
+        id: crypto.randomUUID(),
+        url: reader.result as string,
+        order: images.length,
+      };
+      setImages([...images, newImage]);
     };
     reader.readAsDataURL(file);
+
+    // Сбрасываем input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleRemoveImage = (imageId: string) => {
+    const updated = images
+      .filter((img) => img.id !== imageId)
+      .map((img, index) => ({ ...img, order: index }));
+    setImages(updated);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,7 +62,7 @@ export default function DesireForm({ onSave, initialDesire, onBack }: DesireForm
           title: title.trim() || '',
           details: details.trim() || null,
           description: description.trim() || '',
-          imageUrl,
+          images: images.length > 0 ? images : undefined,
         });
         onSave();
       } else {
@@ -50,7 +72,7 @@ export default function DesireForm({ onSave, initialDesire, onBack }: DesireForm
           details: details.trim() || null,
           description: description.trim() || '',
           deadline: null,
-          imageUrl,
+          images: images.length > 0 ? images : undefined,
           isActive: true, // Новое желание автоматически становится "Сегодня в фокусе"
         });
         // Устанавливаем фокус на новое желание
@@ -140,7 +162,7 @@ export default function DesireForm({ onSave, initialDesire, onBack }: DesireForm
           />
         </div>
 
-        {/* 4. Визуальный образ (опционально) */}
+        {/* 4. Визуальный образ (опционально, до 6 изображений) */}
         <div className="form-group">
           <label htmlFor="image">Визуальный образ (опционально)</label>
           <input
@@ -150,32 +172,36 @@ export default function DesireForm({ onSave, initialDesire, onBack }: DesireForm
             accept="image/*"
             onChange={handleImageChange}
             style={{ display: 'none' }}
+            disabled={images.length >= 6}
           />
-          <div className="image-upload">
-            {imageUrl ? (
-              <div className="image-preview">
-                <img src={imageUrl} alt="Preview" />
+          <div className="image-upload-grid">
+            {images.map((image) => (
+              <div key={image.id} className="image-preview-item">
+                <img src={image.url} alt={`Preview ${image.order + 1}`} />
                 <button
                   type="button"
-                  onClick={() => {
-                    setImageUrl(null);
-                    if (fileInputRef.current) fileInputRef.current.value = '';
-                  }}
+                  onClick={() => handleRemoveImage(image.id)}
                   className="remove-image"
+                  title="Удалить"
                 >
                   ✕
                 </button>
               </div>
-            ) : (
+            ))}
+            {images.length < 6 && (
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="upload-button"
+                className="upload-button-grid"
+                title="Добавить изображение"
               >
-                Выбрать изображение
+                +
               </button>
             )}
           </div>
+          {images.length > 0 && (
+            <p className="form-hint">{images.length} из 6 изображений</p>
+          )}
         </div>
 
         {/* Кнопка действия */}
