@@ -26,7 +26,8 @@ export default defineConfig(({ mode }) => {
           start_url: isProduction ? '/calendar-of-desires/' : '/',
         icons: [
           {
-            src: '/apple-touch-icon.svg',
+            // Важно для GitHub Pages: в проде иконка должна быть внутри base path
+            src: isProduction ? '/calendar-of-desires/apple-touch-icon.svg' : '/apple-touch-icon.svg',
             sizes: '180x180',
             type: 'image/svg+xml',
             purpose: 'any maskable'
@@ -34,6 +35,10 @@ export default defineConfig(({ mode }) => {
         ]
       },
       workbox: {
+        // быстрее подхватываем обновления на PWA (особенно на iOS)
+        clientsClaim: true,
+        skipWaiting: true,
+        cleanupOutdatedCaches: true,
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
         runtimeCaching: [
           {
