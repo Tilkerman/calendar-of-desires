@@ -36,7 +36,7 @@ function App() {
     setCurrentView('form');
   };
 
-  const handleDesireSaved = (desireId?: string) => {
+  const handleDesireSaved = (_desireId?: string) => {
     // После создания или редактирования всегда возвращаемся в список желаний
     setCurrentView('list');
     setEditingDesire(undefined);
