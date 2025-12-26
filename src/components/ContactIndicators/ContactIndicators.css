@@ -1,35 +1,39 @@
 .contact-indicators {
   display: flex;
   gap: 0.75rem;
-  align-items: center;
+  align-items: baseline; /* Выравнивание по базовой линии для одинаковой визуальной высоты */
 }
 
 .contact-icon {
   user-select: none;
   pointer-events: none; /* статус, не кликабельно */
   display: inline-flex;
-  align-items: center;
+  align-items: flex-end; /* Выравнивание по нижнему краю */
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .contact-svg {
   display: block;
+  flex-shrink: 0;
+  /* Все SVG одинаковой высоты и ширины для единообразия */
+  vertical-align: middle;
 }
 
-/* Размеры */
+/* Размеры (увеличены в 1.5 раза, все одинаковой высоты) */
 .contact-indicators-small .contact-svg {
-  width: 18px;
-  height: 18px;
+  width: 27px; /* 18px * 1.5 */
+  height: 27px; /* 18px * 1.5 - фиксированная высота для всех */
 }
 
 .contact-indicators-medium .contact-svg {
-  width: 22px;
-  height: 22px;
+  width: 33px; /* 22px * 1.5 */
+  height: 33px; /* 22px * 1.5 - фиксированная высота для всех */
 }
 
 .contact-indicators-large .contact-svg {
-  width: 28px;
-  height: 28px;
+  width: 42px; /* 28px * 1.5 */
+  height: 42px; /* 28px * 1.5 - фиксированная высота для всех */
 }
 
 /* Слои заливки */

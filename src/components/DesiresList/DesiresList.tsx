@@ -11,7 +11,9 @@ interface DesiresListProps {
 }
 
 interface DesireWithContacts extends Desire {
-  contactDays: number; // общее количество дней с контактом за 7 дней
+  entryDays: number; // количество дней с контактом типа "entry" за 7 дней
+  stepDays: number; // количество дней с контактом типа "step" за 7 дней
+  thoughtDays: number; // количество дней с контактом типа "thought" за 7 дней
   hasTodayContact: boolean; // есть ли контакт за сегодня
 }
 
@@ -41,8 +43,10 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
       // Загружаем контакты для каждого желания
       const desiresWithContacts = await Promise.all(
         allDesires.map(async (desire) => {
-          // Получаем общее количество дней с контактом за 7 дней
-          const contactDays = await contactService.getTotalContactDaysLast7Days(desire.id);
+          // Получаем количество дней с контактом для каждого типа отдельно
+          const entryDays = await contactService.getContactDaysLast7Days(desire.id, 'entry');
+          const stepDays = await contactService.getContactDaysLast7Days(desire.id, 'step');
+          const thoughtDays = await contactService.getContactDaysLast7Days(desire.id, 'thought');
           
           // Проверяем, есть ли контакт за сегодня (любой тип)
           const todayEntry = await contactService.getTodayContact(desire.id, 'entry');
@@ -63,15 +67,14 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
             desire.isActive = true;
           }
           
-          // Если желание активно (в фокусе) и нет контакта за сегодня - создаём контакт типа "thought"
-          // Выбор желания "в фокусе" считается контактом согласно ТЗ
-          if (desire.isActive && currentHour < 23 && !hasTodayContact) {
-            await contactService.createOrUpdateContact(desire.id, 'thought', null);
-          }
+          // НЕ создаём контакт автоматически при загрузке!
+          // Контакт создаётся ТОЛЬКО при явном действии пользователя
           
           return { 
             ...desire, 
-            contactDays,
+            entryDays,
+            stepDays,
+            thoughtDays,
             hasTodayContact,
           };
         })
@@ -91,7 +94,7 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
 
   const handleDesireClick = async (desire: Desire) => {
     // При клике на желание устанавливаем его "в фокусе" (если время до 23:00)
-    // Это считается контактом согласно ТЗ
+    // НО НЕ создаём контакт автоматически! Контакт создаётся только при явном действии.
     const now = new Date();
     const currentHour = now.getHours();
     
@@ -107,12 +110,11 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
       // Активируем текущее желание
       await desireService.updateDesire(desire.id, { isActive: true });
       
-      // Создаём контакт типа "thought", если его ещё нет за сегодня
-      // Выбор желания "в фокусе" считается контактом
-      const todayThought = await contactService.getTodayContact(desire.id, 'thought');
-      if (!todayThought) {
-        await contactService.createOrUpdateContact(desire.id, 'thought', null);
-      }
+      // НЕ создаём контакт автоматически!
+      // Контакт создаётся ТОЛЬКО при явном действии пользователя:
+      // - нажатие кнопки "Мысли сегодня" на странице деталей
+      // - добавление/изменение Записи
+      // - добавление/изменение Шага
       
       // Перезагружаем список для обновления индикаторов
       await loadDesires();
@@ -213,7 +215,9 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
                   <div className="desire-card-contacts-block">
                     <p className="desire-card-contacts-label">Контакт за 7 дней:</p>
                     <ContactIndicators
-                      contactDays={desire.contactDays}
+                      entryDays={desire.entryDays}
+                      stepDays={desire.stepDays}
+                      thoughtDays={desire.thoughtDays}
                       size="small"
                     />
                   </div>

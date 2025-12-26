@@ -45,14 +45,14 @@
 }
 
 html {
-  background-color: var(--bg-primary) !important;
-  color: var(--text-primary) !important;
+  background-color: var(--bg-primary, #ffffff) !important;
+  color: var(--text-primary, #213547) !important;
 }
 
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Avenir, Helvetica, Arial, sans-serif;
-  background-color: var(--bg-primary) !important;
-  color: var(--text-primary) !important;
+  background-color: var(--bg-primary, #ffffff) !important;
+  color: var(--text-primary, #213547) !important;
   min-height: 100vh;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -64,8 +64,8 @@ body {
 #root {
   min-height: 100vh;
   width: 100%;
-  background-color: var(--bg-primary) !important;
-  color: var(--text-primary) !important;
+  background-color: var(--bg-primary, #ffffff) !important;
+  color: var(--text-primary, #213547) !important;
 }
 
 h1, h2, h3 {

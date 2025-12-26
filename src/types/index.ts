@@ -32,10 +32,6 @@ export interface Contact {
 // Тип контакта для отображения
 export type ContactType = 'entry' | 'note' | 'thought' | 'step';
 
-// Состояние индикатора контакта за 7 дней
-// Все 3 иконки заполняются синхронно в зависимости от общего количества дней контакта
-export type ContactIndicatorState = 'empty' | 'light' | 'medium' | 'strong' | 'filled';
-
 
 
 

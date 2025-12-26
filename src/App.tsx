@@ -37,15 +37,10 @@ function App() {
   };
 
   const handleDesireSaved = (desireId?: string) => {
-    if (desireId) {
-      // Переход на экран созданного желания
-      setSelectedDesireId(desireId);
-      setCurrentView('detail');
-    } else {
-      // Редактирование - возврат в список
-      setCurrentView('list');
-    }
+    // После создания или редактирования всегда возвращаемся в список желаний
+    setCurrentView('list');
     setEditingDesire(undefined);
+    setSelectedDesireId(null);
   };
 
   const handleDesireClick = (desire: Desire) => {
@@ -66,9 +61,10 @@ function App() {
         alignItems: 'center', 
         justifyContent: 'center',
         background: 'var(--bg-primary)',
-        color: 'var(--text-primary)'
+        color: 'var(--text-primary)',
+        padding: '2rem'
       }}>
-        <div>Загрузка...</div>
+        <div style={{ fontSize: '1rem', textAlign: 'center' }}>Загрузка...</div>
       </div>
     );
   }
@@ -105,7 +101,22 @@ function App() {
     );
   }
 
-  return null;
+  // Fallback - если что-то пошло не так
+  return (
+    <div style={{ 
+      minHeight: '100vh', 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center',
+      background: 'var(--bg-primary)',
+      color: 'var(--text-primary)',
+      padding: '2rem'
+    }}>
+      <div style={{ fontSize: '1rem', textAlign: 'center' }}>
+        Ошибка: неизвестное состояние приложения
+      </div>
+    </div>
+  );
 }
 
 export default App;

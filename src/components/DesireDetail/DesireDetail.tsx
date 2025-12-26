@@ -16,8 +16,10 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
   const [desire, setDesire] = useState<Desire | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   
-  // Контакты за последние 7 дней (общее количество дней с любым контактом)
-  const [contactDays, setContactDays] = useState(0);
+  // Контакты за последние 7 дней (отдельно для каждого типа)
+  const [entryDays, setEntryDays] = useState(0);
+  const [stepDays, setStepDays] = useState(0);
+  const [thoughtDays, setThoughtDays] = useState(0);
   
   // Сегодняшние контакты
   const [todayEntry, setTodayEntry] = useState<Contact | null>(null);
@@ -73,9 +75,13 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
       setDesire(loadedDesire);
       setEditingDescription(loadedDesire.description);
 
-      // Загружаем общее количество дней с контактом за 7 дней
-      const totalContactDays = await contactService.getTotalContactDaysLast7Days(desireId);
-      setContactDays(totalContactDays);
+      // Загружаем количество дней с контактом для каждого типа отдельно
+      const entryDaysCount = await contactService.getContactDaysLast7Days(desireId, 'entry');
+      const stepDaysCount = await contactService.getContactDaysLast7Days(desireId, 'step');
+      const thoughtDaysCount = await contactService.getContactDaysLast7Days(desireId, 'thought');
+      setEntryDays(entryDaysCount);
+      setStepDays(stepDaysCount);
+      setThoughtDays(thoughtDaysCount);
 
       // Загружаем сегодняшние контакты
       const todayEntryContact = await contactService.getTodayContact(desireId, 'entry');
@@ -309,7 +315,9 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
         <div className="desire-detail-section">
           <h2 className="desire-detail-section-title">Контакт за 7 дней</h2>
           <ContactIndicators
-            contactDays={contactDays}
+            entryDays={entryDays}
+            stepDays={stepDays}
+            thoughtDays={thoughtDays}
             size="large"
           />
           <p className="desire-detail-contact-hint">
