@@ -1,0 +1,149 @@
+import type { TranslationKey } from './en';
+
+export const ru: Record<TranslationKey, string> = {
+  // Header
+  'header.home': 'На главную',
+  'header.appName': 'Календарь желаний',
+  'header.settings': 'Настройки',
+  'header.themeToDark': 'Переключить на темную тему',
+  'header.themeToLight': 'Переключить на светлую тему',
+  'header.lang.ru': 'RU',
+  'header.lang.en': 'EN',
+  'header.langLabel': 'Язык',
+
+  // Common
+  'common.loading': 'Загрузка…',
+  'common.saving': 'Сохранение...',
+  'common.back': 'Назад',
+  'common.save': 'Сохранить',
+  'common.cancel': 'Отмена',
+  'common.delete': 'Удалить',
+  'common.close': 'Закрыть',
+
+  // Settings
+  'settings.comingSoon': 'Настройки (в разработке)',
+
+  // App fallback
+  'app.unknownState': 'Ошибка: неизвестное состояние приложения',
+
+  // Welcome
+  'welcome.title': 'ДОБРО ПОЖАЛОВАТЬ В ТРЕКЕР ИСПОЛНЕНИЯ ЖЕЛАНИЙ',
+  'welcome.motivation': 'ЗАМЕНИ СОЦСЕТИ НА ПОЛЕЗНУЮ РУТИНУ И РЕЗУЛЬТАТЫ НЕ ЗАСТАВЯТ СЕБЯ ЖДАТЬ',
+  'welcome.list.item1': 'следуй инструкциям',
+  'welcome.list.item2': 'прояви постоянство',
+  'welcome.list.item3': 'формулируй желания',
+  'welcome.cta': 'ПОЕХАЛИ!',
+  'welcome.wish': 'УДАЧИ В ВОПЛОЩЕНИИ ЖИЗНИ МЕЧТЫ!',
+
+  // Desires list
+  'desires.count': 'Сейчас у тебя {count} {noun}',
+  'desires.noun.one': 'желание',
+  'desires.noun.few': 'желания',
+  'desires.noun.many': 'желаний',
+  'desires.noun.other': 'желаний',
+  'desires.chooseFocus': 'Выбери, какое желание сегодня в фокусе',
+  'desires.focusHint': 'это то, к которому ты сегодня возвращаешься',
+  'desires.focusToday': 'Сегодня в фокусе',
+  'desires.empty.title': 'У тебя пока нет желаний',
+  'desires.empty.hint': 'Создай первое желание, чтобы начать',
+  'desires.add': 'Добавить желание',
+  'desires.contact7days': 'Контакт за 7 дней:',
+
+  // Desire detail
+  'detail.contact7days.title': 'Контакт за 7 дней',
+  'detail.contact7days.hint': 'Это отражение того, как часто ты возвращался к этому желанию за последние 7 дней',
+  'detail.notes.title': 'Записи',
+  'detail.notes.history': 'История записей',
+  'detail.notes.placeholder': 'Что ты сейчас думаешь или чувствуешь по поводу этого желания?',
+  'detail.step.title': 'Шаги',
+  'detail.step.history': 'История шагов',
+  'detail.step.placeholder': 'Что это был за шаг? (необязательно)',
+  'detail.step.save': 'Сохранить шаг',
+  'detail.thoughts.title': 'Мысли',
+  'detail.thoughts.action': 'Я сегодня возвращался к этому желанию мыслями',
+  'detail.thoughts.done': '✓ Уже отмечено сегодня',
+  'detail.saved': '✓ Сохранено',
+  'detail.marked': '✓ Отмечено',
+  'detail.timeHint.title': 'Ориентир по времени',
+  'detail.timeHint.notDeadline': 'Это не срок и не обязательство',
+  'detail.feelings.title': 'Как ты хочешь себя чувствовать?',
+  'detail.feelings.notSet': 'Не указано',
+  'detail.edit': 'Изменить',
+  'detail.extra.title': 'Дополнительно',
+  'detail.editTitle': 'Изменить название',
+  'detail.editImages': 'Изменить изображения',
+  'detail.editDetails': 'Изменить описание',
+  'detail.deleteWish': 'Удалить желание',
+  'detail.deleteConfirm': 'Удалить желание «{title}»? Это действие нельзя отменить.',
+  'detail.focusToday': 'Сегодня в фокусе',
+  'detail.modal.notesHistory.title': 'История записей',
+  'detail.modal.stepsHistory.title': 'История шагов',
+  'detail.modal.empty': 'История пуста',
+  'detail.modal.editTitle.title': 'Изменить название',
+  'detail.modal.editDetails.title': 'Изменить описание',
+  'detail.modal.editDetails.hint': 'Чем подробнее образ, тем легче к нему возвращаться',
+  'detail.modal.close': 'Закрыть',
+  'detail.error.saveNote': 'Не удалось сохранить запись',
+  'detail.error.saveStep': 'Не удалось сохранить шаг',
+  'detail.error.saveDescription': 'Не удалось сохранить текст',
+  'detail.error.saveTitle': 'Не удалось сохранить название',
+  'detail.error.saveImages': 'Не удалось сохранить изображения',
+  'detail.error.deleteWish': 'Не удалось удалить желание',
+
+  // Desire form
+  'form.newTitle': 'Новое желание',
+  'form.editTitle': 'Изменить желание',
+  'form.title.label': 'Название желания',
+  'form.title.placeholder': 'Опишите своё желание...',
+  'form.details.label': 'Опиши своё желание',
+  'form.details.hint': 'Чем подробнее образ, тем легче к нему возвращаться',
+  'form.details.placeholder':
+    'Как это выглядит?\nГде ты?\nЧто вокруг тебя?\nКто рядом?\nЧто ты делаешь?',
+  'form.details.footerHint': 'Можно писать не идеально. Это только для тебя.',
+  'form.feelings.label': 'Как ты хочешь себя чувствовать?',
+  'form.feelings.placeholder': 'Спокойно, свободно, уверенно...',
+  'form.visual.label': 'Визуальный образ (опционально)',
+  'form.visual.max': 'Максимум 6 изображений',
+  'form.visual.count': '{count} из 6 изображений',
+  'form.image.previewAlt': 'Превью {n}',
+  'form.image.removeTitle': 'Удалить',
+  'form.image.addTitle': 'Добавить изображение',
+  'form.submit.create': 'Создать желание',
+  'form.submit.save': 'Сохранить изменения',
+  'form.submit.saving': 'Сохранение...',
+  'form.error.save': 'Не удалось сохранить желание. Попробуйте ещё раз.',
+
+  // Contact indicators
+  'contacts.entry': 'Записи',
+  'contacts.entryShort': 'З',
+  'contacts.entryAbbr': 'Зап.',
+  'contacts.step': 'Шаги',
+  'contacts.stepShort': 'Ш',
+  'contacts.stepAbbr': 'Шаги',
+  'contacts.thought': 'Мысли',
+  'contacts.thoughtShort': 'М',
+  'contacts.thoughtAbbr': 'Мысл.',
+  'contacts.tooltip': 'Контакт за 7 дней: Записи {entry}/7, Шаги {step}/7, Мысли {thought}/7',
+
+  // Week dots
+  'dots.day.none': 'Нет контакта',
+  'dots.day.title': '{date}: {types}',
+  'dots.day.today': 'Сегодня',
+
+  // Image gallery
+  'gallery.imageAlt': 'Изображение желания',
+  'gallery.prev': 'Предыдущее изображение',
+  'gallery.next': 'Следующее изображение',
+  'gallery.imageN': 'Изображение {n}',
+
+  // Image editor
+  'editor.title': 'Управление изображениями',
+  'editor.replace': 'Заменить',
+  'editor.remove': 'Удалить',
+  'editor.add': 'Добавить изображение',
+  'editor.count': '{count} из {max} изображений',
+  'editor.limit': 'Достигнут лимит изображений',
+  'editor.maxAlert': 'Максимум {max} изображений',
+  'editor.imageAlt': 'Изображение {n}',
+};
+

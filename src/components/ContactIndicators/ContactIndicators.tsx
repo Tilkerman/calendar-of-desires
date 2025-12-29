@@ -1,41 +1,96 @@
-import { getContactFillPercentage } from '../../utils/contactIndicators';
-import { NoteIcon, StepIcon, ThoughtIcon } from './ContactIcons';
 import './ContactIndicators.css';
+import { useI18n } from '../../i18n';
+import { formatDate, getTodayDateString } from '../../utils/date';
 
 interface ContactIndicatorsProps {
-  entryDays: number; // количество дней с контактом типа "entry" за 7 дней (0-7)
-  stepDays: number; // количество дней с контактом типа "step" за 7 дней (0-7)
-  thoughtDays: number; // количество дней с контактом типа "thought" за 7 дней (0-7)
+  days: Array<{ date: string; types: Array<'entry' | 'thought' | 'step'> }>; // 7 дней, oldest -> today
   size?: 'small' | 'medium' | 'large';
+  mode?: 'combined' | 'byType';
 }
 
 /**
- * Компонент отображает 3 иконки (📝 👣 💭), которые заполняются НЕЗАВИСИМО
- * в зависимости от количества дней с контактом КАЖДОГО ТИПА за последние 7 дней.
- * Каждая иконка показывает регулярность контакта именно этого типа.
+ * Индикатор последних 7 дней: каждый кружок = день, цвет = тип контакта.
  */
 export default function ContactIndicators({
-  entryDays,
-  stepDays,
-  thoughtDays,
+  days,
   size = 'medium',
+  mode = 'byType',
 }: ContactIndicatorsProps) {
-  // Каждая иконка заполняется независимо на основе своего типа
-  const entryFillPct = getContactFillPercentage(entryDays);
-  const stepFillPct = getContactFillPercentage(stepDays);
-  const thoughtFillPct = getContactFillPercentage(thoughtDays);
+  const { t, locale } = useI18n();
+  const todayStr = getTodayDateString();
+
+  const buildTitle = (d: { date: string; types: Array<'entry' | 'thought' | 'step'> }) => {
+    const types = d.types;
+    const typesLabel =
+      types.length === 0
+        ? t('dots.day.none')
+        : types
+            .map((x) =>
+              x === 'entry' ? t('contacts.entry') : x === 'thought' ? t('contacts.thought') : t('contacts.step')
+            )
+            .join(', ');
+    const dateLabel = formatDate(d.date, locale);
+    return t('dots.day.title', { date: dateLabel, types: typesLabel });
+  };
+
+  if (mode === 'combined') {
+    return (
+      <div className={`week-dots week-dots-${size}`}>
+        {days.map((d) => {
+          const types = d.types;
+
+          let kind: 'none' | 'entry' | 'thought' | 'step' | 'mixed' = 'none';
+          if (types.length === 1) kind = types[0];
+          else if (types.length > 1) kind = 'mixed';
+
+          const title = buildTitle(d);
+
+          return (
+            <span
+              key={d.date}
+              className={`week-dot week-dot-${kind}`}
+              title={title}
+              aria-label={title}
+            />
+          );
+        })}
+      </div>
+    );
+  }
+
+  const rows: Array<{ type: 'entry' | 'thought' | 'step' }> = [
+    { type: 'entry' },
+    { type: 'thought' },
+    { type: 'step' },
+  ];
 
   return (
-    <div className={`contact-indicators contact-indicators-${size}`} title={`Контакт за 7 дней: Записи ${entryDays}/7, Шаги ${stepDays}/7, Мысли ${thoughtDays}/7`}>
-      <div className="contact-icon" aria-label="Записи">
-        <NoteIcon title="Записи" fillPct={entryFillPct} />
-      </div>
-      <div className="contact-icon" aria-label="Шаги">
-        <StepIcon title="Шаги" fillPct={stepFillPct} />
-      </div>
-      <div className="contact-icon" aria-label="Мысли">
-        <ThoughtIcon title="Мысли" fillPct={thoughtFillPct} />
-      </div>
+    <div className={`week-dots week-dots-${size} week-dots-bytype`}>
+      {rows.map((row) => (
+        <div key={row.type} className="week-dots-row">
+          <span className="week-dots-row-label" title={t(`contacts.${row.type}` as never)}>
+            {size === 'small'
+              ? t(`contacts.${row.type}Abbr` as never)
+              : t(`contacts.${row.type}` as never)}
+          </span>
+          <div className="week-dots-row-dots">
+            {days.map((d) => {
+              const hasType = d.types.includes(row.type);
+              const kind = hasType ? row.type : 'none';
+              const title = buildTitle(d);
+
+              return (
+                <span
+                  key={`${row.type}-${d.date}`}
+                  className={`week-dot week-dot-${kind}`}
+                  title={title}
+                  aria-label={title}
+                />
+              );
+            })}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

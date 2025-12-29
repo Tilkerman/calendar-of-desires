@@ -1,51 +1,31 @@
 import './WelcomeScreen.css';
+import { useI18n } from '../../i18n';
 
 interface WelcomeScreenProps {
   onCreateDesire: () => void;
 }
 
 export default function WelcomeScreen({ onCreateDesire }: WelcomeScreenProps) {
+  const { t } = useI18n();
+
   return (
     <div className="welcome-screen">
       {/* Заголовок */}
       <h1 className="welcome-title">
-        Календарь желаний
+        {t('welcome.title')}
       </h1>
 
-      {/* Подзаголовок */}
-      <p className="welcome-subtitle">
-        Простое приложение,
-        <br />
-        чтобы не забывать о том,
-        <br />
-        чего ты действительно хочешь
+      {/* Мотивационный текст */}
+      <p className="welcome-motivation">
+        {t('welcome.motivation')}
       </p>
 
-      {/* Основной текст */}
-      <div className="welcome-text">
-        <p>Здесь ты выбираешь одно желание.</p>
-        <p>
-          И каждый день
-          <br />
-          ненадолго возвращаешься к нему.
-        </p>
-        <p>
-          Без списков задач.
-          <br />
-          Без давления.
-          <br />
-          Без «ты должен».
-        </p>
-      </div>
-
-      {/* Поясняющий текст */}
-      <p className="welcome-hint">
-        Иногда первый шаг —
-        <br />
-        просто честно признаться себе,
-        <br />
-        чего ты хочешь.
-      </p>
+      {/* Список действий */}
+      <ul className="welcome-list">
+        <li>{t('welcome.list.item1')}</li>
+        <li>{t('welcome.list.item2')}</li>
+        <li>{t('welcome.list.item3')}</li>
+      </ul>
 
       {/* Основное действие */}
       <div className="welcome-actions">
@@ -53,16 +33,17 @@ export default function WelcomeScreen({ onCreateDesire }: WelcomeScreenProps) {
           onClick={onCreateDesire}
           className="welcome-button"
         >
-          Создать первое желание
+          {t('welcome.cta')}
         </button>
-
-        {/* Подпись под кнопкой */}
-        <p className="welcome-button-hint">
-          Займёт 1–2 минуты
-          <br />
-          Никакой регистрации
-        </p>
       </div>
+
+      {/* Пожелание удачи */}
+      <p className="welcome-wish">
+        {t('welcome.wish')}
+      </p>
+
+      {/* Сердечко */}
+      <div className="welcome-heart">❤️</div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import type { DesireImage } from '../../types';
 import './ImageEditor.css';
+import { useI18n } from '../../i18n';
 
 interface ImageEditorProps {
   images: DesireImage[];
@@ -10,6 +11,7 @@ interface ImageEditorProps {
 }
 
 export default function ImageEditor({ images, onSave, onCancel, maxImages = 6 }: ImageEditorProps) {
+  const { t } = useI18n();
   const [currentImages, setCurrentImages] = useState<DesireImage[]>(images || []);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -22,7 +24,7 @@ export default function ImageEditor({ images, onSave, onCancel, maxImages = 6 }:
     if (!file) return;
 
     if (currentImages.length >= maxImages) {
-      alert(`Максимум ${maxImages} изображений`);
+      alert(t('editor.maxAlert', { max: maxImages }));
       return;
     }
 
@@ -79,8 +81,8 @@ export default function ImageEditor({ images, onSave, onCancel, maxImages = 6 }:
   return (
     <div className="image-editor">
       <div className="image-editor-header">
-        <h2>Управление изображениями</h2>
-        <button className="image-editor-close" onClick={onCancel}>
+        <h2>{t('editor.title')}</h2>
+        <button className="image-editor-close" onClick={onCancel} aria-label={t('common.close')}>
           ×
         </button>
       </div>
@@ -89,19 +91,19 @@ export default function ImageEditor({ images, onSave, onCancel, maxImages = 6 }:
         <div className="image-editor-grid">
           {currentImages.map((image) => (
             <div key={image.id} className="image-editor-item">
-              <img src={image.url} alt={`Изображение ${image.order + 1}`} />
+              <img src={image.url} alt={t('editor.imageAlt', { n: image.order + 1 })} />
               <div className="image-editor-item-actions">
                 <button
                   className="image-editor-action-btn"
                   onClick={() => handleReplaceImage(image.id)}
-                  title="Заменить"
+                  title={t('editor.replace')}
                 >
                   🔄
                 </button>
                 <button
                   className="image-editor-action-btn image-editor-action-btn-danger"
                   onClick={() => handleRemoveImage(image.id)}
-                  title="Удалить"
+                  title={t('editor.remove')}
                 >
                   ✕
                 </button>
@@ -112,7 +114,7 @@ export default function ImageEditor({ images, onSave, onCancel, maxImages = 6 }:
           {canAddMore && (
             <button className="image-editor-add-btn" onClick={handleAddImage}>
               <span className="image-editor-add-icon">+</span>
-              <span className="image-editor-add-text">Добавить изображение</span>
+              <span className="image-editor-add-text">{t('editor.add')}</span>
             </button>
           )}
         </div>
@@ -120,21 +122,21 @@ export default function ImageEditor({ images, onSave, onCancel, maxImages = 6 }:
         <div className="image-editor-info">
           {currentImages.length > 0 && (
             <p className="image-editor-count">
-              {currentImages.length} из {maxImages} изображений
+              {t('editor.count', { count: currentImages.length, max: maxImages })}
             </p>
           )}
           {!canAddMore && (
-            <p className="image-editor-limit">Достигнут лимит изображений</p>
+            <p className="image-editor-limit">{t('editor.limit')}</p>
           )}
         </div>
       </div>
 
       <div className="image-editor-footer">
         <button className="desire-detail-save-button" onClick={handleSave}>
-          Сохранить
+          {t('common.save')}
         </button>
         <button className="desire-detail-cancel-button" onClick={onCancel}>
-          Отмена
+          {t('common.cancel')}
         </button>
       </div>
 

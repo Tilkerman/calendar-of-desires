@@ -4,6 +4,7 @@ import { desireService, contactService } from '../../services/db';
 import Header from '../Header/Header';
 import ContactIndicators from '../ContactIndicators/ContactIndicators';
 import './DesiresList.css';
+import { getWishNoun, useI18n } from '../../i18n';
 
 interface DesiresListProps {
   onDesireClick: (desire: Desire) => void;
@@ -11,13 +12,12 @@ interface DesiresListProps {
 }
 
 interface DesireWithContacts extends Desire {
-  entryDays: number; // количество дней с контактом типа "entry" за 7 дней
-  stepDays: number; // количество дней с контактом типа "step" за 7 дней
-  thoughtDays: number; // количество дней с контактом типа "thought" за 7 дней
+  last7Days: Array<{ date: string; types: Array<'entry' | 'thought' | 'step'> }>;
   hasTodayContact: boolean; // есть ли контакт за сегодня
 }
 
 export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListProps) {
+  const { t, locale } = useI18n();
   const [desires, setDesires] = useState<DesireWithContacts[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -43,16 +43,10 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
       // Загружаем контакты для каждого желания
       const desiresWithContacts = await Promise.all(
         allDesires.map(async (desire) => {
-          // Получаем количество дней с контактом для каждого типа отдельно
-          const entryDays = await contactService.getContactDaysLast7Days(desire.id, 'entry');
-          const stepDays = await contactService.getContactDaysLast7Days(desire.id, 'step');
-          const thoughtDays = await contactService.getContactDaysLast7Days(desire.id, 'thought');
-          
-          // Проверяем, есть ли контакт за сегодня (любой тип)
-          const todayEntry = await contactService.getTodayContact(desire.id, 'entry');
-          const todayThought = await contactService.getTodayContact(desire.id, 'thought');
-          const todayStep = await contactService.getTodayContact(desire.id, 'step');
-          const hasTodayContact = !!(todayEntry || todayThought || todayStep);
+          // Сводка по последним 7 дням
+          const last7Days = await contactService.getLast7DaysSummary(desire.id);
+          const today = last7Days[last7Days.length - 1];
+          const hasTodayContact = (today?.types?.length ?? 0) > 0;
           
           // Если есть контакт сегодня и время до 23:00, автоматически устанавливаем isActive
           if (hasTodayContact && currentHour < 23 && !desire.isActive) {
@@ -72,9 +66,7 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
           
           return { 
             ...desire, 
-            entryDays,
-            stepDays,
-            thoughtDays,
+            last7Days,
             hasTodayContact,
           };
         })
@@ -131,7 +123,7 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
 
   const handleSettingsClick = () => {
     // Заглушка для настроек
-    alert('Настройки (в разработке)');
+    alert(t('settings.comingSoon'));
   };
 
   if (isLoading) {
@@ -139,7 +131,7 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
       <>
         <Header onLogoClick={handleLogoClick} onSettingsClick={handleSettingsClick} />
         <div className="desires-list-container">
-          <div className="loading">Загрузка...</div>
+          <div className="loading">{t('common.loading')}</div>
         </div>
       </>
     );
@@ -153,15 +145,15 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
         <div className="desires-info-block">
           {/* Количество желаний */}
           <p className="desires-count">
-            Сейчас у тебя {desires.length} {desires.length === 1 ? 'желание' : desires.length < 5 ? 'желания' : 'желаний'}
+            {t('desires.count', { count: desires.length, noun: getWishNoun(desires.length, locale) })}
           </p>
 
           {/* Пояснение фокуса */}
           <p className="desires-focus-instruction">
-            Выбери, какое желание сегодня в фокусе
+            {t('desires.chooseFocus')}
           </p>
           <p className="desires-focus-hint">
-            это то, к которому ты сегодня возвращаешься
+            {t('desires.focusHint')}
           </p>
         </div>
 
@@ -169,8 +161,8 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
         <div className="desires-list">
           {desires.length === 0 ? (
             <div className="empty-state">
-              <p>У тебя пока нет желаний</p>
-              <p className="empty-state-hint">Создай первое желание, чтобы начать</p>
+              <p>{t('desires.empty.title')}</p>
+              <p className="empty-state-hint">{t('desires.empty.hint')}</p>
             </div>
           ) : (
             desires.map((desire) => (
@@ -188,7 +180,7 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
                   {desire.isActive && (
                     <div className="desire-card-focus-badge">
                       <span className="focus-checkmark">✓</span>
-                      <span className="focus-text">Сегодня в фокусе</span>
+                      <span className="focus-text">{t('desires.focusToday')}</span>
                     </div>
                   )}
                 </div>
@@ -213,11 +205,10 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
 
                   {/* Блок "Контакт за 7 дней" - справа */}
                   <div className="desire-card-contacts-block">
-                    <p className="desire-card-contacts-label">Контакт за 7 дней:</p>
+                    <p className="desire-card-contacts-label">{t('desires.contact7days')}</p>
                     <ContactIndicators
-                      entryDays={desire.entryDays}
-                      stepDays={desire.stepDays}
-                      thoughtDays={desire.thoughtDays}
+                      days={desire.last7Days}
+                      mode="byType"
                       size="small"
                     />
                   </div>
@@ -231,7 +222,7 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
       {/* Кнопка добавления желания - закреплена внизу */}
       <div className="desires-list-add-button-container">
         <button className="desires-list-add-button" onClick={onAddDesire}>
-          Добавить желание
+          {t('desires.add')}
         </button>
       </div>
     </>

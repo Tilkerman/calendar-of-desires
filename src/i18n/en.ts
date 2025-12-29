@@ -1,0 +1,149 @@
+export const en = {
+  // Header
+  'header.home': 'Home',
+  'header.appName': 'Calendar of Desires',
+  'header.settings': 'Settings',
+  'header.themeToDark': 'Switch to dark theme',
+  'header.themeToLight': 'Switch to light theme',
+  'header.lang.ru': 'RU',
+  'header.lang.en': 'EN',
+  'header.langLabel': 'Language',
+
+  // Common
+  'common.loading': 'Loading…',
+  'common.saving': 'Saving…',
+  'common.back': 'Back',
+  'common.save': 'Save',
+  'common.cancel': 'Cancel',
+  'common.delete': 'Delete',
+  'common.close': 'Close',
+
+  // Settings
+  'settings.comingSoon': 'Settings (coming soon)',
+
+  // App fallback
+  'app.unknownState': 'Error: unknown app state',
+
+  // Welcome
+  'welcome.title': 'WELCOME TO THE WISHES TRACKER',
+  'welcome.motivation': 'REPLACE SOCIAL MEDIA WITH A USEFUL ROUTINE — RESULTS WON’T KEEP YOU WAITING',
+  'welcome.list.item1': 'follow the instructions',
+  'welcome.list.item2': 'be consistent',
+  'welcome.list.item3': 'formulate your wishes',
+  'welcome.cta': 'LET’S GO!',
+  'welcome.wish': 'GOOD LUCK MAKING YOUR DREAM LIFE REAL!',
+
+  // Desires list
+  'desires.count': 'You have {count} {noun}',
+  'desires.noun.one': 'wish',
+  'desires.noun.few': 'wishes',
+  'desires.noun.many': 'wishes',
+  'desires.noun.other': 'wishes',
+  'desires.chooseFocus': 'Choose which wish is in focus today',
+  'desires.focusHint': "it’s the one you return to today",
+  'desires.focusToday': 'In focus today',
+  'desires.empty.title': "You don't have any wishes yet",
+  'desires.empty.hint': 'Create your first wish to begin',
+  'desires.add': 'Add a wish',
+  'desires.contact7days': 'Contact in 7 days:',
+
+  // Desire detail
+  'detail.contact7days.title': 'Contact in 7 days',
+  'detail.contact7days.hint': 'This reflects how often you returned to this wish over the last 7 days',
+  'detail.notes.title': 'Notes',
+  'detail.notes.history': 'Notes history',
+  'detail.notes.placeholder': 'What are you thinking or feeling about this wish right now?',
+  'detail.step.title': 'Steps',
+  'detail.step.history': 'Steps history',
+  'detail.step.placeholder': 'What was the step? (optional)',
+  'detail.step.save': 'Save step',
+  'detail.thoughts.title': 'Thoughts',
+  'detail.thoughts.action': 'Today I returned to this wish in my thoughts',
+  'detail.thoughts.done': '✓ Already marked today',
+  'detail.saved': '✓ Saved',
+  'detail.marked': '✓ Marked',
+  'detail.timeHint.title': 'Time guideline',
+  'detail.timeHint.notDeadline': 'This is not a deadline or an obligation',
+  'detail.feelings.title': 'How do you want to feel?',
+  'detail.feelings.notSet': 'Not set',
+  'detail.edit': 'Edit',
+  'detail.extra.title': 'More',
+  'detail.editTitle': 'Edit title',
+  'detail.editImages': 'Edit images',
+  'detail.editDetails': 'Edit description',
+  'detail.deleteWish': 'Delete wish',
+  'detail.deleteConfirm': 'Delete wish “{title}”? This action cannot be undone.',
+  'detail.focusToday': 'In focus today',
+  'detail.modal.notesHistory.title': 'Notes history',
+  'detail.modal.stepsHistory.title': 'Steps history',
+  'detail.modal.empty': 'History is empty',
+  'detail.modal.editTitle.title': 'Edit title',
+  'detail.modal.editDetails.title': 'Edit description',
+  'detail.modal.editDetails.hint': 'The more detailed the image, the easier it is to return to it',
+  'detail.modal.close': 'Close',
+  'detail.error.saveNote': 'Could not save the note',
+  'detail.error.saveStep': 'Could not save the step',
+  'detail.error.saveDescription': 'Could not save the text',
+  'detail.error.saveTitle': 'Could not save the title',
+  'detail.error.saveImages': 'Could not save the images',
+  'detail.error.deleteWish': 'Could not delete the wish',
+
+  // Desire form
+  'form.newTitle': 'New wish',
+  'form.editTitle': 'Edit wish',
+  'form.title.label': 'Wish title',
+  'form.title.placeholder': 'Describe your wish…',
+  'form.details.label': 'Describe your wish',
+  'form.details.hint': 'The more detailed the image, the easier it is to return to it',
+  'form.details.placeholder':
+    'What does it look like?\nWhere are you?\nWhat is around you?\nWho is near you?\nWhat are you doing?',
+  'form.details.footerHint': 'You don’t have to write perfectly. This is just for you.',
+  'form.feelings.label': 'How do you want to feel?',
+  'form.feelings.placeholder': 'Calm, free, confident…',
+  'form.visual.label': 'Visual image (optional)',
+  'form.visual.max': 'Maximum 6 images',
+  'form.visual.count': '{count} of 6 images',
+  'form.image.previewAlt': 'Preview {n}',
+  'form.image.removeTitle': 'Remove',
+  'form.image.addTitle': 'Add image',
+  'form.submit.create': 'Create wish',
+  'form.submit.save': 'Save changes',
+  'form.submit.saving': 'Saving…',
+  'form.error.save': 'Could not save the wish. Please try again.',
+
+  // Contact indicators
+  'contacts.entry': 'Notes',
+  'contacts.entryShort': 'N',
+  'contacts.entryAbbr': 'Notes',
+  'contacts.step': 'Steps',
+  'contacts.stepShort': 'S',
+  'contacts.stepAbbr': 'Steps',
+  'contacts.thought': 'Thoughts',
+  'contacts.thoughtShort': 'T',
+  'contacts.thoughtAbbr': 'Thoughts',
+  'contacts.tooltip': 'Contact in 7 days: Notes {entry}/7, Steps {step}/7, Thoughts {thought}/7',
+
+  // Week dots
+  'dots.day.none': 'No contact',
+  'dots.day.title': '{date}: {types}',
+  'dots.day.today': 'Today',
+
+  // Image gallery
+  'gallery.imageAlt': 'Wish image',
+  'gallery.prev': 'Previous image',
+  'gallery.next': 'Next image',
+  'gallery.imageN': 'Image {n}',
+
+  // Image editor
+  'editor.title': 'Manage images',
+  'editor.replace': 'Replace',
+  'editor.remove': 'Remove',
+  'editor.add': 'Add image',
+  'editor.count': '{count} of {max} images',
+  'editor.limit': 'Image limit reached',
+  'editor.maxAlert': 'Maximum {max} images',
+  'editor.imageAlt': 'Image {n}',
+} as const;
+
+export type TranslationKey = keyof typeof en;
+

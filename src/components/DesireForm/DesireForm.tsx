@@ -2,6 +2,8 @@ import { useState, useRef } from 'react';
 import type { Desire, DesireImage } from '../../types';
 import { desireService } from '../../services/db';
 import './DesireForm.css';
+import { useI18n } from '../../i18n';
+import HeaderActions from '../Header/HeaderActions';
 
 interface DesireFormProps {
   onSave: (desireId?: string) => void;
@@ -10,6 +12,7 @@ interface DesireFormProps {
 }
 
 export default function DesireForm({ onSave, initialDesire, onBack }: DesireFormProps) {
+  const { t } = useI18n();
   const [title, setTitle] = useState(initialDesire?.title || '');
   const [details, setDetails] = useState(initialDesire?.details || '');
   const [description, setDescription] = useState(initialDesire?.description || '');
@@ -23,7 +26,7 @@ export default function DesireForm({ onSave, initialDesire, onBack }: DesireForm
     if (!file) return;
 
     if (images.length >= 6) {
-      alert('Максимум 6 изображений');
+      alert(t('form.visual.max'));
       return;
     }
 
@@ -81,7 +84,7 @@ export default function DesireForm({ onSave, initialDesire, onBack }: DesireForm
       }
     } catch (error) {
       console.error('Ошибка при сохранении желания:', error);
-      setError('Не удалось сохранить желание. Попробуйте ещё раз.');
+      setError(t('form.error.save'));
     } finally {
       setIsLoading(false);
     }
@@ -96,18 +99,19 @@ export default function DesireForm({ onSave, initialDesire, onBack }: DesireForm
             type="button"
             onClick={onBack}
             className="desire-form-back-button"
-            aria-label="Назад"
+            aria-label={t('common.back')}
           >
             <span className="back-arrow">←</span>
-            <span className="back-text">Назад</span>
+            <span className="back-text">{t('common.back')}</span>
           </button>
         )}
         {!initialDesire && (
-          <h1 className="desire-form-header-title">Новое желание</h1>
+          <h1 className="desire-form-header-title">{t('form.newTitle')}</h1>
         )}
         {initialDesire && (
-          <h1 className="desire-form-header-title">Изменить желание</h1>
+          <h1 className="desire-form-header-title">{t('form.editTitle')}</h1>
         )}
+        <HeaderActions />
       </header>
       
       <form className="desire-form" onSubmit={handleSubmit}>
@@ -119,7 +123,7 @@ export default function DesireForm({ onSave, initialDesire, onBack }: DesireForm
 
         {/* 1. Название желания */}
         <div className="form-group">
-          <label htmlFor="title">Название желания</label>
+          <label htmlFor="title">{t('form.title.label')}</label>
           <input
             id="title"
             type="text"
@@ -128,43 +132,39 @@ export default function DesireForm({ onSave, initialDesire, onBack }: DesireForm
               setTitle(e.target.value);
               setError(null);
             }}
-            placeholder="Опишите своё желание..."
+            placeholder={t('form.title.placeholder')}
           />
         </div>
 
         {/* 2. Описание желания (НОВОЕ ПОЛЕ) */}
         <div className="form-group">
-          <label htmlFor="details">Опиши своё желание</label>
-          <p className="form-label-hint">Чем подробнее образ, тем легче к нему возвращаться</p>
+          <label htmlFor="details">{t('form.details.label')}</label>
+          <p className="form-label-hint">{t('form.details.hint')}</p>
           <textarea
             id="details"
             value={details}
             onChange={(e) => setDetails(e.target.value)}
-            placeholder="Как это выглядит?
-Где ты?
-Что вокруг тебя?
-Кто рядом?
-Что ты делаешь?"
+            placeholder={t('form.details.placeholder')}
             rows={8}
           />
-          <p className="form-hint">Можно писать не идеально. Это только для тебя.</p>
+          <p className="form-hint">{t('form.details.footerHint')}</p>
         </div>
 
         {/* 3. Эмоциональное состояние */}
         <div className="form-group">
-          <label htmlFor="description">Как ты хочешь себя чувствовать?</label>
+          <label htmlFor="description">{t('form.feelings.label')}</label>
           <textarea
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Спокойно, свободно, уверенно..."
+            placeholder={t('form.feelings.placeholder')}
             rows={4}
           />
         </div>
 
         {/* 4. Визуальный образ (опционально, до 6 изображений) */}
         <div className="form-group">
-          <label htmlFor="image">Визуальный образ (опционально)</label>
+          <label htmlFor="image">{t('form.visual.label')}</label>
           <input
             ref={fileInputRef}
             id="image"
@@ -177,12 +177,12 @@ export default function DesireForm({ onSave, initialDesire, onBack }: DesireForm
           <div className="image-upload-grid">
             {images.map((image) => (
               <div key={image.id} className="image-preview-item">
-                <img src={image.url} alt={`Preview ${image.order + 1}`} />
+                <img src={image.url} alt={t('form.image.previewAlt', { n: image.order + 1 })} />
                 <button
                   type="button"
                   onClick={() => handleRemoveImage(image.id)}
                   className="remove-image"
-                  title="Удалить"
+                  title={t('form.image.removeTitle')}
                 >
                   ✕
                 </button>
@@ -193,20 +193,24 @@ export default function DesireForm({ onSave, initialDesire, onBack }: DesireForm
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 className="upload-button-grid"
-                title="Добавить изображение"
+                title={t('form.image.addTitle')}
               >
                 +
               </button>
             )}
           </div>
           {images.length > 0 && (
-            <p className="form-hint">{images.length} из 6 изображений</p>
+            <p className="form-hint">{t('form.visual.count', { count: images.length })}</p>
           )}
         </div>
 
         {/* Кнопка действия */}
         <button type="submit" className="submit-button" disabled={isLoading}>
-          {isLoading ? 'Сохранение...' : initialDesire ? 'Сохранить изменения' : 'Создать желание'}
+          {isLoading
+            ? t('form.submit.saving')
+            : initialDesire
+              ? t('form.submit.save')
+              : t('form.submit.create')}
         </button>
       </form>
     </div>

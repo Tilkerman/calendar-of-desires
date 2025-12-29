@@ -5,10 +5,12 @@ import DesiresList from './components/DesiresList/DesiresList';
 import DesireDetail from './components/DesireDetail/DesireDetail';
 import type { Desire } from './types';
 import { desireService } from './services/db';
+import { useI18n } from './i18n';
 
 type View = 'welcome' | 'list' | 'form' | 'detail';
 
 function App() {
+  const { t } = useI18n();
   const [currentView, setCurrentView] = useState<View>('welcome');
   const [selectedDesireId, setSelectedDesireId] = useState<string | null>(null);
   const [editingDesire, setEditingDesire] = useState<Desire | undefined>(undefined);
@@ -64,7 +66,7 @@ function App() {
         color: 'var(--text-primary)',
         padding: '2rem'
       }}>
-        <div style={{ fontSize: '1rem', textAlign: 'center' }}>Загрузка...</div>
+        <div style={{ fontSize: '1rem', textAlign: 'center' }}>{t('common.loading')}</div>
       </div>
     );
   }
@@ -113,7 +115,7 @@ function App() {
       padding: '2rem'
     }}>
       <div style={{ fontSize: '1rem', textAlign: 'center' }}>
-        Ошибка: неизвестное состояние приложения
+        {t('app.unknownState')}
       </div>
     </div>
   );

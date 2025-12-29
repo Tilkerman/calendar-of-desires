@@ -107,6 +107,63 @@ export const desireService = {
 
 // Методы для работы с контактами
 export const contactService = {
+  // Сводка по последним 7 дням: для каждого дня возвращаем какие типы контактов были
+  async getLast7DaysSummary(
+    desireId: string
+  ): Promise<Array<{ date: string; types: Array<'entry' | 'thought' | 'step'> }>> {
+    try {
+      await db.open();
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const dates: string[] = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        dates.push(toLocalDateString(d)); // oldest -> newest (today last)
+      }
+
+      const start = dates[0];
+      const end = dates[dates.length - 1];
+
+      // Берём контакты только в диапазоне последних 7 дней через индекс [desireId+date]
+      const contactsLast7 = await db.contacts
+        .where('[desireId+date]')
+        .between([desireId, start], [desireId, end], true, true)
+        .toArray();
+
+      const byDate = new Map<string, Set<'entry' | 'thought' | 'step'>>();
+      for (const dateStr of dates) {
+        byDate.set(dateStr, new Set());
+      }
+
+      for (const c of contactsLast7) {
+        const set = byDate.get(c.date);
+        if (!set) continue;
+        // В базе 'note' хранится как 'entry'
+        const normalized = (c.type === 'note' ? 'entry' : c.type) as 'entry' | 'thought' | 'step';
+        if (normalized === 'entry' || normalized === 'thought' || normalized === 'step') {
+          set.add(normalized);
+        }
+      }
+
+      return dates.map((date) => ({ date, types: Array.from(byDate.get(date) ?? []) }));
+    } catch (error) {
+      console.error('Ошибка при получении сводки контактов за 7 дней:', error);
+      // Фолбэк: 7 пустых дней (today last)
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const dates: string[] = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        dates.push(toLocalDateString(d));
+      }
+      return dates.map((date) => ({ date, types: [] }));
+    }
+  },
+
   // Получить контакт определенного типа за сегодня
   // Поддержка 'note' как алиаса для 'entry' для обратной совместимости
   async getTodayContact(desireId: string, type: ContactType): Promise<Contact | undefined> {

@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
 import './Header.css';
+import { useI18n } from '../../i18n';
+import HeaderActions from './HeaderActions';
 
 interface HeaderProps {
   onSettingsClick?: () => void;
@@ -7,20 +8,7 @@ interface HeaderProps {
 }
 
 export default function Header({ onSettingsClick, onLogoClick }: HeaderProps) {
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    const saved = localStorage.getItem('theme');
-    return (saved === 'dark' ? 'dark' : 'light') as 'light' | 'dark';
-  });
-
-  useEffect(() => {
-    // Применяем тему к документу
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
-  };
+  const { t } = useI18n();
 
   return (
     <header className="app-header">
@@ -29,36 +17,13 @@ export default function Header({ onSettingsClick, onLogoClick }: HeaderProps) {
         <button 
           className="header-logo" 
           onClick={onLogoClick}
-          aria-label="На главную"
+          aria-label={t('header.home')}
         >
           <span className="logo-icon">📅</span>
-          <span className="logo-text">Календарь желаний</span>
+          <span className="logo-text">{t('header.appName')}</span>
         </button>
 
-        <div className="header-actions">
-          {/* Переключение темы - Toggle Switch */}
-          <button
-            className={`theme-toggle-switch ${theme === 'dark' ? 'theme-toggle-dark' : 'theme-toggle-light'}`}
-            onClick={toggleTheme}
-            aria-label={theme === 'light' ? 'Переключить на темную тему' : 'Переключить на светлую тему'}
-            type="button"
-          >
-            <span className="theme-toggle-slider">
-              <span className="theme-toggle-icon">
-                {theme === 'dark' ? '🌙' : '☀️'}
-              </span>
-            </span>
-          </button>
-
-          {/* Настройки */}
-          <button
-            className="header-settings"
-            onClick={onSettingsClick}
-            aria-label="Настройки"
-          >
-            ⚙️
-          </button>
-        </div>
+        <HeaderActions onSettingsClick={onSettingsClick} />
       </div>
     </header>
   );

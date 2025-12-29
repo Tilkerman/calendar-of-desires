@@ -6,6 +6,8 @@ import ImageGallery from '../ImageGallery/ImageGallery';
 import ImageEditor from '../ImageEditor/ImageEditor';
 import { formatDate, getTodayDateString } from '../../utils/date';
 import './DesireDetail.css';
+import { useI18n } from '../../i18n';
+import HeaderActions from '../Header/HeaderActions';
 
 interface DesireDetailProps {
   desireId: string;
@@ -13,13 +15,12 @@ interface DesireDetailProps {
 }
 
 export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
+  const { t, locale } = useI18n();
   const [desire, setDesire] = useState<Desire | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   
   // Контакты за последние 7 дней (отдельно для каждого типа)
-  const [entryDays, setEntryDays] = useState(0);
-  const [stepDays, setStepDays] = useState(0);
-  const [thoughtDays, setThoughtDays] = useState(0);
+  const [last7Days, setLast7Days] = useState<Array<{ date: string; types: Array<'entry' | 'thought' | 'step'> }>>([]);
   
   // Сегодняшние контакты
   const [todayEntry, setTodayEntry] = useState<Contact | null>(null);
@@ -75,13 +76,9 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
       setDesire(loadedDesire);
       setEditingDescription(loadedDesire.description);
 
-      // Загружаем количество дней с контактом для каждого типа отдельно
-      const entryDaysCount = await contactService.getContactDaysLast7Days(desireId, 'entry');
-      const stepDaysCount = await contactService.getContactDaysLast7Days(desireId, 'step');
-      const thoughtDaysCount = await contactService.getContactDaysLast7Days(desireId, 'thought');
-      setEntryDays(entryDaysCount);
-      setStepDays(stepDaysCount);
-      setThoughtDays(thoughtDaysCount);
+      // Загружаем сводку по последним 7 дням
+      const summary = await contactService.getLast7DaysSummary(desireId);
+      setLast7Days(summary);
 
       // Загружаем сегодняшние контакты
       const todayEntryContact = await contactService.getTodayContact(desireId, 'entry');
@@ -150,7 +147,7 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
       await loadDesire();
     } catch (error) {
       console.error(`Ошибка при сохранении ${type === 'entry' ? 'записи' : 'шага'}:`, error);
-      alert(`Не удалось сохранить ${type === 'entry' ? 'запись' : 'шаг'}`);
+      alert(type === 'entry' ? t('detail.error.saveNote') : t('detail.error.saveStep'));
     } finally {
       setIsSaving(false);
     }
@@ -191,7 +188,7 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
       await loadDesire();
     } catch (error) {
       console.error('Ошибка при сохранении описания:', error);
-      alert('Не удалось сохранить описание');
+      alert(t('detail.error.saveDescription'));
     } finally {
       setIsSaving(false);
     }
@@ -213,7 +210,7 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
       await loadDesire();
     } catch (error) {
       console.error('Ошибка при сохранении названия:', error);
-      alert('Не удалось сохранить название');
+      alert(t('detail.error.saveTitle'));
     } finally {
       setIsSaving(false);
     }
@@ -235,7 +232,7 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
       await loadDesire();
     } catch (error) {
       console.error('Ошибка при сохранении описания:', error);
-      alert('Не удалось сохранить описание');
+      alert(t('detail.error.saveDescription'));
     } finally {
       setIsSaving(false);
     }
@@ -244,7 +241,7 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
   const handleDeleteDesire = async () => {
     if (!desire) return;
     
-    const confirmed = window.confirm(`Удалить желание "${desire.title}"? Это действие нельзя отменить.`);
+    const confirmed = window.confirm(t('detail.deleteConfirm', { title: desire.title }));
     if (!confirmed) return;
 
     try {
@@ -252,14 +249,14 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
       onBack();
     } catch (error) {
       console.error('Ошибка при удалении желания:', error);
-      alert('Не удалось удалить желание');
+      alert(t('detail.error.deleteWish'));
     }
   };
 
   if (isLoading) {
     return (
       <div className="desire-detail-loading">
-        <div>Загрузка...</div>
+        <div>{t('common.loading')}</div>
       </div>
     );
   }
@@ -272,16 +269,12 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
     <div className="desire-detail">
       {/* Шапка экрана желания */}
       <header className="desire-detail-header">
-        <button className="desire-detail-back" onClick={onBack} aria-label="Назад">
+        <button className="desire-detail-back" onClick={onBack} aria-label={t('common.back')}>
           <span className="back-arrow">←</span>
-          <span className="back-text">Назад</span>
+          <span className="back-text">{t('common.back')}</span>
         </button>
         <h1 className="desire-detail-title">{desire.title}</h1>
-        {desire.isActive && (
-          <div className="desire-detail-focus-icon" title="Сегодня в фокусе">
-            ✓
-          </div>
-        )}
+        <HeaderActions />
       </header>
 
       {/* Визуальный якорь - галерея изображений */}
@@ -313,28 +306,27 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
       <div className="desire-detail-content">
         {/* Блок "Состояние контакта" */}
         <div className="desire-detail-section">
-          <h2 className="desire-detail-section-title">Контакт за 7 дней</h2>
+          <h2 className="desire-detail-section-title">{t('detail.contact7days.title')}</h2>
           <ContactIndicators
-            entryDays={entryDays}
-            stepDays={stepDays}
-            thoughtDays={thoughtDays}
+            days={last7Days}
+            mode="byType"
             size="large"
           />
           <p className="desire-detail-contact-hint">
-            Это отражение того, как часто ты возвращался к этому желанию за последние 7 дней
+            {t('detail.contact7days.hint')}
           </p>
         </div>
 
         {/* Блок записей */}
         <div className="desire-detail-section">
           <div className="desire-detail-section-header">
-            <h2 className="desire-detail-section-title">Записи</h2>
+            <h2 className="desire-detail-section-title">{t('detail.notes.title')}</h2>
             <button
               className="desire-detail-history-button-small"
               onClick={() => setShowEntryHistory(true)}
-              title="История записей"
+              title={t('detail.notes.history')}
             >
-              История записей
+              {t('detail.notes.history')}
             </button>
           </div>
           <textarea
@@ -342,7 +334,7 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
             value={entryText}
             onChange={(e) => setEntryText(e.target.value)}
             onBlur={handleSaveEntry}
-            placeholder="Что ты сейчас думаешь или чувствуешь по поводу этого желания?"
+            placeholder={t('detail.notes.placeholder')}
             rows={4}
             disabled={isSaving}
           />
@@ -352,32 +344,32 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
               onClick={handleSaveEntry}
               disabled={isSaving}
             >
-              {isSaving ? 'Сохранение...' : 'Сохранить'}
+              {isSaving ? t('common.saving') : t('common.save')}
             </button>
           )}
           {saveConfirmation === 'entry' && (
-            <div className="desire-detail-confirmation">✓ Сохранено</div>
+            <div className="desire-detail-confirmation">{t('detail.saved')}</div>
           )}
         </div>
 
         {/* Блок мыслей */}
         <div className="desire-detail-section">
-          <h2 className="desire-detail-section-title desire-detail-section-title-spaced">Мысли</h2>
+          <h2 className="desire-detail-section-title desire-detail-section-title-spaced">{t('detail.thoughts.title')}</h2>
           <button
             className={`desire-detail-action-button ${todayThought ? 'desire-detail-action-button-done' : ''}`}
             onClick={handleThoughtClick}
             disabled={isSaving || !!todayThought}
           >
-            {todayThought ? '✓ Уже отмечено сегодня' : 'Я сегодня возвращался к этому желанию мыслями'}
+            {todayThought ? t('detail.thoughts.done') : t('detail.thoughts.action')}
           </button>
           {saveConfirmation === 'thought' && (
-            <div className="desire-detail-confirmation">✓ Отмечено</div>
+            <div className="desire-detail-confirmation">{t('detail.marked')}</div>
           )}
           {thoughtHistory.length > 0 && (
             <div className="desire-detail-history">
               {thoughtHistory.map((contact) => (
                 <div key={contact.id} className="desire-detail-history-item">
-                  <span className="desire-detail-history-date">{formatDate(contact.date)}</span>
+                  <span className="desire-detail-history-date">{formatDate(contact.date, locale)}</span>
                 </div>
               ))}
             </div>
@@ -387,13 +379,13 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
         {/* Блок шагов */}
         <div className="desire-detail-section">
           <div className="desire-detail-section-header">
-            <h2 className="desire-detail-section-title">Шаги</h2>
+            <h2 className="desire-detail-section-title">{t('detail.step.title')}</h2>
             <button
               className="desire-detail-history-button-small"
               onClick={() => setShowStepHistory(true)}
-              title="История шагов"
+              title={t('detail.step.history')}
             >
-              История шагов
+              {t('detail.step.history')}
             </button>
           </div>
           <textarea
@@ -401,7 +393,7 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
             value={stepText}
             onChange={(e) => setStepText(e.target.value)}
             onBlur={handleSaveStep}
-            placeholder="Что это был за шаг? (необязательно)"
+            placeholder={t('detail.step.placeholder')}
             rows={4}
             disabled={isSaving}
           />
@@ -411,24 +403,24 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
               onClick={handleSaveStep}
               disabled={isSaving}
             >
-              {isSaving ? 'Сохранение...' : 'Сохранить шаг'}
+              {isSaving ? t('common.saving') : t('detail.step.save')}
             </button>
           )}
           {saveConfirmation === 'step' && (
-            <div className="desire-detail-confirmation">✓ Сохранено</div>
+            <div className="desire-detail-confirmation">{t('detail.saved')}</div>
           )}
         </div>
 
         {/* Эмоциональное описание */}
         <div className="desire-detail-section">
-          <h2 className="desire-detail-section-title">Как ты хочешь себя чувствовать?</h2>
+          <h2 className="desire-detail-section-title">{t('detail.feelings.title')}</h2>
           {isEditingDescription ? (
             <div className="desire-detail-description-edit">
               <textarea
                 className="desire-detail-description-input"
                 value={editingDescription}
                 onChange={(e) => setEditingDescription(e.target.value)}
-                placeholder="Спокойно, свободно, уверенно…"
+                placeholder={t('form.feelings.placeholder')}
                 rows={3}
               />
               <div className="desire-detail-description-actions">
@@ -437,7 +429,7 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
                   onClick={handleSaveDescription}
                   disabled={isSaving}
                 >
-                  Сохранить
+                  {t('common.save')}
                 </button>
                 <button
                   className="desire-detail-cancel-button"
@@ -446,18 +438,18 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
                     setIsEditingDescription(false);
                   }}
                 >
-                  Отмена
+                  {t('common.cancel')}
                 </button>
               </div>
             </div>
           ) : (
             <div className="desire-detail-description-view">
-              <p>{desire.description || 'Не указано'}</p>
+              <p>{desire.description || t('detail.feelings.notSet')}</p>
               <button
                 className="desire-detail-edit-button"
                 onClick={() => setIsEditingDescription(true)}
               >
-                Изменить
+                {t('detail.edit')}
               </button>
             </div>
           )}
@@ -466,48 +458,47 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
         {/* Ориентир по времени */}
         {desire.deadline && (
           <div className="desire-detail-section">
-            <h2 className="desire-detail-section-title">Ориентир по времени</h2>
+            <h2 className="desire-detail-section-title">{t('detail.timeHint.title')}</h2>
             <p className="desire-detail-deadline">
-              {new Date(desire.deadline).toLocaleDateString('ru-RU', {
+              {new Date(desire.deadline).toLocaleDateString(locale === 'ru' ? 'ru-RU' : 'en-US', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
               })}
             </p>
             <p className="desire-detail-deadline-hint">
-              Это не срок и не обязательство
+              {t('detail.timeHint.notDeadline')}
             </p>
           </div>
         )}
 
         {/* Дополнительные действия */}
         <div className="desire-detail-section">
-          <h2 className="desire-detail-section-title desire-detail-section-title-spaced">Дополнительно</h2>
+          <h2 className="desire-detail-section-title desire-detail-section-title-spaced">{t('detail.extra.title')}</h2>
           <div className="desire-detail-actions">
             <button
               className="desire-detail-secondary-button"
               onClick={handleEditTitle}
             >
-              Изменить название
+              {t('detail.editTitle')}
             </button>
             <button
               className="desire-detail-secondary-button"
               onClick={() => setShowEditImagesModal(true)}
             >
-              Изменить изображения
+              {t('detail.editImages')}
             </button>
             <button
               className="desire-detail-secondary-button"
               onClick={handleEditDetails}
             >
-              Изменить описание
+              {t('detail.editDetails')}
             </button>
-            <div className="desire-detail-actions-divider"></div>
             <button
               className="desire-detail-delete-button"
               onClick={handleDeleteDesire}
             >
-              Удалить желание
+              {t('detail.deleteWish')}
             </button>
           </div>
         </div>
@@ -518,17 +509,18 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
         <div className="desire-detail-history-modal-overlay" onClick={() => setShowEntryHistory(false)}>
           <div className="desire-detail-history-modal" onClick={(e) => e.stopPropagation()}>
             <div className="desire-detail-history-modal-header">
-              <h2>История записей</h2>
+              <h2>{t('detail.modal.notesHistory.title')}</h2>
               <button
                 className="desire-detail-history-modal-close"
                 onClick={() => setShowEntryHistory(false)}
+                aria-label={t('common.close')}
               >
                 ×
               </button>
             </div>
             <div className="desire-detail-history-modal-content">
               {entryHistory.length === 0 ? (
-                <p className="desire-detail-history-empty">История пуста</p>
+                <p className="desire-detail-history-empty">{t('detail.modal.empty')}</p>
               ) : (
                 (() => {
                   // Группируем записи по датам
@@ -548,7 +540,7 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
 
                   return sortedDates.map((date) => (
                     <div key={date} className="desire-detail-history-group">
-                      <div className="desire-detail-history-group-date">{formatDate(date)}</div>
+                      <div className="desire-detail-history-group-date">{formatDate(date, locale)}</div>
                       {grouped[date].map((contact) => (
                         <div key={contact.id} className="desire-detail-history-modal-item">
                           {contact.text && (
@@ -570,17 +562,18 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
         <div className="desire-detail-history-modal-overlay" onClick={() => setShowStepHistory(false)}>
           <div className="desire-detail-history-modal" onClick={(e) => e.stopPropagation()}>
             <div className="desire-detail-history-modal-header">
-              <h2>История шагов</h2>
+              <h2>{t('detail.modal.stepsHistory.title')}</h2>
               <button
                 className="desire-detail-history-modal-close"
                 onClick={() => setShowStepHistory(false)}
+                aria-label={t('common.close')}
               >
                 ×
               </button>
             </div>
             <div className="desire-detail-history-modal-content">
               {stepHistory.length === 0 ? (
-                <p className="desire-detail-history-empty">История пуста</p>
+                <p className="desire-detail-history-empty">{t('detail.modal.empty')}</p>
               ) : (
                 (() => {
                   // Группируем шаги по датам
@@ -600,7 +593,7 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
 
                   return sortedDates.map((date) => (
                     <div key={date} className="desire-detail-history-group">
-                      <div className="desire-detail-history-group-date">{formatDate(date)}</div>
+                      <div className="desire-detail-history-group-date">{formatDate(date, locale)}</div>
                       {grouped[date].map((contact) => (
                         <div key={contact.id} className="desire-detail-history-modal-item">
                           {contact.text && (
@@ -622,10 +615,11 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
         <div className="desire-detail-history-modal-overlay" onClick={() => setShowEditTitleModal(false)}>
           <div className="desire-detail-history-modal" onClick={(e) => e.stopPropagation()}>
             <div className="desire-detail-history-modal-header">
-              <h2>Изменить название</h2>
+              <h2>{t('detail.modal.editTitle.title')}</h2>
               <button
                 className="desire-detail-history-modal-close"
                 onClick={() => setShowEditTitleModal(false)}
+                aria-label={t('common.close')}
               >
                 ×
               </button>
@@ -637,7 +631,7 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
                   className="desire-detail-edit-input"
                   value={editingTitle}
                   onChange={(e) => setEditingTitle(e.target.value)}
-                  placeholder="Название желания"
+                  placeholder={t('form.title.label')}
                   autoFocus
                 />
                 <div className="desire-detail-edit-form-actions">
@@ -646,14 +640,14 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
                     onClick={handleSaveTitle}
                     disabled={isSaving || !editingTitle.trim()}
                   >
-                    {isSaving ? 'Сохранение...' : 'Сохранить'}
+                    {isSaving ? t('common.saving') : t('common.save')}
                   </button>
                   <button
                     className="desire-detail-cancel-button"
                     onClick={() => setShowEditTitleModal(false)}
                     disabled={isSaving}
                   >
-                    Отмена
+                    {t('common.cancel')}
                   </button>
                 </div>
               </div>
@@ -667,10 +661,11 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
         <div className="desire-detail-history-modal-overlay" onClick={() => setShowEditDetailsModal(false)}>
           <div className="desire-detail-history-modal" onClick={(e) => e.stopPropagation()}>
             <div className="desire-detail-history-modal-header">
-              <h2>Изменить описание</h2>
+              <h2>{t('detail.modal.editDetails.title')}</h2>
               <button
                 className="desire-detail-history-modal-close"
                 onClick={() => setShowEditDetailsModal(false)}
+                aria-label={t('common.close')}
               >
                 ×
               </button>
@@ -678,17 +673,13 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
             <div className="desire-detail-history-modal-content">
               <div className="desire-detail-edit-form">
                 <p className="desire-detail-edit-hint">
-                  Чем подробнее образ, тем легче к нему возвращаться
+                  {t('detail.modal.editDetails.hint')}
                 </p>
                 <textarea
                   className="desire-detail-edit-textarea"
                   value={editingDetails}
                   onChange={(e) => setEditingDetails(e.target.value)}
-                  placeholder="Как это выглядит?
-Где ты?
-Что вокруг тебя?
-Кто рядом?
-Что ты делаешь?"
+                  placeholder={t('form.details.placeholder')}
                   rows={8}
                   autoFocus
                 />
@@ -698,14 +689,14 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
                     onClick={handleSaveDetails}
                     disabled={isSaving}
                   >
-                    {isSaving ? 'Сохранение...' : 'Сохранить'}
+                    {isSaving ? t('common.saving') : t('common.save')}
                   </button>
                   <button
                     className="desire-detail-cancel-button"
                     onClick={() => setShowEditDetailsModal(false)}
                     disabled={isSaving}
                   >
-                    Отмена
+                    {t('common.cancel')}
                   </button>
                 </div>
               </div>
@@ -728,7 +719,7 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
                   await loadDesire();
                 } catch (error) {
                   console.error('Ошибка при сохранении изображений:', error);
-                  alert('Не удалось сохранить изображения');
+                  alert(t('detail.error.saveImages'));
                 } finally {
                   setIsSaving(false);
                 }

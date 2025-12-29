@@ -1,6 +1,12 @@
 // Утилиты для работы с датами
 
-export function formatDate(date: string): string {
+export type SupportedLocale = 'ru' | 'en';
+
+function getDateLocale(locale?: SupportedLocale): string {
+  return locale === 'ru' ? 'ru-RU' : 'en-US';
+}
+
+export function formatDate(date: string, locale: SupportedLocale = 'ru'): string {
   const d = new Date(date);
   const today = new Date();
   const yesterday = new Date(today);
@@ -8,16 +14,16 @@ export function formatDate(date: string): string {
 
   // Проверяем, сегодня ли это
   if (d.toDateString() === today.toDateString()) {
-    return 'Сегодня';
+    return locale === 'ru' ? 'Сегодня' : 'Today';
   }
 
   // Проверяем, вчера ли это
   if (d.toDateString() === yesterday.toDateString()) {
-    return 'Вчера';
+    return locale === 'ru' ? 'Вчера' : 'Yesterday';
   }
 
   // Форматируем дату
-  return d.toLocaleDateString('ru-RU', {
+  return d.toLocaleDateString(getDateLocale(locale), {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
@@ -38,9 +44,9 @@ export function toLocalDateString(d: Date): string {
   return `${yyyy}-${mm}-${dd}`;
 }
 
-export function formatDateTime(date: string): string {
+export function formatDateTime(date: string, locale: SupportedLocale = 'ru'): string {
   const d = new Date(date);
-  return d.toLocaleString('ru-RU', {
+  return d.toLocaleString(getDateLocale(locale), {
     day: 'numeric',
     month: 'long',
     year: 'numeric',

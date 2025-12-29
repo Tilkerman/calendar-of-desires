@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { DesireImage } from '../../types';
 import './ImageGallery.css';
+import { useI18n } from '../../i18n';
 
 interface ImageGalleryProps {
   images: DesireImage[];
@@ -8,6 +9,7 @@ interface ImageGalleryProps {
 }
 
 export default function ImageGallery({ images, title }: ImageGalleryProps) {
+  const { t } = useI18n();
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Если нет изображений, не показываем галерею
@@ -86,7 +88,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
         >
           {sortedImages.map((image) => (
             <div key={image.id} className="image-gallery-slide">
-              <img src={image.url} alt={title || 'Изображение желания'} />
+              <img src={image.url} alt={title || t('gallery.imageAlt')} />
             </div>
           ))}
         </div>
@@ -97,14 +99,14 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
             <button
               className="image-gallery-nav image-gallery-nav-prev"
               onClick={handlePrevious}
-              aria-label="Предыдущее изображение"
+              aria-label={t('gallery.prev')}
             >
               ‹
             </button>
             <button
               className="image-gallery-nav image-gallery-nav-next"
               onClick={handleNext}
-              aria-label="Следующее изображение"
+              aria-label={t('gallery.next')}
             >
               ›
             </button>
@@ -120,7 +122,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
               key={index}
               className={`image-gallery-indicator ${index === currentIndex ? 'active' : ''}`}
               onClick={() => handleIndicatorClick(index)}
-              aria-label={`Изображение ${index + 1}`}
+              aria-label={t('gallery.imageN', { n: index + 1 })}
             />
           ))}
         </div>
