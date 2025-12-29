@@ -133,6 +133,7 @@ export const en = {
   'form.submit.save': 'Save changes',
   'form.submit.saving': 'Saving…',
   'form.error.save': 'Could not save the wish. Please try again.',
+  'form.error.imageLoad': 'Could not load the image. Please try another file.',
 
   // Contact indicators
   'contacts.entry': 'Notes',

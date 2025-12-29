@@ -36,12 +36,10 @@ function sectorPath(cx: number, cy: number, r: number, a0: number, a1: number) {
 export default function LifeWheel({
   onCreateWish,
   onCreateWishInArea,
-  onOpenDesire,
   onShowAllDesires,
 }: {
   onCreateWish: () => void;
   onCreateWishInArea: (area: LifeArea) => void;
-  onOpenDesire: (desireId: string) => void;
   onShowAllDesires: () => void;
 }) {
   const { t } = useI18n();

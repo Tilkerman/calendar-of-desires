@@ -95,10 +95,6 @@ function App() {
             setAskAreaAfterSave(false);
             handleCreateDesire();
           }}
-          onOpenDesire={(desireId) => {
-            setSelectedDesireId(desireId);
-            setCurrentView('detail');
-          }}
           onShowAllDesires={() => {
             setCurrentView('list');
           }}

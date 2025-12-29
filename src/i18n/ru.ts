@@ -135,6 +135,7 @@ export const ru: Record<TranslationKey, string> = {
   'form.submit.save': 'Сохранить изменения',
   'form.submit.saving': 'Сохранение...',
   'form.error.save': 'Не удалось сохранить желание. Попробуйте ещё раз.',
+  'form.error.imageLoad': 'Не удалось загрузить изображение. Попробуйте другой файл.',
 
   // Contact indicators
   'contacts.entry': 'Записи',
