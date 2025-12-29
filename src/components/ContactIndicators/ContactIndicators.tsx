@@ -1,6 +1,6 @@
 import './ContactIndicators.css';
 import { useI18n } from '../../i18n';
-import { formatDate, getTodayDateString } from '../../utils/date';
+import { formatDate } from '../../utils/date';
 
 interface ContactIndicatorsProps {
   days: Array<{ date: string; types: Array<'entry' | 'thought' | 'step'> }>; // 7 дней, oldest -> today
@@ -17,7 +17,6 @@ export default function ContactIndicators({
   mode = 'byType',
 }: ContactIndicatorsProps) {
   const { t, locale } = useI18n();
-  const todayStr = getTodayDateString();
 
   const buildTitle = (d: { date: string; types: Array<'entry' | 'thought' | 'step'> }) => {
     const types = d.types;
