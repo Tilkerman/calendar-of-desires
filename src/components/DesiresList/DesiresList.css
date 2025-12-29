@@ -1,5 +1,22 @@
 /* DesiresList Component Styles */
 
+.desires-list-back {
+  appearance: none;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.45rem 0.65rem;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.desires-list-back:hover {
+  background: var(--bg-hover);
+}
+
 .desires-list-container {
   min-height: 100vh;
   padding: 2rem 1.5rem 6rem; /* Отступ снизу для кнопки */
@@ -103,20 +120,26 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.9rem;
+  /* Маленький чип, чтобы не конкурировать с длинным названием */
+  font-size: 0.68rem;
   font-weight: 400;
   flex-shrink: 0;
   white-space: nowrap;
+  padding: 0.18rem 0.4rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
+  background: var(--bg-primary);
+  color: var(--text-tertiary);
 }
 
 .focus-checkmark {
-  font-size: 0.95rem;
+  font-size: 0.78rem;
   color: var(--text-secondary);
 }
 
 .focus-text {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
+  font-size: 0.68rem;
+  color: var(--text-tertiary);
   font-weight: 400;
 }
 
@@ -143,23 +166,27 @@
 .desire-card-image {
   flex-shrink: 0;
   width: 140px;
-  height: 80px;
-  border-radius: 8px;
+  height: 92px; /* чуть выше, чтобы низ картинки совпадал с нижней строкой (iPhone) */
+  /* Скругление края картинки (как на референсе с iPhone) */
+  border-radius: 12px;
   overflow: hidden;
   background: var(--bg-placeholder);
 }
 
 .desire-card-image img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* На iOS иногда лучше явно наследовать радиус, чтобы край был ровным */
+  border-radius: inherit;
 }
 
 .desire-card-image-placeholder {
   width: 100%;
   height: 100%;
   background: var(--bg-placeholder);
-  border-radius: 8px;
+  border-radius: 12px;
 }
 
 /* Блок контактов - справа */
@@ -266,6 +293,17 @@
 
   .desire-card-image {
     width: 110px;
-    height: 65px;
+    height: 78px; /* чуть выше для выравнивания с блоком контакта на iOS */
+  }
+}
+
+/* На очень узких экранах оставляем только ✓, чтобы бейдж не мешал длинному названию */
+@media (max-width: 360px) {
+  .desire-card-focus-badge .focus-text {
+    display: none;
+  }
+  .desire-card-focus-badge {
+    gap: 0;
+    padding: 0.16rem 0.32rem;
   }
 }

@@ -42,14 +42,37 @@ export const en = {
   'desires.chooseFocus': 'Choose which wish is in focus today',
   'desires.focusHint': "it’s the one you return to today",
   'desires.focusToday': 'In focus today',
+  'desires.focusBadge': 'In focus',
   'desires.empty.title': "You don't have any wishes yet",
   'desires.empty.hint': 'Create your first wish to begin',
   'desires.add': 'Add a wish',
   'desires.contact7days': 'Contact in 7 days:',
 
+  // Wheel
+  'wheel.title': 'Rate and fill each life area from 1 to 10',
+  'wheel.subtitle': 'Fill thoughtfully over 3–5 days',
+  'wheel.create': 'Create wish',
+  'wheel.allDesires': 'All wishes',
+  'wheel.pickArea.title': 'Choose an area for this wish',
+
+  // Areas
+  'areas.health': 'Health',
+  'areas.love': 'Love',
+  'areas.growth': 'Growth',
+  'areas.family': 'Family',
+  'areas.home': 'Home',
+  'areas.work': 'Work',
+  'areas.hobby': 'Hobby',
+  'areas.finance': 'Finance',
+
   // Desire detail
   'detail.contact7days.title': 'Contact in 7 days',
   'detail.contact7days.hint': 'This reflects how often you returned to this wish over the last 7 days',
+  'detail.details.title': 'Wish description',
+  'detail.details.hint': 'The more detailed the image, the easier it is to return to it',
+  'detail.details.notSet': 'Not set',
+  'detail.details.showMore': 'Show more',
+  'detail.details.showLess': 'Show less',
   'detail.notes.title': 'Notes',
   'detail.notes.history': 'Notes history',
   'detail.notes.placeholder': 'What are you thinking or feeling about this wish right now?',

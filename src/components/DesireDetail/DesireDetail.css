@@ -103,6 +103,8 @@
   margin-bottom: 2.5rem;
 }
 
+/* Важно: воздух внутри блока "Контакт за 7 дней" настраиваем через .week-dots ниже */
+
 .desire-detail-section-header {
   display: flex;
   justify-content: space-between;
@@ -117,14 +119,66 @@
   color: var(--text-primary);
 }
 
+.desire-detail-details-hint {
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  margin: 0.35rem 0 0 0;
+  line-height: 1.4;
+}
+
+.desire-detail-details-box {
+  margin-top: 0.75rem;
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-card);
+}
+
+.desire-detail-details-box-content {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.desire-detail-details-box-content.empty {
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.desire-detail-details-box-content.clamped {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 6;
+  overflow: hidden;
+}
+
+.desire-detail-details-box-content.expanded {
+  display: block;
+}
+
+.desire-detail-details-toggle {
+  margin-top: 0.75rem;
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: var(--accent-color);
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.desire-detail-details-toggle:hover {
+  text-decoration: underline;
+}
+
 .desire-detail-section-title-spaced {
   margin-bottom: 1rem;
 }
 
-/* Блок состояния контакта */
-.desire-detail-section .contact-indicators {
-  margin: 0.5rem 0 0.75rem 0;
-  justify-content: flex-start;
+/* Блок состояния контакта (ContactIndicators: .week-dots) */
+.desire-detail-section .week-dots {
+  margin: 0.75rem 0 0.75rem 0;
 }
 
 .desire-detail-contact-hint {
@@ -387,6 +441,7 @@
 /* Визуальное подтверждение сохранения */
 .desire-detail-confirmation {
   margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
   padding: 0.5rem;
   background: var(--bg-card-focused);
   color: var(--accent-color);

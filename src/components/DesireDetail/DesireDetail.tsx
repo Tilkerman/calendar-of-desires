@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import type { Desire, Contact, DesireImage } from '../../types';
 import { desireService, contactService } from '../../services/db';
 import ContactIndicators from '../ContactIndicators/ContactIndicators';
@@ -18,6 +18,7 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
   const { t, locale } = useI18n();
   const [desire, setDesire] = useState<Desire | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [detailsExpanded, setDetailsExpanded] = useState(false);
   
   // Контакты за последние 7 дней (отдельно для каждого типа)
   const [last7Days, setLast7Days] = useState<Array<{ date: string; types: Array<'entry' | 'thought' | 'step'> }>>([]);
@@ -51,18 +52,44 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
   const [editingDetails, setEditingDetails] = useState('');
   const [showEditImagesModal, setShowEditImagesModal] = useState(false);
 
+  // IMPORTANT: хуки должны вызываться всегда, поэтому вычисления для details делаем до ранних return'ов
+  const detailsText = (desire?.details || '').trim();
+  const hasDetails = detailsText.length > 0;
+  const detailsShouldClamp = useMemo(() => {
+    if (!detailsText) return false;
+    const lines = detailsText.split('\n').length;
+    return lines > 6 || detailsText.length > 320;
+  }, [detailsText]);
+
   useEffect(() => {
     loadDesire();
   }, [desireId]);
 
-  // Обновляем данные при возврате на экран (например, после создания контакта)
+  // Обновляем данные при возврате на экран (например, после переключения вкладки),
+  // но НЕ во время открытых модалок — иначе выбор файла (input type="file") может не успеть обработаться.
   useEffect(() => {
     const handleFocus = () => {
+      if (
+        showEditImagesModal ||
+        showEditTitleModal ||
+        showEditDetailsModal ||
+        showEntryHistory ||
+        showStepHistory
+      ) {
+        return;
+      }
       loadDesire();
     };
     window.addEventListener('focus', handleFocus);
     return () => window.removeEventListener('focus', handleFocus);
-  }, [desireId]);
+  }, [
+    desireId,
+    showEditImagesModal,
+    showEditTitleModal,
+    showEditDetailsModal,
+    showEntryHistory,
+    showStepHistory,
+  ]);
 
   const loadDesire = async () => {
     setIsLoading(true);
@@ -304,6 +331,41 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
       })()}
 
       <div className="desire-detail-content">
+        {/* Описание желания (важно по Джиканти — показываем сразу) */}
+        <div className="desire-detail-section">
+          <div className="desire-detail-section-header">
+            <div>
+              <h2 className="desire-detail-section-title">{t('detail.details.title')}</h2>
+              {!hasDetails && (
+                <p className="desire-detail-details-hint">{t('detail.details.hint')}</p>
+              )}
+            </div>
+            <button className="desire-detail-edit-button" onClick={handleEditDetails}>
+              {t('detail.edit')}
+            </button>
+          </div>
+
+          <div className="desire-detail-details-box">
+            <div
+              className={`desire-detail-details-box-content ${detailsExpanded ? 'expanded' : 'clamped'} ${
+                hasDetails ? '' : 'empty'
+              }`}
+            >
+              {hasDetails ? detailsText : t('detail.details.notSet')}
+            </div>
+          </div>
+
+          {detailsShouldClamp && (
+            <button
+              type="button"
+              className="desire-detail-details-toggle"
+              onClick={() => setDetailsExpanded((v) => !v)}
+            >
+              {detailsExpanded ? t('detail.details.showLess') : t('detail.details.showMore')}
+            </button>
+          )}
+        </div>
+
         {/* Блок "Состояние контакта" */}
         <div className="desire-detail-section">
           <h2 className="desire-detail-section-title">{t('detail.contact7days.title')}</h2>
@@ -710,6 +772,7 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
         <div className="desire-detail-history-modal-overlay" onClick={() => setShowEditImagesModal(false)}>
           <div onClick={(e) => e.stopPropagation()}>
             <ImageEditor
+              key={`image-editor-${desire.id}-${showEditImagesModal}`}
               images={desire.images || []}
               onSave={async (images: DesireImage[]) => {
                 setIsSaving(true);

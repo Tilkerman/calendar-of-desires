@@ -6,6 +6,22 @@ export interface DesireImage {
   order: number; // порядок отображения (0, 1, 2, ...)
 }
 
+export type LifeArea =
+  | 'health'
+  | 'love'
+  | 'growth'
+  | 'family'
+  | 'home'
+  | 'work'
+  | 'hobby'
+  | 'finance';
+
+export interface LifeAreaRating {
+  id: LifeArea;
+  score: number; // 0..10
+  updatedAt: string; // ISO timestamp
+}
+
 export interface Desire {
   id: string;
   title: string;
@@ -14,6 +30,7 @@ export interface Desire {
   images?: DesireImage[]; // массив изображений (до 6)
   description: string; // эмоциональное описание "Как ты хочешь себя чувствовать?"
   details: string | null; // подробное описание желания "Опиши своё желание"
+  area?: LifeArea | null; // к какой сфере относится желание
   createdAt: string; // ISO date
   isActive: boolean; // желание в фокусе сегодня
 }

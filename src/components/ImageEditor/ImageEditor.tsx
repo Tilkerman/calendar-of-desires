@@ -12,7 +12,9 @@ interface ImageEditorProps {
 
 export default function ImageEditor({ images, onSave, onCancel, maxImages = 6 }: ImageEditorProps) {
   const { t } = useI18n();
-  const [currentImages, setCurrentImages] = useState<DesireImage[]>(images || []);
+  // Инициализируем состояние только при первом рендере
+  // После этого состояние управляется только пользователем
+  const [currentImages, setCurrentImages] = useState<DesireImage[]>(() => images || []);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleAddImage = () => {
@@ -21,7 +23,15 @@ export default function ImageEditor({ images, onSave, onCancel, maxImages = 6 }:
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file) {
+      return;
+    }
+
+    // Проверяем, что это изображение
+    if (!file.type.startsWith('image/')) {
+      alert('Пожалуйста, выберите файл изображения');
+      return;
+    }
 
     if (currentImages.length >= maxImages) {
       alert(t('editor.maxAlert', { max: maxImages }));
@@ -29,20 +39,44 @@ export default function ImageEditor({ images, onSave, onCancel, maxImages = 6 }:
     }
 
     const reader = new FileReader();
+    
     reader.onloadend = () => {
+      const result = reader.result;
+      if (!result || typeof result !== 'string') {
+        alert('Ошибка при чтении файла. Попробуйте выбрать другой файл.');
+        return;
+      }
+      
       const newImage: DesireImage = {
         id: crypto.randomUUID(),
-        url: reader.result as string,
+        url: result,
         order: currentImages.length,
       };
-      setCurrentImages([...currentImages, newImage]);
+      
+      // Используем функциональное обновление состояния для гарантии
+      setCurrentImages((prevImages) => {
+        const updated = [...prevImages, newImage];
+        return updated;
+      });
     };
-    reader.readAsDataURL(file);
+    
+    reader.onerror = () => {
+      alert('Ошибка при чтении файла. Попробуйте выбрать другой файл.');
+    };
+    
+    try {
+      reader.readAsDataURL(file);
+    } catch (error) {
+      alert('Ошибка при обработке файла. Попробуйте выбрать другой файл.');
+    }
 
     // Сбрасываем input для возможности повторного выбора того же файла
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+    // Делаем это после небольшой задержки, чтобы событие onChange успело обработаться
+    setTimeout(() => {
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }, 100);
   };
 
   const handleRemoveImage = (imageId: string) => {
@@ -89,9 +123,23 @@ export default function ImageEditor({ images, onSave, onCancel, maxImages = 6 }:
 
       <div className="image-editor-content">
         <div className="image-editor-grid">
-          {currentImages.map((image) => (
-            <div key={image.id} className="image-editor-item">
-              <img src={image.url} alt={t('editor.imageAlt', { n: image.order + 1 })} />
+          {currentImages.length === 0 && (
+            <div style={{ 
+              gridColumn: '1 / -1', 
+              textAlign: 'center', 
+              padding: '2rem',
+              color: 'var(--text-tertiary)'
+            }}>
+              Изображения не добавлены
+            </div>
+          )}
+          {currentImages.map((image, index) => (
+            <div key={image.id || `image-${index}`} className="image-editor-item">
+              <img 
+                src={image.url} 
+                alt={t('editor.imageAlt', { n: image.order + 1 }) || `Изображение ${index + 1}`}
+                style={{ display: 'block' }}
+              />
               <div className="image-editor-item-actions">
                 <button
                   className="image-editor-action-btn"

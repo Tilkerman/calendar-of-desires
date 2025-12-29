@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { Desire } from '../../types';
+import type { Desire, LifeArea } from '../../types';
 import { desireService, contactService } from '../../services/db';
 import Header from '../Header/Header';
 import ContactIndicators from '../ContactIndicators/ContactIndicators';
@@ -9,6 +9,8 @@ import { getWishNoun, useI18n } from '../../i18n';
 interface DesiresListProps {
   onDesireClick: (desire: Desire) => void;
   onAddDesire: () => void;
+  onBack?: () => void;
+  useAreaBorderColors?: boolean;
 }
 
 interface DesireWithContacts extends Desire {
@@ -16,7 +18,18 @@ interface DesireWithContacts extends Desire {
   hasTodayContact: boolean; // есть ли контакт за сегодня
 }
 
-export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListProps) {
+const AREA_COLORS: Record<LifeArea, string> = {
+  health: '#49a078',
+  love: '#f2b6c6',
+  growth: '#5a7ba7',
+  family: '#9aa0a6',
+  home: '#58c6d6',
+  work: '#2d4f7a',
+  hobby: '#f4c542',
+  finance: '#c44d58',
+};
+
+export default function DesiresList({ onDesireClick, onAddDesire, onBack, useAreaBorderColors }: DesiresListProps) {
   const { t, locale } = useI18n();
   const [desires, setDesires] = useState<DesireWithContacts[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -117,6 +130,7 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
   };
 
   const handleLogoClick = () => {
+    if (onBack) return onBack();
     // Прокрутка в начало страницы
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -129,7 +143,17 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
   if (isLoading) {
     return (
       <>
-        <Header onLogoClick={handleLogoClick} onSettingsClick={handleSettingsClick} />
+        <Header
+          leftSlot={
+            onBack ? (
+              <button type="button" className="desires-list-back" onClick={onBack}>
+                ← {t('common.back')}
+              </button>
+            ) : null
+          }
+          onLogoClick={handleLogoClick}
+          onSettingsClick={handleSettingsClick}
+        />
         <div className="desires-list-container">
           <div className="loading">{t('common.loading')}</div>
         </div>
@@ -139,7 +163,17 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
 
   return (
     <>
-      <Header onLogoClick={handleLogoClick} onSettingsClick={handleSettingsClick} />
+      <Header
+        leftSlot={
+          onBack ? (
+            <button type="button" className="desires-list-back" onClick={onBack}>
+              ← {t('common.back')}
+            </button>
+          ) : null
+        }
+        onLogoClick={handleLogoClick}
+        onSettingsClick={handleSettingsClick}
+      />
       <div className="desires-list-container">
         {/* Блок информации под шапкой */}
         <div className="desires-info-block">
@@ -169,6 +203,11 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
               <div
                 key={desire.id}
                 className={`desire-card ${desire.isActive ? 'desire-card-focused' : ''}`}
+                style={
+                  useAreaBorderColors && desire.area
+                    ? { borderColor: AREA_COLORS[desire.area], borderWidth: 2 }
+                    : undefined
+                }
                 onClick={() => handleDesireClick(desire)}
               >
                 {/* Верхняя часть: название и бейдж */}
@@ -180,7 +219,7 @@ export default function DesiresList({ onDesireClick, onAddDesire }: DesiresListP
                   {desire.isActive && (
                     <div className="desire-card-focus-badge">
                       <span className="focus-checkmark">✓</span>
-                      <span className="focus-text">{t('desires.focusToday')}</span>
+                      <span className="focus-text">{t('desires.focusBadge')}</span>
                     </div>
                   )}
                 </div>

@@ -1,30 +1,34 @@
 import { useState, useEffect } from 'react';
 import DesireForm from './components/DesireForm/DesireForm';
-import WelcomeScreen from './components/WelcomeScreen/WelcomeScreen';
-import DesiresList from './components/DesiresList/DesiresList';
 import DesireDetail from './components/DesireDetail/DesireDetail';
-import type { Desire } from './types';
+import type { Desire, LifeArea } from './types';
 import { desireService } from './services/db';
 import { useI18n } from './i18n';
+import LifeWheel from './components/LifeWheel/LifeWheel';
+import AreaPickerModal from './components/LifeWheel/AreaPickerModal';
+import DesiresList from './components/DesiresList/DesiresList';
 
-type View = 'welcome' | 'list' | 'form' | 'detail';
+type View = 'wheel' | 'list' | 'form' | 'detail';
 
 function App() {
   const { t } = useI18n();
-  const [currentView, setCurrentView] = useState<View>('welcome');
+  const [currentView, setCurrentView] = useState<View>('wheel');
   const [selectedDesireId, setSelectedDesireId] = useState<string | null>(null);
   const [editingDesire, setEditingDesire] = useState<Desire | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
+  const [presetArea, setPresetArea] = useState<LifeArea | null>(null);
+  const [askAreaAfterSave, setAskAreaAfterSave] = useState(false);
+  const [pendingAreaForDesireId, setPendingAreaForDesireId] = useState<string | null>(null);
 
   // Проверяем наличие желаний при загрузке
   useEffect(() => {
     const checkDesires = async () => {
       try {
-        const desires = await desireService.getAllDesires();
-        setCurrentView(desires.length > 0 ? 'list' : 'welcome');
+        await desireService.getAllDesires();
+        setCurrentView('wheel');
       } catch (error) {
         console.error('Ошибка при проверке желаний:', error);
-        setCurrentView('welcome');
+        setCurrentView('wheel');
       } finally {
         setIsLoading(false);
       }
@@ -38,21 +42,27 @@ function App() {
     setCurrentView('form');
   };
 
-  const handleDesireSaved = (_desireId?: string) => {
-    // После создания или редактирования всегда возвращаемся в список желаний
-    setCurrentView('list');
+  const handleDesireSaved = (desireId?: string) => {
     setEditingDesire(undefined);
-    setSelectedDesireId(null);
+    if (desireId) {
+      if (askAreaAfterSave) {
+        setPendingAreaForDesireId(desireId);
+        setCurrentView('wheel');
+      } else {
+        setSelectedDesireId(desireId);
+        setCurrentView('detail');
+      }
+    } else {
+      setCurrentView('wheel');
+      setSelectedDesireId(null);
+    }
+    setAskAreaAfterSave(false);
+    setPresetArea(null);
   };
 
-  const handleDesireClick = (desire: Desire) => {
-    setSelectedDesireId(desire.id);
-    setCurrentView('detail');
-  };
-
-  const handleBackToList = () => {
+  const handleBackToWheel = () => {
     setSelectedDesireId(null);
-    setCurrentView('list');
+    setCurrentView('wheel');
   };
 
   if (isLoading) {
@@ -71,15 +81,58 @@ function App() {
     );
   }
 
-  if (currentView === 'welcome') {
-    return <WelcomeScreen onCreateDesire={handleCreateDesire} />;
+  if (currentView === 'wheel') {
+    return (
+      <>
+        <LifeWheel
+          onCreateWish={() => {
+            setPresetArea(null);
+            setAskAreaAfterSave(true);
+            handleCreateDesire();
+          }}
+          onCreateWishInArea={(area) => {
+            setPresetArea(area);
+            setAskAreaAfterSave(false);
+            handleCreateDesire();
+          }}
+          onOpenDesire={(desireId) => {
+            setSelectedDesireId(desireId);
+            setCurrentView('detail');
+          }}
+          onShowAllDesires={() => {
+            setCurrentView('list');
+          }}
+        />
+        <AreaPickerModal
+          open={!!pendingAreaForDesireId}
+          onClose={() => setPendingAreaForDesireId(null)}
+          onPick={async (area) => {
+            if (!pendingAreaForDesireId) return;
+            await desireService.updateDesire(pendingAreaForDesireId, { area });
+            const id = pendingAreaForDesireId;
+            setPendingAreaForDesireId(null);
+            setSelectedDesireId(id);
+            setCurrentView('detail');
+          }}
+        />
+      </>
+    );
   }
 
   if (currentView === 'list') {
     return (
       <DesiresList
-        onDesireClick={handleDesireClick}
-        onAddDesire={handleCreateDesire}
+        onBack={() => setCurrentView('wheel')}
+        useAreaBorderColors
+        onDesireClick={(desire) => {
+          setSelectedDesireId(desire.id);
+          setCurrentView('detail');
+        }}
+        onAddDesire={() => {
+          setPresetArea(null);
+          setAskAreaAfterSave(true);
+          handleCreateDesire();
+        }}
       />
     );
   }
@@ -89,7 +142,8 @@ function App() {
       <DesireForm 
         onSave={handleDesireSaved} 
         initialDesire={editingDesire}
-        onBack={() => setCurrentView('list')}
+        presetArea={presetArea}
+        onBack={() => setCurrentView('wheel')}
       />
     );
   }
@@ -98,7 +152,7 @@ function App() {
     return (
       <DesireDetail
         desireId={selectedDesireId}
-        onBack={handleBackToList}
+        onBack={handleBackToWheel}
       />
     );
   }

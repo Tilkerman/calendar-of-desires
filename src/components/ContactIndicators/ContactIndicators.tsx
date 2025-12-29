@@ -3,7 +3,7 @@ import { useI18n } from '../../i18n';
 import { formatDate } from '../../utils/date';
 
 interface ContactIndicatorsProps {
-  days: Array<{ date: string; types: Array<'entry' | 'thought' | 'step'> }>; // 7 дней, oldest -> today
+  days: Array<{ date: string; types: Array<'entry' | 'thought' | 'step'> }>; // 7 дней (из сервиса приходит oldest -> today)
   size?: 'small' | 'medium' | 'large';
   mode?: 'combined' | 'byType';
 }
@@ -17,6 +17,9 @@ export default function ContactIndicators({
   mode = 'byType',
 }: ContactIndicatorsProps) {
   const { t, locale } = useI18n();
+  // Требование: отметки "идут" слева направо, поэтому показываем today слева (newest -> oldest).
+  // Данные из сервиса приходят oldest -> today, разворачиваем только для отображения.
+  const displayDays = [...days].reverse();
 
   const buildTitle = (d: { date: string; types: Array<'entry' | 'thought' | 'step'> }) => {
     const types = d.types;
@@ -35,7 +38,7 @@ export default function ContactIndicators({
   if (mode === 'combined') {
     return (
       <div className={`week-dots week-dots-${size}`}>
-        {days.map((d) => {
+        {displayDays.map((d) => {
           const types = d.types;
 
           let kind: 'none' | 'entry' | 'thought' | 'step' | 'mixed' = 'none';
@@ -68,12 +71,10 @@ export default function ContactIndicators({
       {rows.map((row) => (
         <div key={row.type} className="week-dots-row">
           <span className="week-dots-row-label" title={t(`contacts.${row.type}` as never)}>
-            {size === 'small'
-              ? t(`contacts.${row.type}Abbr` as never)
-              : t(`contacts.${row.type}` as never)}
+            {t(`contacts.${row.type}` as never)}
           </span>
           <div className="week-dots-row-dots">
-            {days.map((d) => {
+            {displayDays.map((d) => {
               const hasType = d.types.includes(row.type);
               const kind = hasType ? row.type : 'none';
               const title = buildTitle(d);

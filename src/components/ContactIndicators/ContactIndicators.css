@@ -11,25 +11,41 @@
 }
 
 .week-dots-row {
-  display: flex;
+  /* Важно для iOS: фиксируем колонку подписей, чтобы кружки начинались с одной линии */
+  display: grid;
+  grid-template-columns: var(--week-label-width, 8ch) auto;
   align-items: center;
-  gap: 0.5rem;
+  column-gap: 0.6rem;
 }
 
 .week-dots-row-label {
-  min-width: 3.2rem;
+  width: var(--week-label-width, 8ch);
   text-align: left;
-  font-size: 0.78rem;
-  font-weight: 800;
+  font-size: 0.72rem;
+  font-weight: 400;
   color: var(--text-tertiary);
   user-select: none;
   line-height: 1;
+  white-space: nowrap;
 }
 
 .week-dots-row-dots {
   display: flex;
   gap: 0.35rem;
   align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+}
+
+/* Подстраиваем ширину колонки подписей под размеры */
+.week-dots-small.week-dots-bytype {
+  /* Полные подписи (Notes/Thoughts/Steps; Записи/Мысли/Шаги) */
+  --week-label-width: 10ch;
+}
+
+.week-dots-medium.week-dots-bytype,
+.week-dots-large.week-dots-bytype {
+  --week-label-width: 11ch;
 }
 
 .week-dots-small .week-dot {

@@ -44,14 +44,37 @@ export const ru: Record<TranslationKey, string> = {
   'desires.chooseFocus': 'Выбери, какое желание сегодня в фокусе',
   'desires.focusHint': 'это то, к которому ты сегодня возвращаешься',
   'desires.focusToday': 'Сегодня в фокусе',
+  'desires.focusBadge': 'В фокусе',
   'desires.empty.title': 'У тебя пока нет желаний',
   'desires.empty.hint': 'Создай первое желание, чтобы начать',
   'desires.add': 'Добавить желание',
   'desires.contact7days': 'Контакт за 7 дней:',
 
+  // Wheel
+  'wheel.title': 'Оцени и заполни цветом каждую сферу своей жизни от 1 до 10',
+  'wheel.subtitle': 'Заполняй вдумчиво 3–5 дней',
+  'wheel.create': 'Создать желание',
+  'wheel.allDesires': 'Все желания',
+  'wheel.pickArea.title': 'К какой сфере отнести это желание?',
+
+  // Areas
+  'areas.health': 'Здоровье',
+  'areas.love': 'Любовь',
+  'areas.growth': 'Развитие',
+  'areas.family': 'Семья',
+  'areas.home': 'Дом',
+  'areas.work': 'Работа',
+  'areas.hobby': 'Хобби',
+  'areas.finance': 'Финансы',
+
   // Desire detail
   'detail.contact7days.title': 'Контакт за 7 дней',
   'detail.contact7days.hint': 'Это отражение того, как часто ты возвращался к этому желанию за последние 7 дней',
+  'detail.details.title': 'Описание желания',
+  'detail.details.hint': 'Чем подробнее образ, тем легче к нему возвращаться',
+  'detail.details.notSet': 'Не указано',
+  'detail.details.showMore': 'Показать полностью',
+  'detail.details.showLess': 'Свернуть',
   'detail.notes.title': 'Записи',
   'detail.notes.history': 'История записей',
   'detail.notes.placeholder': 'Что ты сейчас думаешь или чувствуешь по поводу этого желания?',

@@ -1,10 +1,11 @@
 import Dexie, { type Table } from 'dexie';
-import type { Desire, Contact, ContactType } from '../types';
+import type { Desire, Contact, ContactType, LifeArea, LifeAreaRating } from '../types';
 import { getTodayDateString, toLocalDateString } from '../utils/date';
 
 class CalendarOfDesiresDB extends Dexie {
   desires!: Table<Desire>;
   contacts!: Table<Contact>;
+  lifeAreas!: Table<LifeAreaRating>;
 
   constructor() {
     super('CalendarOfDesiresDB');
@@ -17,6 +18,31 @@ class CalendarOfDesiresDB extends Dexie {
       desires: 'id, isActive, createdAt',
       contacts: 'id, desireId, date, type, [desireId+date], [desireId+date+type], createdAt',
     });
+
+    // Версия 4: добавляем сферу (area) для желаний и таблицу оценок по сферам (lifeAreas)
+    this.version(4)
+      .stores({
+        desires: 'id, isActive, createdAt, area',
+        contacts: 'id, desireId, date, type, [desireId+date], [desireId+date+type], createdAt',
+        lifeAreas: 'id',
+      })
+      .upgrade(async (tx) => {
+        // Инициализируем 8 сфер значениями 0..10
+        const areas: LifeArea[] = [
+          'health',
+          'love',
+          'growth',
+          'family',
+          'home',
+          'work',
+          'hobby',
+          'finance',
+        ];
+        const now = new Date().toISOString();
+        await tx.table('lifeAreas').bulkPut(
+          areas.map((id) => ({ id, score: 0, updatedAt: now }))
+        );
+      });
   }
 }
 
@@ -59,6 +85,7 @@ export const desireService = {
       const newDesire: Desire = {
         ...desire,
         details: desire.details || null, // Поддержка нового поля
+        area: desire.area ?? null,
         id: crypto.randomUUID(),
         createdAt: new Date().toISOString(),
       };
@@ -72,7 +99,14 @@ export const desireService = {
   },
 
   async updateDesire(id: string, updates: Partial<Desire>): Promise<void> {
-    await db.desires.update(id, updates);
+    try {
+      await db.open();
+      // Используем modify для гарантированного обновления всех полей, включая массивы
+      await db.desires.where('id').equals(id).modify(updates);
+    } catch (error) {
+      console.error('Ошибка при обновлении желания:', error);
+      throw error;
+    }
   },
 
   async deleteDesire(id: string): Promise<void> {
@@ -102,6 +136,35 @@ export const desireService = {
       console.error('Ошибка при установке фокуса на желание:', error);
       throw error;
     }
+  },
+
+  async getCountsByArea(areas: LifeArea[]): Promise<Record<LifeArea, number>> {
+    await db.open();
+    const result = {} as Record<LifeArea, number>;
+    await Promise.all(
+      areas.map(async (a) => {
+        const count = await db.desires.where('area').equals(a as any).count();
+        result[a] = count;
+      })
+    );
+    return result;
+  },
+};
+
+export const lifeAreaService = {
+  async getAll(): Promise<Record<LifeArea, number>> {
+    await db.open();
+    const rows = await db.lifeAreas.toArray();
+    const result = {} as Record<LifeArea, number>;
+    for (const r of rows) {
+      result[r.id] = r.score;
+    }
+    return result;
+  },
+
+  async setScore(area: LifeArea, score: number): Promise<void> {
+    await db.open();
+    await db.lifeAreas.put({ id: area, score, updatedAt: new Date().toISOString() });
   },
 };
 

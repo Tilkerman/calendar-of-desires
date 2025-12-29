@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import type { Desire, DesireImage } from '../../types';
+import type { Desire, DesireImage, LifeArea } from '../../types';
 import { desireService } from '../../services/db';
 import './DesireForm.css';
 import { useI18n } from '../../i18n';
@@ -9,14 +9,20 @@ interface DesireFormProps {
   onSave: (desireId?: string) => void;
   initialDesire?: Desire;
   onBack?: () => void;
+  presetArea?: LifeArea | null;
 }
 
-export default function DesireForm({ onSave, initialDesire, onBack }: DesireFormProps) {
+export default function DesireForm({ onSave, initialDesire, onBack, presetArea }: DesireFormProps) {
   const { t } = useI18n();
   const [title, setTitle] = useState(initialDesire?.title || '');
   const [details, setDetails] = useState(initialDesire?.details || '');
   const [description, setDescription] = useState(initialDesire?.description || '');
-  const [images, setImages] = useState<DesireImage[]>(initialDesire?.images || []);
+  // Инициализируем images из initialDesire, учитывая что может быть undefined или пустой массив
+  const [images, setImages] = useState<DesireImage[]>(
+    initialDesire?.images && Array.isArray(initialDesire.images) 
+      ? initialDesire.images 
+      : []
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -38,6 +44,9 @@ export default function DesireForm({ onSave, initialDesire, onBack }: DesireForm
         order: images.length,
       };
       setImages([...images, newImage]);
+    };
+    reader.onerror = () => {
+      setError(t('form.error.imageLoad') || 'Ошибка при загрузке изображения');
     };
     reader.readAsDataURL(file);
 
@@ -65,7 +74,7 @@ export default function DesireForm({ onSave, initialDesire, onBack }: DesireForm
           title: title.trim() || '',
           details: details.trim() || null,
           description: description.trim() || '',
-          images: images.length > 0 ? images : undefined,
+          images: images, // Всегда передаем массив, даже если пустой
         });
         onSave();
       } else {
@@ -76,6 +85,7 @@ export default function DesireForm({ onSave, initialDesire, onBack }: DesireForm
           description: description.trim() || '',
           deadline: null,
           images: images.length > 0 ? images : undefined,
+          area: presetArea ?? null,
           isActive: true, // Новое желание автоматически становится "Сегодня в фокусе"
         });
         // Устанавливаем фокус на новое желание
