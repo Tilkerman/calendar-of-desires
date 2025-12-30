@@ -40,7 +40,7 @@ export default function LifeWheel({
 }: {
   onCreateWish: () => void;
   onCreateWishInArea: (area: LifeArea) => void;
-  onShowAllDesires: () => void;
+  onShowAllDesires: (area?: LifeArea) => void;
 }) {
   const { t } = useI18n();
   const [scores, setScores] = useState<Record<LifeArea, number>>(() => {
@@ -196,7 +196,11 @@ export default function LifeWheel({
               key={area}
               type="button"
               className="life-area-tile"
-              onClick={() => onCreateWishInArea(area)}
+              onClick={() => {
+                const count = counts[area] ?? 0;
+                if (count > 0) return onShowAllDesires(area);
+                return onCreateWishInArea(area);
+              }}
             >
               <div className="life-area-label">{t(`areas.${area}` as never)}</div>
               <div className="life-area-square" style={{ background: AREA_COLORS[area] }}>
@@ -209,7 +213,7 @@ export default function LifeWheel({
 
       <div className="life-wheel-bottom">
         <div className="life-wheel-bottom-row">
-          <button className="life-wheel-all-button" onClick={onShowAllDesires} type="button">
+          <button className="life-wheel-all-button" onClick={() => onShowAllDesires()} type="button">
             {t('wheel.allDesires')}
           </button>
           <button className="life-wheel-create" onClick={onCreateWish} type="button">

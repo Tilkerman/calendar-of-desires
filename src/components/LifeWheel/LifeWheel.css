@@ -50,6 +50,11 @@
   border-radius: 10px;
   cursor: pointer;
   white-space: nowrap;
+  /* Match height with the primary "create" button in the same grid row */
+  align-self: stretch;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .life-wheel-all-button:hover {

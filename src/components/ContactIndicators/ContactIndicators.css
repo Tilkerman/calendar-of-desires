@@ -13,7 +13,8 @@
 .week-dots-row {
   /* Важно для iOS: фиксируем колонку подписей, чтобы кружки начинались с одной линии */
   display: grid;
-  grid-template-columns: var(--week-label-width, 8ch) auto;
+  /* Second column must be shrinkable on narrow screens (iOS) */
+  grid-template-columns: var(--week-label-width, 8ch) minmax(0, 1fr);
   align-items: center;
   column-gap: 0.6rem;
 }
@@ -35,6 +36,28 @@
   align-items: center;
   justify-content: flex-start;
   flex-wrap: nowrap;
+}
+
+/* Mobile: prevent dots from overflowing outside cards on narrow screens */
+@media (max-width: 420px) {
+  .week-dots-small.week-dots-bytype {
+    /* Slightly narrower labels on mobile to free up space for dots */
+    --week-label-width: 8ch;
+  }
+
+  .week-dots-row {
+    column-gap: 0.45rem;
+  }
+
+  .week-dots-row-dots {
+    gap: 0.25rem;
+    flex-wrap: wrap;
+  }
+
+  .week-dots-small .week-dot {
+    width: 8px;
+    height: 8px;
+  }
 }
 
 /* Подстраиваем ширину колонки подписей под размеры */

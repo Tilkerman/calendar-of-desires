@@ -11,6 +11,7 @@ interface DesiresListProps {
   onAddDesire: () => void;
   onBack?: () => void;
   useAreaBorderColors?: boolean;
+  filterArea?: LifeArea | null;
 }
 
 interface DesireWithContacts extends Desire {
@@ -29,7 +30,13 @@ const AREA_COLORS: Record<LifeArea, string> = {
   finance: '#c44d58',
 };
 
-export default function DesiresList({ onDesireClick, onAddDesire, onBack, useAreaBorderColors }: DesiresListProps) {
+export default function DesiresList({
+  onDesireClick,
+  onAddDesire,
+  onBack,
+  useAreaBorderColors,
+  filterArea,
+}: DesiresListProps) {
   const { t, locale } = useI18n();
   const [desires, setDesires] = useState<DesireWithContacts[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -38,6 +45,10 @@ export default function DesiresList({ onDesireClick, onAddDesire, onBack, useAre
     setIsLoading(true);
     try {
       let allDesires = await desireService.getAllDesires();
+
+      if (filterArea) {
+        allDesires = allDesires.filter((d) => d.area === filterArea);
+      }
       
       // Проверяем время - если после 23:00, сбрасываем все isActive
       const now = new Date();
@@ -95,7 +106,7 @@ export default function DesiresList({ onDesireClick, onAddDesire, onBack, useAre
 
   useEffect(() => {
     loadDesires();
-  }, []);
+  }, [filterArea]);
 
   const handleDesireClick = async (desire: Desire) => {
     // При клике на желание устанавливаем его "в фокусе" (если время до 23:00)

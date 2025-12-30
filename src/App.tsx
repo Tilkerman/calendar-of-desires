@@ -17,6 +17,7 @@ function App() {
   const [editingDesire, setEditingDesire] = useState<Desire | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [presetArea, setPresetArea] = useState<LifeArea | null>(null);
+  const [listAreaFilter, setListAreaFilter] = useState<LifeArea | null>(null);
   const [askAreaAfterSave, setAskAreaAfterSave] = useState(false);
   const [pendingAreaForDesireId, setPendingAreaForDesireId] = useState<string | null>(null);
 
@@ -95,7 +96,8 @@ function App() {
             setAskAreaAfterSave(false);
             handleCreateDesire();
           }}
-          onShowAllDesires={() => {
+          onShowAllDesires={(area) => {
+            setListAreaFilter(area ?? null);
             setCurrentView('list');
           }}
         />
@@ -118,7 +120,11 @@ function App() {
   if (currentView === 'list') {
     return (
       <DesiresList
-        onBack={() => setCurrentView('wheel')}
+        filterArea={listAreaFilter}
+        onBack={() => {
+          setListAreaFilter(null);
+          setCurrentView('wheel');
+        }}
         useAreaBorderColors
         onDesireClick={(desire) => {
           setSelectedDesireId(desire.id);
