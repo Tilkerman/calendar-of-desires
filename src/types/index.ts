@@ -49,6 +49,14 @@ export interface Contact {
 // Тип контакта для отображения
 export type ContactType = 'entry' | 'note' | 'thought' | 'step';
 
+// Обратная связь
+export interface Feedback {
+  id: string;
+  text: string;
+  rating: number | null; // 1-5 или null
+  createdAt: string; // ISO timestamp
+}
+
 
 
 

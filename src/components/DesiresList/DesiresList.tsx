@@ -12,6 +12,7 @@ interface DesiresListProps {
   onBack?: () => void;
   useAreaBorderColors?: boolean;
   filterArea?: LifeArea | null;
+  onSettingsClick?: () => void;
 }
 
 interface DesireWithContacts extends Desire {
@@ -36,6 +37,7 @@ export default function DesiresList({
   onBack,
   useAreaBorderColors,
   filterArea,
+  onSettingsClick,
 }: DesiresListProps) {
   const { t, locale } = useI18n();
   const [desires, setDesires] = useState<DesireWithContacts[]>([]);
@@ -147,8 +149,11 @@ export default function DesiresList({
   };
 
   const handleSettingsClick = () => {
-    // Заглушка для настроек
-    alert(t('settings.comingSoon'));
+    if (onSettingsClick) {
+      onSettingsClick();
+    } else {
+      alert(t('settings.comingSoon'));
+    }
   };
 
   if (isLoading) {

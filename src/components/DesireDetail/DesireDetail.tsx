@@ -12,9 +12,10 @@ import HeaderActions from '../Header/HeaderActions';
 interface DesireDetailProps {
   desireId: string;
   onBack: () => void;
+  onSettingsClick?: () => void;
 }
 
-export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
+export default function DesireDetail({ desireId, onBack, onSettingsClick }: DesireDetailProps) {
   const { t, locale } = useI18n();
   const [desire, setDesire] = useState<Desire | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -301,7 +302,7 @@ export default function DesireDetail({ desireId, onBack }: DesireDetailProps) {
           <span className="back-text">{t('common.back')}</span>
         </button>
         <h1 className="desire-detail-title">{desire.title}</h1>
-        <HeaderActions />
+        <HeaderActions onSettingsClick={onSettingsClick} />
       </header>
 
       {/* Визуальный якорь - галерея изображений */}

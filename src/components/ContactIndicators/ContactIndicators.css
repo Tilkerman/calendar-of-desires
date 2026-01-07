@@ -41,29 +41,29 @@
 /* Mobile: prevent dots from overflowing outside cards on narrow screens */
 @media (max-width: 420px) {
   .week-dots-small.week-dots-bytype {
-    /* Slightly narrower labels on mobile to free up space for dots */
-    --week-label-width: 8ch;
+    /* Уменьшаем ширину подписей чтобы освободить место для точек */
+    --week-label-width: 6.5ch;
   }
 
   .week-dots-row {
-    column-gap: 0.45rem;
+    column-gap: 0.35rem;
   }
 
   .week-dots-row-dots {
-    gap: 0.25rem;
-    flex-wrap: wrap;
+    gap: 0.15rem;
+    flex-wrap: nowrap;
   }
 
   .week-dots-small .week-dot {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
 }
 
 /* Подстраиваем ширину колонки подписей под размеры */
 .week-dots-small.week-dots-bytype {
   /* Полные подписи (Notes/Thoughts/Steps; Записи/Мысли/Шаги) */
-  --week-label-width: 10ch;
+  --week-label-width: 8ch;
 }
 
 .week-dots-medium.week-dots-bytype,

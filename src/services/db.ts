@@ -1,11 +1,12 @@
 import Dexie, { type Table } from 'dexie';
-import type { Desire, Contact, ContactType, LifeArea, LifeAreaRating } from '../types';
+import type { Desire, Contact, ContactType, LifeArea, LifeAreaRating, Feedback } from '../types';
 import { getTodayDateString, toLocalDateString } from '../utils/date';
 
 class CalendarOfDesiresDB extends Dexie {
   desires!: Table<Desire>;
   contacts!: Table<Contact>;
   lifeAreas!: Table<LifeAreaRating>;
+  feedbacks!: Table<Feedback>;
 
   constructor() {
     super('CalendarOfDesiresDB');
@@ -42,6 +43,15 @@ class CalendarOfDesiresDB extends Dexie {
         await tx.table('lifeAreas').bulkPut(
           areas.map((id) => ({ id, score: 0, updatedAt: now }))
         );
+      });
+
+    // Версия 5: добавляем таблицу для обратной связи
+    this.version(5)
+      .stores({
+        desires: 'id, isActive, createdAt, area',
+        contacts: 'id, desireId, date, type, [desireId+date], [desireId+date+type], createdAt',
+        lifeAreas: 'id',
+        feedbacks: 'id, createdAt',
       });
   }
 }
@@ -407,6 +417,33 @@ export const contactService = {
   // Удалить контакт
   async deleteContact(id: string): Promise<void> {
     await db.contacts.delete(id);
+  },
+};
+
+// Сервис для работы с обратной связью
+export const feedbackService = {
+  // Сохранить обратную связь
+  async saveFeedback(text: string, rating: number | null): Promise<string> {
+    const id = `feedback-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const feedback: Feedback = {
+      id,
+      text,
+      rating,
+      createdAt: new Date().toISOString(),
+    };
+    await db.feedbacks.add(feedback);
+    return id;
+  },
+
+  // Получить все обратные связи (от новых к старым)
+  async getAllFeedbacks(): Promise<Feedback[]> {
+    const feedbacks = await db.feedbacks.orderBy('createdAt').reverse().toArray();
+    return feedbacks;
+  },
+
+  // Удалить обратную связь
+  async deleteFeedback(id: string): Promise<void> {
+    await db.feedbacks.delete(id);
   },
 };
 

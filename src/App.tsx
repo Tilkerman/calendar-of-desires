@@ -7,12 +7,20 @@ import { useI18n } from './i18n';
 import LifeWheel from './components/LifeWheel/LifeWheel';
 import AreaPickerModal from './components/LifeWheel/AreaPickerModal';
 import DesiresList from './components/DesiresList/DesiresList';
+import SettingsModal from './components/Settings/SettingsModal';
+import AboutPage from './components/Settings/AboutPage';
+import TutorialPage from './components/Settings/TutorialPage';
+import InstallPage from './components/Settings/InstallPage';
+import SettingsPage from './components/Settings/SettingsPage';
+import FeedbackPage from './components/Settings/FeedbackPage';
+import BackupPage from './components/Settings/BackupPage';
+import ClearDataPage from './components/Settings/ClearDataPage';
 
-type View = 'wheel' | 'list' | 'form' | 'detail';
+type View = 'wheel' | 'list' | 'form' | 'detail' | 'about' | 'tutorial' | 'install' | 'settings' | 'feedback' | 'backup' | 'clear';
 
 function App() {
   const { t } = useI18n();
-  const [currentView, setCurrentView] = useState<View>('wheel');
+  const [currentView, setCurrentView] = useState<View>('list');
   const [selectedDesireId, setSelectedDesireId] = useState<string | null>(null);
   const [editingDesire, setEditingDesire] = useState<Desire | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
@@ -20,16 +28,17 @@ function App() {
   const [listAreaFilter, setListAreaFilter] = useState<LifeArea | null>(null);
   const [askAreaAfterSave, setAskAreaAfterSave] = useState(false);
   const [pendingAreaForDesireId, setPendingAreaForDesireId] = useState<string | null>(null);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
   // Проверяем наличие желаний при загрузке
   useEffect(() => {
     const checkDesires = async () => {
       try {
         await desireService.getAllDesires();
-        setCurrentView('wheel');
+        setCurrentView('list');
       } catch (error) {
         console.error('Ошибка при проверке желаний:', error);
-        setCurrentView('wheel');
+        setCurrentView('list');
       } finally {
         setIsLoading(false);
       }
@@ -66,6 +75,46 @@ function App() {
     setCurrentView('wheel');
   };
 
+  const handleSettingsClick = () => {
+    setIsSettingsModalOpen(true);
+  };
+
+  const handleSettingsMenuItemClick = (menuItem: string) => {
+    switch (menuItem) {
+      case 'about':
+        setCurrentView('about');
+        break;
+      case 'tutorial':
+        setCurrentView('tutorial');
+        break;
+      case 'install':
+        setCurrentView('install');
+        break;
+      case 'settings':
+        setCurrentView('settings');
+        break;
+      case 'feedback':
+        setCurrentView('feedback');
+        break;
+      case 'backup':
+        setCurrentView('backup');
+        break;
+      case 'clear':
+        setCurrentView('clear');
+        break;
+    }
+  };
+
+  const handleBackFromSettings = () => {
+    setCurrentView('wheel');
+  };
+
+  const handleDataCleared = () => {
+    // После очистки данных возвращаемся на главный экран
+    setCurrentView('wheel');
+    window.location.reload();
+  };
+
   if (isLoading) {
     return (
       <div style={{ 
@@ -100,6 +149,7 @@ function App() {
             setListAreaFilter(area ?? null);
             setCurrentView('list');
           }}
+          onSettingsClick={handleSettingsClick}
         />
         <AreaPickerModal
           open={!!pendingAreaForDesireId}
@@ -113,29 +163,42 @@ function App() {
             setCurrentView('detail');
           }}
         />
+        <SettingsModal
+          isOpen={isSettingsModalOpen}
+          onClose={() => setIsSettingsModalOpen(false)}
+          onMenuItemClick={handleSettingsMenuItemClick}
+        />
       </>
     );
   }
 
   if (currentView === 'list') {
     return (
-      <DesiresList
-        filterArea={listAreaFilter}
-        onBack={() => {
-          setListAreaFilter(null);
-          setCurrentView('wheel');
-        }}
-        useAreaBorderColors
-        onDesireClick={(desire) => {
-          setSelectedDesireId(desire.id);
-          setCurrentView('detail');
-        }}
-        onAddDesire={() => {
-          setPresetArea(null);
-          setAskAreaAfterSave(true);
-          handleCreateDesire();
-        }}
-      />
+      <>
+        <DesiresList
+          filterArea={listAreaFilter}
+          onBack={() => {
+            setListAreaFilter(null);
+            setCurrentView('wheel');
+          }}
+          useAreaBorderColors
+          onDesireClick={(desire) => {
+            setSelectedDesireId(desire.id);
+            setCurrentView('detail');
+          }}
+          onAddDesire={() => {
+            setPresetArea(null);
+            setAskAreaAfterSave(true);
+            handleCreateDesire();
+          }}
+          onSettingsClick={handleSettingsClick}
+        />
+        <SettingsModal
+          isOpen={isSettingsModalOpen}
+          onClose={() => setIsSettingsModalOpen(false)}
+          onMenuItemClick={handleSettingsMenuItemClick}
+        />
+      </>
     );
   }
 
@@ -152,10 +215,117 @@ function App() {
 
   if (currentView === 'detail' && selectedDesireId) {
     return (
-      <DesireDetail
-        desireId={selectedDesireId}
-        onBack={handleBackToWheel}
-      />
+      <>
+        <DesireDetail
+          desireId={selectedDesireId}
+          onBack={handleBackToWheel}
+          onSettingsClick={handleSettingsClick}
+        />
+        <SettingsModal
+          isOpen={isSettingsModalOpen}
+          onClose={() => setIsSettingsModalOpen(false)}
+          onMenuItemClick={handleSettingsMenuItemClick}
+        />
+      </>
+    );
+  }
+
+  if (currentView === 'about') {
+    return (
+      <>
+        <AboutPage onBack={handleBackFromSettings} onSettingsClick={handleSettingsClick} />
+        <SettingsModal
+          isOpen={isSettingsModalOpen}
+          onClose={() => setIsSettingsModalOpen(false)}
+          onMenuItemClick={handleSettingsMenuItemClick}
+        />
+      </>
+    );
+  }
+
+  if (currentView === 'tutorial') {
+    return (
+      <>
+        <TutorialPage
+          onBack={handleBackFromSettings}
+          onCreateDesire={() => {
+            setPresetArea(null);
+            setAskAreaAfterSave(true);
+            handleCreateDesire();
+          }}
+          onSettingsClick={handleSettingsClick}
+        />
+        <SettingsModal
+          isOpen={isSettingsModalOpen}
+          onClose={() => setIsSettingsModalOpen(false)}
+          onMenuItemClick={handleSettingsMenuItemClick}
+        />
+      </>
+    );
+  }
+
+  if (currentView === 'install') {
+    return (
+      <>
+        <InstallPage onBack={handleBackFromSettings} onSettingsClick={handleSettingsClick} />
+        <SettingsModal
+          isOpen={isSettingsModalOpen}
+          onClose={() => setIsSettingsModalOpen(false)}
+          onMenuItemClick={handleSettingsMenuItemClick}
+        />
+      </>
+    );
+  }
+
+  if (currentView === 'settings') {
+    return (
+      <>
+        <SettingsPage onBack={handleBackFromSettings} onSettingsClick={handleSettingsClick} />
+        <SettingsModal
+          isOpen={isSettingsModalOpen}
+          onClose={() => setIsSettingsModalOpen(false)}
+          onMenuItemClick={handleSettingsMenuItemClick}
+        />
+      </>
+    );
+  }
+
+  if (currentView === 'feedback') {
+    return (
+      <>
+        <FeedbackPage onBack={handleBackFromSettings} onSettingsClick={handleSettingsClick} />
+        <SettingsModal
+          isOpen={isSettingsModalOpen}
+          onClose={() => setIsSettingsModalOpen(false)}
+          onMenuItemClick={handleSettingsMenuItemClick}
+        />
+      </>
+    );
+  }
+
+  if (currentView === 'backup') {
+    return (
+      <>
+        <BackupPage onBack={handleBackFromSettings} onSettingsClick={handleSettingsClick} />
+        <SettingsModal
+          isOpen={isSettingsModalOpen}
+          onClose={() => setIsSettingsModalOpen(false)}
+          onMenuItemClick={handleSettingsMenuItemClick}
+        />
+      </>
+    );
+  }
+
+  if (currentView === 'clear') {
+    return (
+      <>
+        <ClearDataPage onBack={handleBackFromSettings} onDataCleared={handleDataCleared} onSettingsClick={handleSettingsClick} />
+        <SettingsModal
+          isOpen={isSettingsModalOpen}
+          onClose={() => setIsSettingsModalOpen(false)}
+          onMenuItemClick={handleSettingsMenuItemClick}
+        />
+      </>
     );
   }
 

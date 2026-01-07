@@ -37,10 +37,12 @@ export default function LifeWheel({
   onCreateWish,
   onCreateWishInArea,
   onShowAllDesires,
+  onSettingsClick,
 }: {
   onCreateWish: () => void;
   onCreateWishInArea: (area: LifeArea) => void;
   onShowAllDesires: (area?: LifeArea) => void;
+  onSettingsClick?: () => void;
 }) {
   const { t } = useI18n();
   const [scores, setScores] = useState<Record<LifeArea, number>>(() => {
@@ -113,7 +115,10 @@ export default function LifeWheel({
 
   return (
     <div className="life-wheel-screen">
-      <Header onLogoClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} />
+      <Header 
+        onLogoClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
+        onSettingsClick={onSettingsClick}
+      />
 
       <div className="life-wheel-content">
         <div className="life-wheel-title">
