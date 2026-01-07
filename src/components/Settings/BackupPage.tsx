@@ -3,7 +3,7 @@ import Header from '../Header/Header';
 import './SettingsPages.css';
 import { useI18n } from '../../i18n';
 import { db, desireService, contactService, lifeAreaService, feedbackService } from '../../services/db';
-import type { Desire, Contact, LifeAreaRating, Feedback } from '../../types';
+import type { Contact, LifeAreaRating, Feedback } from '../../types';
 
 interface BackupPageProps {
   onBack: () => void;
