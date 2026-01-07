@@ -22,7 +22,10 @@ export default function SettingsModal({ isOpen, onClose, onMenuItemClick }: Sett
     };
   }, [isOpen]);
 
-  if (!isOpen) return null;
+  // Не возвращаем null, чтобы компонент всегда был в DOM (для отладки)
+  if (!isOpen) {
+    return null;
+  }
 
   const menuItems = [
     { id: 'about', icon: 'ℹ️', label: t('settings.menu.about') },

@@ -24,7 +24,12 @@ export default function HeaderActions({ onSettingsClick }: HeaderActionsProps) {
   };
 
   const handleSettingsClick = () => {
-    if (onSettingsClick) return onSettingsClick();
+    console.log('[HeaderActions] Settings button clicked, onSettingsClick:', !!onSettingsClick);
+    if (onSettingsClick) {
+      console.log('[HeaderActions] Calling onSettingsClick');
+      return onSettingsClick();
+    }
+    console.log('[HeaderActions] No onSettingsClick handler, showing alert');
     alert(t('settings.comingSoon'));
   };
 

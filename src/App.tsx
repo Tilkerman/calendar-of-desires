@@ -76,6 +76,7 @@ function App() {
   };
 
   const handleSettingsClick = () => {
+    console.log('[App] Settings clicked, opening modal');
     setIsSettingsModalOpen(true);
   };
 
@@ -204,12 +205,19 @@ function App() {
 
   if (currentView === 'form') {
     return (
-      <DesireForm 
-        onSave={handleDesireSaved} 
-        initialDesire={editingDesire}
-        presetArea={presetArea}
-        onBack={() => setCurrentView('wheel')}
-      />
+      <>
+        <DesireForm 
+          onSave={handleDesireSaved} 
+          initialDesire={editingDesire}
+          presetArea={presetArea}
+          onBack={() => setCurrentView('wheel')}
+        />
+        <SettingsModal
+          isOpen={isSettingsModalOpen}
+          onClose={() => setIsSettingsModalOpen(false)}
+          onMenuItemClick={handleSettingsMenuItemClick}
+        />
+      </>
     );
   }
 
@@ -331,19 +339,26 @@ function App() {
 
   // Fallback - если что-то пошло не так
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      display: 'flex', 
-      alignItems: 'center', 
-      justifyContent: 'center',
-      background: 'var(--bg-primary)',
-      color: 'var(--text-primary)',
-      padding: '2rem'
-    }}>
-      <div style={{ fontSize: '1rem', textAlign: 'center' }}>
-        {t('app.unknownState')}
+    <>
+      <div style={{ 
+        minHeight: '100vh', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        background: 'var(--bg-primary)',
+        color: 'var(--text-primary)',
+        padding: '2rem'
+      }}>
+        <div style={{ fontSize: '1rem', textAlign: 'center' }}>
+          {t('app.unknownState')}
+        </div>
       </div>
-    </div>
+      <SettingsModal
+        isOpen={isSettingsModalOpen}
+        onClose={() => setIsSettingsModalOpen(false)}
+        onMenuItemClick={handleSettingsMenuItemClick}
+      />
+    </>
   );
 }
 
