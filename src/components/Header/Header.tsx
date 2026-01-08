@@ -1,6 +1,7 @@
 import './Header.css';
 import { useI18n } from '../../i18n';
 import HeaderActions from './HeaderActions';
+import LogoIcon from './LogoIcon';
 import type { ReactNode } from 'react';
 
 interface HeaderProps {
@@ -24,7 +25,7 @@ export default function Header({ onSettingsClick, onLogoClick, leftSlot }: Heade
             aria-label={t('header.home')}
             type="button"
           >
-            <span className="logo-icon">📅</span>
+            <LogoIcon />
             <span className="logo-text">{t('header.appName')}</span>
           </button>
         </div>

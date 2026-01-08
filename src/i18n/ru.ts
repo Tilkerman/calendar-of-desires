@@ -103,6 +103,7 @@ export const ru: Record<TranslationKey, string> = {
   'desires.focusBadge': 'В фокусе',
   'desires.empty.title': 'У тебя пока нет желаний',
   'desires.empty.hint': 'Создай первое желание, чтобы начать',
+  'desires.completed.count': 'Выполнено {count} {noun}',
   'desires.add': 'Добавить желание',
   'desires.contact7days': 'Контакт за 7 дней:',
 
@@ -112,6 +113,7 @@ export const ru: Record<TranslationKey, string> = {
   'wheel.create': 'Создать желание',
   'wheel.allDesires': 'Все желания',
   'wheel.pickArea.title': 'К какой сфере отнести это желание?',
+  'wheel.completed.title': 'Готово',
 
   // Areas
   'areas.health': 'Здоровье',
@@ -152,6 +154,8 @@ export const ru: Record<TranslationKey, string> = {
   'detail.editTitle': 'Изменить название',
   'detail.editImages': 'Изменить изображения',
   'detail.editDetails': 'Изменить описание',
+  'detail.completeWish': 'Осуществить желание',
+  'detail.completeConfirm': 'Отметить желание «{title}» как выполненное?',
   'detail.deleteWish': 'Удалить желание',
   'detail.deleteConfirm': 'Удалить желание «{title}»? Это действие нельзя отменить.',
   'detail.focusToday': 'Сегодня в фокусе',
@@ -167,6 +171,7 @@ export const ru: Record<TranslationKey, string> = {
   'detail.error.saveDescription': 'Не удалось сохранить текст',
   'detail.error.saveTitle': 'Не удалось сохранить название',
   'detail.error.saveImages': 'Не удалось сохранить изображения',
+  'detail.error.completeWish': 'Не удалось отметить желание как выполненное',
   'detail.error.deleteWish': 'Не удалось удалить желание',
 
   // Desire form

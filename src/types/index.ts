@@ -33,6 +33,8 @@ export interface Desire {
   area?: LifeArea | null; // к какой сфере относится желание
   createdAt: string; // ISO date
   isActive: boolean; // желание в фокусе сегодня
+  isCompleted?: boolean; // желание осуществлено/выполнено
+  completedAt?: string | null; // ISO date - когда было отмечено как выполненное
 }
 
 // Контакт с желанием за день

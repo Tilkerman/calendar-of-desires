@@ -281,6 +281,24 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick }: Desi
     }
   };
 
+  const handleMarkAsCompleted = async () => {
+    if (!desire) return;
+    
+    const confirmed = window.confirm(t('detail.completeConfirm', { title: desire.title }));
+    if (!confirmed) return;
+
+    setIsSaving(true);
+    try {
+      await desireService.markAsCompleted(desire.id);
+      onBack(); // Возвращаемся на главную страницу
+    } catch (error) {
+      console.error('Ошибка при пометке желания как выполненного:', error);
+      alert(t('detail.error.completeWish'));
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="desire-detail-loading">
@@ -557,6 +575,15 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick }: Desi
             >
               {t('detail.editDetails')}
             </button>
+            {!desire.isCompleted && (
+              <button
+                className="desire-detail-complete-button"
+                onClick={handleMarkAsCompleted}
+                disabled={isSaving}
+              >
+                {isSaving ? t('common.saving') : t('detail.completeWish')}
+              </button>
+            )}
             <button
               className="desire-detail-delete-button"
               onClick={handleDeleteDesire}

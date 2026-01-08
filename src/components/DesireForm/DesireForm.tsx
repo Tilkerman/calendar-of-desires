@@ -10,9 +10,10 @@ interface DesireFormProps {
   initialDesire?: Desire;
   onBack?: () => void;
   presetArea?: LifeArea | null;
+  onSettingsClick?: () => void;
 }
 
-export default function DesireForm({ onSave, initialDesire, onBack, presetArea }: DesireFormProps) {
+export default function DesireForm({ onSave, initialDesire, onBack, presetArea, onSettingsClick }: DesireFormProps) {
   const { t } = useI18n();
   const [title, setTitle] = useState(initialDesire?.title || '');
   const [details, setDetails] = useState(initialDesire?.details || '');
@@ -121,7 +122,7 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea }
         {initialDesire && (
           <h1 className="desire-form-header-title">{t('form.editTitle')}</h1>
         )}
-        <HeaderActions />
+        <HeaderActions onSettingsClick={onSettingsClick} />
       </header>
       
       <form className="desire-form" onSubmit={handleSubmit}>

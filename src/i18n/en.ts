@@ -101,6 +101,7 @@ export const en = {
   'desires.focusBadge': 'In focus',
   'desires.empty.title': "You don't have any wishes yet",
   'desires.empty.hint': 'Create your first wish to begin',
+  'desires.completed.count': 'Completed {count} {noun}',
   'desires.add': 'Add a wish',
   'desires.contact7days': 'Contact in 7 days:',
 
@@ -110,6 +111,7 @@ export const en = {
   'wheel.create': 'Create wish',
   'wheel.allDesires': 'All wishes',
   'wheel.pickArea.title': 'Choose an area for this wish',
+  'wheel.completed.title': 'Completed',
 
   // Areas
   'areas.health': 'Health',
@@ -150,6 +152,8 @@ export const en = {
   'detail.editTitle': 'Edit title',
   'detail.editImages': 'Edit images',
   'detail.editDetails': 'Edit description',
+  'detail.completeWish': 'Mark as completed',
+  'detail.completeConfirm': 'Mark wish “{title}” as completed?',
   'detail.deleteWish': 'Delete wish',
   'detail.deleteConfirm': 'Delete wish “{title}”? This action cannot be undone.',
   'detail.focusToday': 'In focus today',
@@ -165,6 +169,7 @@ export const en = {
   'detail.error.saveDescription': 'Could not save the text',
   'detail.error.saveTitle': 'Could not save the title',
   'detail.error.saveImages': 'Could not save the images',
+  'detail.error.completeWish': 'Could not mark wish as completed',
   'detail.error.deleteWish': 'Could not delete the wish',
 
   // Desire form

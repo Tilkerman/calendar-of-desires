@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import type { LifeArea } from '../../types';
+import type { LifeArea, Desire } from '../../types';
 import { desireService, lifeAreaService } from '../../services/db';
 import Header from '../Header/Header';
 import './LifeWheel.css';
@@ -38,11 +38,13 @@ export default function LifeWheel({
   onCreateWishInArea,
   onShowAllDesires,
   onSettingsClick,
+  onShowCompleted,
 }: {
   onCreateWish: () => void;
   onCreateWishInArea: (area: LifeArea) => void;
   onShowAllDesires: (area?: LifeArea) => void;
   onSettingsClick?: () => void;
+  onShowCompleted?: () => void;
 }) {
   const { t } = useI18n();
   const [scores, setScores] = useState<Record<LifeArea, number>>(() => {
@@ -55,11 +57,17 @@ export default function LifeWheel({
     for (const a of AREAS) init[a] = 0;
     return init;
   });
+  const [completedDesires, setCompletedDesires] = useState<Desire[]>([]);
 
   const load = async () => {
-    const [s, c] = await Promise.all([lifeAreaService.getAll(), desireService.getCountsByArea(AREAS)]);
+    const [s, c, completed] = await Promise.all([
+      lifeAreaService.getAll(),
+      desireService.getCountsByArea(AREAS),
+      desireService.getCompletedDesires(),
+    ]);
     setScores((prev) => ({ ...prev, ...s }));
     setCounts(c);
+    setCompletedDesires(completed);
   };
 
   useEffect(() => {
@@ -121,9 +129,20 @@ export default function LifeWheel({
       />
 
       <div className="life-wheel-content">
-        <div className="life-wheel-title">
-          <div className="life-wheel-title-main">{t('wheel.title')}</div>
-          <div className="life-wheel-title-sub">{t('wheel.subtitle')}</div>
+        <div className="life-wheel-title-row">
+          <div className="life-wheel-title">
+            <div className="life-wheel-title-main">{t('wheel.title')}</div>
+            <div className="life-wheel-title-sub">{t('wheel.subtitle')}</div>
+          </div>
+          {completedDesires.length > 0 && onShowCompleted && (
+            <button
+              type="button"
+              className="life-wheel-completed-button"
+              onClick={onShowCompleted}
+            >
+              {t('wheel.completed.title')} ({completedDesires.length})
+            </button>
+          )}
         </div>
 
         <div className="life-wheel-wrapper">

@@ -53,6 +53,15 @@ class CalendarOfDesiresDB extends Dexie {
         lifeAreas: 'id',
         feedbacks: 'id, createdAt',
       });
+
+    // Версия 6: добавляем поля isCompleted и completedAt для желаний
+    this.version(6)
+      .stores({
+        desires: 'id, isActive, isCompleted, createdAt, area',
+        contacts: 'id, desireId, date, type, [desireId+date], [desireId+date+type], createdAt',
+        lifeAreas: 'id',
+        feedbacks: 'id, createdAt',
+      });
   }
 }
 
@@ -96,6 +105,8 @@ export const desireService = {
         ...desire,
         details: desire.details || null, // Поддержка нового поля
         area: desire.area ?? null,
+        isCompleted: desire.isCompleted ?? false,
+        completedAt: desire.completedAt ?? null,
         id: crypto.randomUUID(),
         createdAt: new Date().toISOString(),
       };
@@ -125,13 +136,49 @@ export const desireService = {
     await db.contacts.where('desireId').equals(id).delete();
   },
 
-  async getAllDesires(): Promise<Desire[]> {
+  async getAllDesires(includeCompleted: boolean = false): Promise<Desire[]> {
     try {
       await db.open();
-      return await db.desires.orderBy('createdAt').reverse().toArray();
+      const all = await db.desires.orderBy('createdAt').reverse().toArray();
+      if (includeCompleted) {
+        return all;
+      }
+      return all.filter((d) => !d.isCompleted);
     } catch (error) {
       console.error('Ошибка при получении всех желаний:', error);
       return [];
+    }
+  },
+
+  async getCompletedDesires(): Promise<Desire[]> {
+    try {
+      await db.open();
+      const completed = await db.desires
+        .filter((d) => d.isCompleted === true)
+        .toArray();
+      // Сортируем по completedAt (если есть) или createdAt
+      return completed.sort((a, b) => {
+        const aDate = a.completedAt || a.createdAt;
+        const bDate = b.completedAt || b.createdAt;
+        return new Date(bDate).getTime() - new Date(aDate).getTime();
+      });
+    } catch (error) {
+      console.error('Ошибка при получении выполненных желаний:', error);
+      return [];
+    }
+  },
+
+  async markAsCompleted(id: string): Promise<void> {
+    try {
+      await db.open();
+      await db.desires.where('id').equals(id).modify({
+        isCompleted: true,
+        completedAt: new Date().toISOString(),
+        isActive: false, // Снимаем фокус с выполненного желания
+      });
+    } catch (error) {
+      console.error('Ошибка при пометке желания как выполненного:', error);
+      throw error;
     }
   },
 
@@ -153,7 +200,11 @@ export const desireService = {
     const result = {} as Record<LifeArea, number>;
     await Promise.all(
       areas.map(async (a) => {
-        const count = await db.desires.where('area').equals(a as any).count();
+        const count = await db.desires
+          .where('area')
+          .equals(a as any)
+          .filter((d) => !d.isCompleted)
+          .count();
         result[a] = count;
       })
     );

@@ -14,9 +14,8 @@ import InstallPage from './components/Settings/InstallPage';
 import SettingsPage from './components/Settings/SettingsPage';
 import FeedbackPage from './components/Settings/FeedbackPage';
 import BackupPage from './components/Settings/BackupPage';
-import ClearDataPage from './components/Settings/ClearDataPage';
 
-type View = 'wheel' | 'list' | 'form' | 'detail' | 'about' | 'tutorial' | 'install' | 'settings' | 'feedback' | 'backup' | 'clear';
+type View = 'wheel' | 'list' | 'form' | 'detail' | 'about' | 'tutorial' | 'install' | 'settings' | 'feedback' | 'backup' | 'completed';
 
 function App() {
   const { t } = useI18n();
@@ -100,9 +99,6 @@ function App() {
       case 'backup':
         setCurrentView('backup');
         break;
-      case 'clear':
-        setCurrentView('clear');
-        break;
     }
   };
 
@@ -149,6 +145,9 @@ function App() {
           onShowAllDesires={(area) => {
             setListAreaFilter(area ?? null);
             setCurrentView('list');
+          }}
+          onShowCompleted={() => {
+            setCurrentView('completed');
           }}
           onSettingsClick={handleSettingsClick}
         />
@@ -211,6 +210,7 @@ function App() {
           initialDesire={editingDesire}
           presetArea={presetArea}
           onBack={() => setCurrentView('wheel')}
+          onSettingsClick={handleSettingsClick}
         />
         <SettingsModal
           isOpen={isSettingsModalOpen}
@@ -275,7 +275,11 @@ function App() {
   if (currentView === 'install') {
     return (
       <>
-        <InstallPage onBack={handleBackFromSettings} onSettingsClick={handleSettingsClick} />
+        <InstallPage 
+          onBack={handleBackFromSettings} 
+          onSettingsClick={handleSettingsClick}
+          onDataCleared={handleDataCleared}
+        />
         <SettingsModal
           isOpen={isSettingsModalOpen}
           onClose={() => setIsSettingsModalOpen(false)}
@@ -324,10 +328,24 @@ function App() {
     );
   }
 
-  if (currentView === 'clear') {
+  if (currentView === 'completed') {
     return (
       <>
-        <ClearDataPage onBack={handleBackFromSettings} onDataCleared={handleDataCleared} onSettingsClick={handleSettingsClick} />
+        <DesiresList
+          showCompleted={true}
+          onBack={() => setCurrentView('wheel')}
+          useAreaBorderColors
+          onDesireClick={(desire) => {
+            setSelectedDesireId(desire.id);
+            setCurrentView('detail');
+          }}
+          onAddDesire={() => {
+            setPresetArea(null);
+            setAskAreaAfterSave(true);
+            handleCreateDesire();
+          }}
+          onSettingsClick={handleSettingsClick}
+        />
         <SettingsModal
           isOpen={isSettingsModalOpen}
           onClose={() => setIsSettingsModalOpen(false)}
@@ -336,6 +354,7 @@ function App() {
       </>
     );
   }
+
 
   // Fallback - если что-то пошло не так
   return (

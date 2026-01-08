@@ -10,9 +10,18 @@
   padding: 1.5rem 1rem 6rem;
 }
 
+.life-wheel-title-row {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  margin: 1rem 0 1.5rem;
+  flex-wrap: wrap;
+}
+
 .life-wheel-title {
   text-align: center;
-  margin: 1rem 0 1.5rem;
+  flex: 1;
+  min-width: 200px;
 }
 
 .life-wheel-title-main {
@@ -27,6 +36,39 @@
   font-size: 0.85rem;
   font-weight: 400;
   color: var(--text-tertiary);
+}
+
+.life-wheel-completed-button {
+  appearance: none;
+  border: 1px solid #d4af37;
+  background: var(--bg-card);
+  color: #d4af37;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.35rem 0.55rem;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+
+.life-wheel-completed-button:hover {
+  background: rgba(212, 175, 55, 0.1);
+}
+
+@media (max-width: 768px) {
+  .life-wheel-title-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .life-wheel-completed-button {
+    align-self: center;
+  }
 }
 
 .life-wheel-wrapper {

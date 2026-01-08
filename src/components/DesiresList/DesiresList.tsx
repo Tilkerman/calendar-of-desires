@@ -13,6 +13,7 @@ interface DesiresListProps {
   useAreaBorderColors?: boolean;
   filterArea?: LifeArea | null;
   onSettingsClick?: () => void;
+  showCompleted?: boolean; // Показывать только выполненные желания
 }
 
 interface DesireWithContacts extends Desire {
@@ -38,6 +39,7 @@ export default function DesiresList({
   useAreaBorderColors,
   filterArea,
   onSettingsClick,
+  showCompleted = false,
 }: DesiresListProps) {
   const { t, locale } = useI18n();
   const [desires, setDesires] = useState<DesireWithContacts[]>([]);
@@ -46,27 +48,37 @@ export default function DesiresList({
   const loadDesires = async () => {
     setIsLoading(true);
     try {
-      let allDesires = await desireService.getAllDesires();
+      let allDesires = showCompleted 
+        ? await desireService.getCompletedDesires()
+        : await desireService.getAllDesires();
 
       if (filterArea) {
         allDesires = allDesires.filter((d) => d.area === filterArea);
       }
       
-      // Проверяем время - если после 23:00, сбрасываем все isActive
-      const now = new Date();
-      const currentHour = now.getHours();
-      if (currentHour >= 23) {
-        // После 23:00 сбрасываем все флаги isActive
-        await Promise.all(
-          allDesires
-            .filter((d) => d.isActive)
-            .map((d) => desireService.updateDesire(d.id, { isActive: false }))
-        );
-        // Перезагружаем желания после сброса
-        allDesires = await desireService.getAllDesires();
+      // Проверяем время - если после 23:00, сбрасываем все isActive (только для активных желаний)
+      if (!showCompleted) {
+        const now = new Date();
+        const currentHour = now.getHours();
+        if (currentHour >= 23) {
+          // После 23:00 сбрасываем все флаги isActive
+          await Promise.all(
+            allDesires
+              .filter((d) => d.isActive)
+              .map((d) => desireService.updateDesire(d.id, { isActive: false }))
+          );
+          // Перезагружаем желания после сброса
+          allDesires = await desireService.getAllDesires();
+          if (filterArea) {
+            allDesires = allDesires.filter((d) => d.area === filterArea);
+          }
+        }
       }
 
       // Загружаем контакты для каждого желания
+      const now = new Date();
+      const currentHour = now.getHours();
+      
       const desiresWithContacts = await Promise.all(
         allDesires.map(async (desire) => {
           // Сводка по последним 7 дням
@@ -108,34 +120,36 @@ export default function DesiresList({
 
   useEffect(() => {
     loadDesires();
-  }, [filterArea]);
+  }, [filterArea, showCompleted]); // loadDesires использует эти зависимости внутри
 
   const handleDesireClick = async (desire: Desire) => {
-    // При клике на желание устанавливаем его "в фокусе" (если время до 23:00)
+    // При клике на желание устанавливаем его "в фокусе" (если время до 23:00 и желание не выполнено)
     // НО НЕ создаём контакт автоматически! Контакт создаётся только при явном действии.
-    const now = new Date();
-    const currentHour = now.getHours();
-    
-    if (currentHour < 23) {
-      // Деактивируем все остальные желания
-      const allDesires = await desireService.getAllDesires();
-      await Promise.all(
-        allDesires
-          .filter((d) => d.id !== desire.id && d.isActive)
-          .map((d) => desireService.updateDesire(d.id, { isActive: false }))
-      );
+    if (!showCompleted && !desire.isCompleted) {
+      const now = new Date();
+      const currentHour = now.getHours();
       
-      // Активируем текущее желание
-      await desireService.updateDesire(desire.id, { isActive: true });
-      
-      // НЕ создаём контакт автоматически!
-      // Контакт создаётся ТОЛЬКО при явном действии пользователя:
-      // - нажатие кнопки "Мысли сегодня" на странице деталей
-      // - добавление/изменение Записи
-      // - добавление/изменение Шага
-      
-      // Перезагружаем список для обновления индикаторов
-      await loadDesires();
+      if (currentHour < 23) {
+        // Деактивируем все остальные желания
+        const allDesires = await desireService.getAllDesires();
+        await Promise.all(
+          allDesires
+            .filter((d) => d.id !== desire.id && d.isActive)
+            .map((d) => desireService.updateDesire(d.id, { isActive: false }))
+        );
+        
+        // Активируем текущее желание
+        await desireService.updateDesire(desire.id, { isActive: true });
+        
+        // НЕ создаём контакт автоматически!
+        // Контакт создаётся ТОЛЬКО при явном действии пользователя:
+        // - нажатие кнопки "Мысли сегодня" на странице деталей
+        // - добавление/изменение Записи
+        // - добавление/изменение Шага
+        
+        // Перезагружаем список для обновления индикаторов
+        await loadDesires();
+      }
     }
     
     // Открываем детальный экран желания
@@ -195,16 +209,23 @@ export default function DesiresList({
         <div className="desires-info-block">
           {/* Количество желаний */}
           <p className="desires-count">
-            {t('desires.count', { count: desires.length, noun: getWishNoun(desires.length, locale) })}
+            {showCompleted 
+              ? t('desires.completed.count', { count: desires.length, noun: getWishNoun(desires.length, locale) })
+              : t('desires.count', { count: desires.length, noun: getWishNoun(desires.length, locale) })
+            }
           </p>
 
-          {/* Пояснение фокуса */}
-          <p className="desires-focus-instruction">
-            {t('desires.chooseFocus')}
-          </p>
-          <p className="desires-focus-hint">
-            {t('desires.focusHint')}
-          </p>
+          {/* Пояснение фокуса - только для активных желаний */}
+          {!showCompleted && (
+            <>
+              <p className="desires-focus-instruction">
+                {t('desires.chooseFocus')}
+              </p>
+              <p className="desires-focus-hint">
+                {t('desires.focusHint')}
+              </p>
+            </>
+          )}
         </div>
 
         {/* Карточки желаний */}
@@ -242,21 +263,21 @@ export default function DesiresList({
 
                 <div className="desire-card-content">
                   {/* Превью-изображение - слева */}
-            <div className="desire-card-image">
-              {(() => {
-                // Получаем первое изображение из массива images или из imageUrl (legacy)
-                const firstImage = desire.images && desire.images.length > 0
-                  ? desire.images.sort((a, b) => a.order - b.order)[0]
-                  : null;
-                const imageUrl = firstImage?.url || desire.imageUrl;
-                
-                return imageUrl ? (
-                  <img src={imageUrl} alt={desire.title} />
-                ) : (
-                  <div className="desire-card-image-placeholder"></div>
-                );
-              })()}
-            </div>
+                  <div className="desire-card-image">
+                    {(() => {
+                      // Получаем первое изображение из массива images или из imageUrl (legacy)
+                      const firstImage = desire.images && desire.images.length > 0
+                        ? desire.images.sort((a, b) => a.order - b.order)[0]
+                        : null;
+                      const imageUrl = firstImage?.url || desire.imageUrl;
+                      
+                      return imageUrl ? (
+                        <img src={imageUrl} alt={desire.title} />
+                      ) : (
+                        <div className="desire-card-image-placeholder"></div>
+                      );
+                    })()}
+                  </div>
 
                   {/* Блок "Контакт за 7 дней" - справа */}
                   <div className="desire-card-contacts-block">

@@ -34,47 +34,11 @@ export default function SettingsModal({ isOpen, onClose, onMenuItemClick }: Sett
     { id: 'settings', icon: '⚙️', label: t('settings.menu.settings') },
     { id: 'feedback', icon: '✉️', label: t('settings.menu.feedback') },
     { id: 'backup', icon: '💾', label: t('settings.menu.backup') },
-    { id: 'clear', icon: '🗑️', label: t('settings.menu.clear') },
-    { id: 'share', icon: '↗️', label: t('settings.menu.share') },
   ];
 
   const handleMenuItemClick = (itemId: string) => {
-    if (itemId === 'share') {
-      handleShare();
-      return;
-    }
     onMenuItemClick(itemId);
     onClose();
-  };
-
-  const handleShare = async () => {
-    const url = window.location.origin + window.location.pathname;
-    const title = t('header.appName');
-    const text = t('settings.share.text');
-
-    if (navigator.share) {
-      try {
-        await navigator.share({ title, text, url });
-      } catch (err) {
-        // Пользователь отменил или ошибка
-        console.log('Share cancelled');
-      }
-    } else {
-      // Fallback: копируем в буфер
-      try {
-        await navigator.clipboard.writeText(url);
-        alert(t('settings.share.copied'));
-      } catch (err) {
-        // Старый браузер
-        const textArea = document.createElement('textarea');
-        textArea.value = url;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        alert(t('settings.share.copied'));
-      }
-    }
   };
 
   return (
