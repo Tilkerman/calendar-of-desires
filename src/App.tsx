@@ -14,8 +14,10 @@ import InstallPage from './components/Settings/InstallPage';
 import SettingsPage from './components/Settings/SettingsPage';
 import FeedbackPage from './components/Settings/FeedbackPage';
 import BackupPage from './components/Settings/BackupPage';
+import StatisticsPage from './components/Settings/StatisticsPage';
+import BackupReminder from './components/BackupReminder/BackupReminder';
 
-type View = 'wheel' | 'list' | 'form' | 'detail' | 'about' | 'tutorial' | 'install' | 'settings' | 'feedback' | 'backup' | 'completed';
+type View = 'wheel' | 'list' | 'form' | 'detail' | 'about' | 'tutorial' | 'install' | 'settings' | 'feedback' | 'backup' | 'statistics' | 'completed';
 
 function App() {
   const { t } = useI18n();
@@ -99,7 +101,15 @@ function App() {
       case 'backup':
         setCurrentView('backup');
         break;
+      case 'statistics':
+        setCurrentView('statistics');
+        break;
     }
+  };
+
+  const handleBackupReminderClick = () => {
+    setCurrentView('backup');
+    setIsSettingsModalOpen(false);
   };
 
   const handleBackFromSettings = () => {
@@ -168,6 +178,7 @@ function App() {
           onClose={() => setIsSettingsModalOpen(false)}
           onMenuItemClick={handleSettingsMenuItemClick}
         />
+        <BackupReminder onBackupClick={handleBackupReminderClick} />
       </>
     );
   }
@@ -198,6 +209,7 @@ function App() {
           onClose={() => setIsSettingsModalOpen(false)}
           onMenuItemClick={handleSettingsMenuItemClick}
         />
+        <BackupReminder onBackupClick={handleBackupReminderClick} />
       </>
     );
   }
@@ -217,6 +229,7 @@ function App() {
           onClose={() => setIsSettingsModalOpen(false)}
           onMenuItemClick={handleSettingsMenuItemClick}
         />
+        <BackupReminder onBackupClick={handleBackupReminderClick} />
       </>
     );
   }
@@ -324,6 +337,27 @@ function App() {
           onClose={() => setIsSettingsModalOpen(false)}
           onMenuItemClick={handleSettingsMenuItemClick}
         />
+        <BackupReminder onBackupClick={handleBackupReminderClick} />
+      </>
+    );
+  }
+
+  if (currentView === 'statistics') {
+    return (
+      <>
+        <StatisticsPage
+          onBack={handleBackFromSettings}
+          onSettingsClick={handleSettingsClick}
+          onDesireClick={(desireId) => {
+            setSelectedDesireId(desireId);
+            setCurrentView('detail');
+          }}
+        />
+        <SettingsModal
+          isOpen={isSettingsModalOpen}
+          onClose={() => setIsSettingsModalOpen(false)}
+          onMenuItemClick={handleSettingsMenuItemClick}
+        />
       </>
     );
   }
@@ -351,6 +385,7 @@ function App() {
           onClose={() => setIsSettingsModalOpen(false)}
           onMenuItemClick={handleSettingsMenuItemClick}
         />
+        <BackupReminder onBackupClick={handleBackupReminderClick} />
       </>
     );
   }

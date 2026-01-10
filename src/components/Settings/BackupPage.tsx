@@ -4,6 +4,7 @@ import './SettingsPages.css';
 import { useI18n } from '../../i18n';
 import { db, desireService, contactService, lifeAreaService, feedbackService } from '../../services/db';
 import type { Contact, LifeAreaRating, Feedback } from '../../types';
+import { saveLastBackupDate } from '../../utils/backupReminder';
 
 interface BackupPageProps {
   onBack: () => void;
@@ -60,6 +61,9 @@ export default function BackupPage({ onBack, onSettingsClick }: BackupPageProps)
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+
+      // Сохраняем дату последнего экспорта для напоминаний
+      saveLastBackupDate();
 
       alert(t('settings.backup.exportSuccess'));
     } catch (error) {

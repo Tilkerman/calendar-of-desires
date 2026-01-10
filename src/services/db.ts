@@ -469,6 +469,28 @@ export const contactService = {
   async deleteContact(id: string): Promise<void> {
     await db.contacts.delete(id);
   },
+
+  // Получить статистику контактов для желания
+  async getStatistics(desireId: string): Promise<{
+    entryCount: number; // количество записей
+    thoughtCount: number; // количество мыслей
+    stepCount: number; // количество шагов
+  }> {
+    const allContacts = await db.contacts
+      .where('desireId')
+      .equals(desireId)
+      .toArray();
+
+    const entryCount = allContacts.filter((c) => c.type === 'entry' || c.type === 'note').length;
+    const thoughtCount = allContacts.filter((c) => c.type === 'thought').length;
+    const stepCount = allContacts.filter((c) => c.type === 'step').length;
+
+    return {
+      entryCount,
+      thoughtCount,
+      stepCount,
+    };
+  },
 };
 
 // Сервис для работы с обратной связью

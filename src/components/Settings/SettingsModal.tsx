@@ -34,6 +34,7 @@ export default function SettingsModal({ isOpen, onClose, onMenuItemClick }: Sett
     { id: 'settings', icon: '⚙️', label: t('settings.menu.settings') },
     { id: 'feedback', icon: '✉️', label: t('settings.menu.feedback') },
     { id: 'backup', icon: '💾', label: t('settings.menu.backup') },
+    { id: 'statistics', icon: '📊', label: t('settings.menu.statistics') },
   ];
 
   const handleMenuItemClick = (itemId: string) => {

@@ -9,6 +9,10 @@ export default defineConfig(({ mode }) => {
   
   return {
     base,
+    server: {
+      host: 'localhost',
+      port: 5173
+    },
     plugins: [
       react(),
       VitePWA({
