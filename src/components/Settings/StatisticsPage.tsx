@@ -6,7 +6,7 @@ import { useI18n } from '../../i18n';
 import { desireService, contactService } from '../../services/db';
 import type { Desire } from '../../types';
 import { formatStatValue } from '../../utils/formatStats';
-import { getActivityIndicator, compareWithAverage, type ActivityIndicator } from '../../utils/activityIndicators';
+import { getActivityIndicator, compareWithAverage } from '../../utils/activityIndicators';
 
 interface StatisticsPageProps {
   onBack: () => void;
