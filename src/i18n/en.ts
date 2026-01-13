@@ -232,7 +232,7 @@ export const en = {
     'describe your wish in detail as if it has already come true, in the present tense.',
   'form.details.footerHint': 'You don’t have to write perfectly. This is just for you.',
   'form.feelings.label': 'How do you want to feel?',
-  'form.feelings.placeholder': 'Calm, free, confident…',
+  'form.feelings.placeholder': 'you are from the future. Your wish has come true, what do you feel? Joy, gratitude, calmness... tell in detail and in your own words',
   'form.visual.label': 'Visual image (optional)',
   'form.visual.max': 'Maximum 6 images',
   'form.visual.count': '{count} of 6 images',
