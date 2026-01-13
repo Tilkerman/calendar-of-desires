@@ -245,7 +245,6 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
         {/* 2. Описание желания (НОВОЕ ПОЛЕ) */}
         <div className="form-group">
           <label htmlFor="details">{t('form.details.label')}</label>
-          <p className="form-label-hint">{t('form.details.hint')}</p>
           <textarea
             id="details"
             value={details}
@@ -253,7 +252,6 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
             placeholder={t('form.details.placeholder')}
             rows={8}
           />
-          <p className="form-hint">{t('form.details.footerHint')}</p>
         </div>
 
         {/* 3. Эмоциональное состояние */}
