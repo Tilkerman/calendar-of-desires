@@ -225,11 +225,11 @@ export const en = {
   'form.newTitle': 'New wish',
   'form.editTitle': 'Edit wish',
   'form.title.label': 'Wish title',
-  'form.title.placeholder': 'Describe your wish…',
+  'form.title.placeholder': 'example: Car, lose 10 kg, etc.',
   'form.details.label': 'Describe your wish',
   'form.details.hint': 'The more detailed the image, the easier it is to return to it',
   'form.details.placeholder':
-    'What does it look like?\nWhere are you?\nWhat is around you?\nWho is near you?\nWhat are you doing?',
+    'describe your wish in detail as if it has already come true, in the present tense.',
   'form.details.footerHint': 'You don’t have to write perfectly. This is just for you.',
   'form.feelings.label': 'How do you want to feel?',
   'form.feelings.placeholder': 'Calm, free, confident…',

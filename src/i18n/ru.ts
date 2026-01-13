@@ -227,11 +227,11 @@ export const ru: Record<TranslationKey, string> = {
   'form.newTitle': 'Новое желание',
   'form.editTitle': 'Изменить желание',
   'form.title.label': 'Название желания',
-  'form.title.placeholder': 'Опишите своё желание...',
+  'form.title.placeholder': 'пример: Авто, скинуть 10 кг и т.д.',
   'form.details.label': 'Опиши своё желание',
   'form.details.hint': 'Чем подробнее образ, тем легче к нему возвращаться',
   'form.details.placeholder':
-    'Как это выглядит?\nГде ты?\nЧто вокруг тебя?\nКто рядом?\nЧто ты делаешь?',
+    'как можно подробнее описываем свое желание так, будто оно уже сбылось, в настоящем времени.',
   'form.details.footerHint': 'Можно писать не идеально. Это только для тебя.',
   'form.feelings.label': 'Как ты хочешь себя чувствовать?',
   'form.feelings.placeholder': 'Спокойно, свободно, уверенно...',
