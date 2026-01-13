@@ -6,6 +6,7 @@ interface ContactIndicatorsProps {
   days: Array<{ date: string; types: Array<'entry' | 'thought' | 'step'> }>; // 7 дней (из сервиса приходит oldest -> today)
   size?: 'small' | 'medium' | 'large';
   mode?: 'combined' | 'byType';
+  actionItemsProgress?: { completed: number; total: number }; // прогресс по action items (для замены индикатора шагов)
 }
 
 /**
@@ -15,6 +16,7 @@ export default function ContactIndicators({
   days,
   size = 'medium',
   mode = 'byType',
+  actionItemsProgress,
 }: ContactIndicatorsProps) {
   const { t, locale } = useI18n();
   // Требование: отметки "идут" слева направо, поэтому показываем today слева (newest -> oldest).
@@ -68,29 +70,48 @@ export default function ContactIndicators({
 
   return (
     <div className={`week-dots week-dots-${size} week-dots-bytype`}>
-      {rows.map((row) => (
-        <div key={row.type} className="week-dots-row">
-          <span className="week-dots-row-label" title={t(`contacts.${row.type}` as never)}>
-            {t(`contacts.${row.type}` as never)}
-          </span>
-          <div className="week-dots-row-dots">
-            {displayDays.map((d) => {
-              const hasType = d.types.includes(row.type);
-              const kind = hasType ? row.type : 'none';
-              const title = buildTitle(d);
+      {rows.map((row) => {
+        // Для шагов показываем прогресс action items, если передан
+        if (row.type === 'step' && actionItemsProgress) {
+          return (
+            <div key={row.type} className="week-dots-row">
+              <span className="week-dots-row-label" title={t(`contacts.${row.type}` as never)}>
+                {t(`contacts.${row.type}` as never)}
+              </span>
+              <div className="week-dots-row-progress">
+                <span className="action-items-progress-text">
+                  {actionItemsProgress.completed}/{actionItemsProgress.total}
+                </span>
+              </div>
+            </div>
+          );
+        }
+        
+        // Для записей и мыслей показываем индикатор за 7 дней как обычно
+        return (
+          <div key={row.type} className="week-dots-row">
+            <span className="week-dots-row-label" title={t(`contacts.${row.type}` as never)}>
+              {t(`contacts.${row.type}` as never)}
+            </span>
+            <div className="week-dots-row-dots">
+              {displayDays.map((d) => {
+                const hasType = d.types.includes(row.type);
+                const kind = hasType ? row.type : 'none';
+                const title = buildTitle(d);
 
-              return (
-                <span
-                  key={`${row.type}-${d.date}`}
-                  className={`week-dot week-dot-${kind}`}
-                  title={title}
-                  aria-label={title}
-                />
-              );
-            })}
+                return (
+                  <span
+                    key={`${row.type}-${d.date}`}
+                    className={`week-dot week-dot-${kind}`}
+                    title={title}
+                    aria-label={title}
+                  />
+                );
+              })}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

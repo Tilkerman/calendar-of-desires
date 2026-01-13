@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { Desire, LifeArea } from '../../types';
-import { desireService, contactService } from '../../services/db';
+import { desireService, contactService, actionItemService } from '../../services/db';
 import Header from '../Header/Header';
 import ContactIndicators from '../ContactIndicators/ContactIndicators';
 import './DesiresList.css';
@@ -19,6 +19,7 @@ interface DesiresListProps {
 interface DesireWithContacts extends Desire {
   last7Days: Array<{ date: string; types: Array<'entry' | 'thought' | 'step'> }>;
   hasTodayContact: boolean; // есть ли контакт за сегодня
+  actionItemsProgress?: { completed: number; total: number }; // прогресс по action items
 }
 
 const AREA_COLORS: Record<LifeArea, string> = {
@@ -102,10 +103,20 @@ export default function DesiresList({
           // НЕ создаём контакт автоматически при загрузке!
           // Контакт создаётся ТОЛЬКО при явном действии пользователя
           
+          // Загружаем action items для подсчета прогресса
+          const actionItems = await actionItemService.getActionItemsByDesire(desire.id);
+          const actionItemsProgress = actionItems.length > 0
+            ? {
+                completed: actionItems.filter(item => item.isCompleted).length,
+                total: actionItems.length
+              }
+            : undefined;
+          
           return { 
             ...desire, 
             last7Days,
             hasTodayContact,
+            actionItemsProgress,
           };
         })
       );
@@ -286,6 +297,7 @@ export default function DesiresList({
                       days={desire.last7Days}
                       mode="byType"
                       size="small"
+                      actionItemsProgress={desire.actionItemsProgress}
                     />
                   </div>
                 </div>

@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import type { Desire, Contact, DesireImage, ActionItem } from '../../types';
 import { desireService, contactService, actionItemService } from '../../services/db';
-import ContactIndicators from '../ContactIndicators/ContactIndicators';
 import ImageGallery from '../ImageGallery/ImageGallery';
 import { formatDate, getTodayDateString } from '../../utils/date';
 import './DesireDetail.css';
@@ -20,9 +19,6 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick, onEdit
   const [desire, setDesire] = useState<Desire | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [detailsExpanded, setDetailsExpanded] = useState(false);
-  
-  // Контакты за последние 7 дней (отдельно для каждого типа)
-  const [last7Days, setLast7Days] = useState<Array<{ date: string; types: Array<'entry' | 'thought' | 'step'> }>>([]);
   
   // Сегодняшние контакты
   const [todayEntry, setTodayEntry] = useState<Contact | null>(null);
@@ -82,10 +78,6 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick, onEdit
       // Загружаем шаги
       const items = await actionItemService.getActionItemsByDesire(desireId);
       setActionItems(items);
-
-      // Загружаем сводку по последним 7 дням
-      const summary = await contactService.getLast7DaysSummary(desireId);
-      setLast7Days(summary);
 
       // Загружаем сегодняшние контакты
       const todayEntryContact = await contactService.getTodayContact(desireId, 'entry');
@@ -289,18 +281,6 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick, onEdit
           )}
         </div>
 
-        {/* Блок "Состояние контакта" */}
-        <div className="desire-detail-section">
-          <h2 className="desire-detail-section-title">{t('detail.contact7days.title')}</h2>
-          <ContactIndicators
-            days={last7Days}
-            mode="byType"
-            size="large"
-          />
-          <p className="desire-detail-contact-hint">
-            {t('detail.contact7days.hint')}
-          </p>
-        </div>
 
         {/* Блок записей */}
         <div className="desire-detail-section">

@@ -38,6 +38,19 @@
   flex-wrap: nowrap;
 }
 
+.week-dots-row-progress {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.action-items-progress-text {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1;
+}
+
 /* Mobile: prevent dots from overflowing outside cards on narrow screens */
 @media (max-width: 420px) {
   .week-dots-small.week-dots-bytype {

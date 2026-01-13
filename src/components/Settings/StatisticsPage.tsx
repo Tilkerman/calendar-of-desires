@@ -3,7 +3,7 @@ import Header from '../Header/Header';
 import './SettingsPages.css';
 import './StatisticsPage.css';
 import { useI18n } from '../../i18n';
-import { desireService, contactService } from '../../services/db';
+import { desireService, contactService, actionItemService } from '../../services/db';
 import type { Desire } from '../../types';
 import { formatStatValue } from '../../utils/formatStats';
 import { getActivityIndicator, compareWithAverage } from '../../utils/activityIndicators';
@@ -18,8 +18,8 @@ interface DesireStatistics extends Desire {
   daysAlive: number; // сколько дней существует желание
   entryCount: number; // количество записей
   thoughtCount: number; // количество мыслей
-  stepCount: number; // количество шагов
-  totalContacts: number; // общее количество контактов
+  actionItemsProgress?: { completed: number; total: number }; // прогресс по action items
+  totalContacts: number; // общее количество контактов (записи + мысли, без шагов)
   avgActivityPerDay: number; // средняя активность в день (контактов/день)
   activityPercent: number; // процент дней с активностью (0-100)
   isHot: boolean; // "горячее" желание (много активности за последние дни)
@@ -56,8 +56,17 @@ export default function StatisticsPage({ onBack, onSettingsClick, onDesireClick 
           // Получаем статистику контактов
           const stats = await contactService.getStatistics(desire.id);
           
-          // Общее количество контактов
-          const totalContacts = stats.entryCount + stats.thoughtCount + stats.stepCount;
+          // Загружаем action items для прогресса шагов
+          const actionItems = await actionItemService.getActionItemsByDesire(desire.id);
+          const actionItemsProgress = actionItems.length > 0
+            ? {
+                completed: actionItems.filter(item => item.isCompleted).length,
+                total: actionItems.length
+              }
+            : undefined;
+          
+          // Общее количество контактов (только записи и мысли, без старых шагов)
+          const totalContacts = stats.entryCount + stats.thoughtCount;
           
           // Средняя активность в день (контактов на день)
           const avgActivityPerDay = daysAlive > 0 ? totalContacts / daysAlive : 0;
@@ -84,7 +93,7 @@ export default function StatisticsPage({ onBack, onSettingsClick, onDesireClick 
             daysAlive,
             entryCount: stats.entryCount,
             thoughtCount: stats.thoughtCount,
-            stepCount: stats.stepCount,
+            actionItemsProgress,
             totalContacts,
             avgActivityPerDay: Math.round(avgActivityPerDay * 10) / 10, // округляем до 1 знака
             activityPercent: Math.round(activityPercent), // округляем до целого
@@ -442,7 +451,9 @@ export default function StatisticsPage({ onBack, onSettingsClick, onDesireClick 
                       <div className="statistics-stat-item" title={t('settings.statistics.stepsTooltip')}>
                         <span className="statistics-stat-icon">👣</span>
                         <span className="statistics-stat-value">
-                          {formatStatValue(desire.stepCount, 'steps', locale)}
+                          {desire.actionItemsProgress 
+                            ? `${desire.actionItemsProgress.completed}/${desire.actionItemsProgress.total}`
+                            : '—'}
                         </span>
                       </div>
                     </div>
