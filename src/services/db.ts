@@ -1,5 +1,5 @@
 import Dexie, { type Table } from 'dexie';
-import type { Desire, Contact, ContactType, LifeArea, LifeAreaRating, Feedback } from '../types';
+import type { Desire, Contact, ContactType, LifeArea, LifeAreaRating, Feedback, ActionItem } from '../types';
 import { getTodayDateString, toLocalDateString } from '../utils/date';
 
 class CalendarOfDesiresDB extends Dexie {
@@ -7,6 +7,7 @@ class CalendarOfDesiresDB extends Dexie {
   contacts!: Table<Contact>;
   lifeAreas!: Table<LifeAreaRating>;
   feedbacks!: Table<Feedback>;
+  actionItems!: Table<ActionItem>;
 
   constructor() {
     super('CalendarOfDesiresDB');
@@ -61,6 +62,16 @@ class CalendarOfDesiresDB extends Dexie {
         contacts: 'id, desireId, date, type, [desireId+date], [desireId+date+type], createdAt',
         lifeAreas: 'id',
         feedbacks: 'id, createdAt',
+      });
+
+    // Версия 7: добавляем таблицу actionItems (шаги действий)
+    this.version(7)
+      .stores({
+        desires: 'id, isActive, isCompleted, createdAt, area',
+        contacts: 'id, desireId, date, type, [desireId+date], [desireId+date+type], createdAt',
+        lifeAreas: 'id',
+        feedbacks: 'id, createdAt',
+        actionItems: 'id, desireId, order, [desireId+order], createdAt',
       });
   }
 }
@@ -131,9 +142,10 @@ export const desireService = {
   },
 
   async deleteDesire(id: string): Promise<void> {
-    // Удаляем желание и все связанные контакты
+    // Удаляем желание и все связанные контакты и шаги
     await db.desires.delete(id);
     await db.contacts.where('desireId').equals(id).delete();
+    await actionItemService.deleteActionItemsByDesire(id);
   },
 
   async getAllDesires(includeCompleted: boolean = false): Promise<Desire[]> {
@@ -517,6 +529,144 @@ export const feedbackService = {
   // Удалить обратную связь
   async deleteFeedback(id: string): Promise<void> {
     await db.feedbacks.delete(id);
+  },
+};
+
+// Сервис для работы с шагами действий (action items)
+export const actionItemService = {
+  // Получить все шаги для желания (отсортированные по order)
+  async getActionItemsByDesire(desireId: string): Promise<ActionItem[]> {
+    try {
+      await db.open();
+      const items = await db.actionItems
+        .where('desireId')
+        .equals(desireId)
+        .sortBy('order');
+      return items;
+    } catch (error) {
+      console.error('Ошибка при получении шагов:', error);
+      return [];
+    }
+  },
+
+  // Создать новый шаг
+  async createActionItem(desireId: string, text: string, order?: number): Promise<string> {
+    try {
+      await db.open();
+      
+      // Если order не указан, добавляем в конец
+      if (order === undefined) {
+        const existing = await this.getActionItemsByDesire(desireId);
+        order = existing.length;
+      }
+
+      const newItem: ActionItem = {
+        id: crypto.randomUUID(),
+        desireId,
+        text: text.trim(),
+        isCompleted: false,
+        order,
+        createdAt: new Date().toISOString(),
+        completedAt: null,
+      };
+
+      await db.actionItems.add(newItem);
+      return newItem.id;
+    } catch (error) {
+      console.error('Ошибка при создании шага:', error);
+      throw error;
+    }
+  },
+
+  // Обновить шаг
+  async updateActionItem(id: string, updates: Partial<ActionItem>): Promise<void> {
+    try {
+      await db.open();
+      await db.actionItems.update(id, updates);
+    } catch (error) {
+      console.error('Ошибка при обновлении шага:', error);
+      throw error;
+    }
+  },
+
+  // Отметить шаг как выполненный/невыполненный
+  async toggleActionItem(id: string): Promise<void> {
+    try {
+      await db.open();
+      const item = await db.actionItems.get(id);
+      if (!item) return;
+
+      const isCompleted = !item.isCompleted;
+      await db.actionItems.update(id, {
+        isCompleted,
+        completedAt: isCompleted ? new Date().toISOString() : null,
+      });
+    } catch (error) {
+      console.error('Ошибка при переключении статуса шага:', error);
+      throw error;
+    }
+  },
+
+  // Удалить шаг
+  async deleteActionItem(id: string): Promise<void> {
+    try {
+      await db.open();
+      const item = await db.actionItems.get(id);
+      if (!item) return;
+      
+      const desireId = item.desireId;
+      await db.actionItems.delete(id);
+      
+      // Пересчитываем порядок оставшихся шагов
+      const remainingItems = await this.getActionItemsByDesire(desireId);
+      await Promise.all(
+        remainingItems.map((it, index) =>
+          db.actionItems.update(it.id, { order: index })
+        )
+      );
+    } catch (error) {
+      console.error('Ошибка при удалении шага:', error);
+      throw error;
+    }
+  },
+
+  // Удалить все шаги для желания
+  async deleteActionItemsByDesire(desireId: string): Promise<void> {
+    try {
+      await db.open();
+      await db.actionItems.where('desireId').equals(desireId).delete();
+    } catch (error) {
+      console.error('Ошибка при удалении шагов:', error);
+      throw error;
+    }
+  },
+
+  // Переупорядочить шаги
+  async reorderActionItems(_desireId: string, itemIds: string[]): Promise<void> {
+    try {
+      await db.open();
+      await Promise.all(
+        itemIds.map((id, index) =>
+          db.actionItems.update(id, { order: index })
+        )
+      );
+    } catch (error) {
+      console.error('Ошибка при переупорядочивании шагов:', error);
+      throw error;
+    }
+  },
+
+  // Проверить, все ли шаги выполнены
+  async areAllActionItemsCompleted(desireId: string): Promise<boolean> {
+    try {
+      await db.open();
+      const items = await this.getActionItemsByDesire(desireId);
+      if (items.length === 0) return false;
+      return items.every((item) => item.isCompleted);
+    } catch (error) {
+      console.error('Ошибка при проверке шагов:', error);
+      return false;
+    }
   },
 };
 

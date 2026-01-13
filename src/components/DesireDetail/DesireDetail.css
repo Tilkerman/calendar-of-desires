@@ -752,5 +752,75 @@
   }
 }
 
+/* Стили для шагов действий (action items) */
+.action-items-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.action-item-checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.75rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.action-item-checkbox-label:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent-color);
+}
+
+.action-item-checkbox {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: var(--accent-color);
+  flex-shrink: 0;
+}
+
+.action-item-checkbox:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.action-item-checkbox-text {
+  flex: 1;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.action-item-checkbox-text.completed {
+  text-decoration: line-through;
+  color: var(--text-tertiary);
+  opacity: 0.7;
+}
+
+.action-items-all-completed {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: rgba(100, 255, 100, 0.1);
+  border: 1px solid rgba(100, 255, 100, 0.3);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+[data-theme='dark'] .action-items-all-completed {
+  background: rgba(100, 255, 100, 0.15);
+  border-color: rgba(100, 255, 100, 0.4);
+}
+
 
 

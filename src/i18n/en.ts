@@ -16,6 +16,7 @@ export const en = {
   'common.save': 'Save',
   'common.cancel': 'Cancel',
   'common.delete': 'Delete',
+  'common.edit': 'Edit',
   'common.close': 'Close',
 
   // Settings
@@ -182,6 +183,9 @@ export const en = {
   'detail.step.history': 'Steps history',
   'detail.step.placeholder': 'What was the step? (optional)',
   'detail.step.save': 'Save step',
+  'detail.actionItems.title': 'My steps',
+  'detail.actionItems.allCompleted': '🎉 All steps completed!',
+  'detail.error.toggleStep': 'Could not toggle step status',
   'detail.thoughts.title': 'Thoughts',
   'detail.thoughts.action': 'Today I returned to this wish in my thoughts',
   'detail.thoughts.done': '✓ Already marked today',
@@ -198,8 +202,9 @@ export const en = {
   'detail.editDetails': 'Edit description',
   'detail.completeWish': 'Mark as completed',
   'detail.completeConfirm': 'Mark wish “{title}” as completed?',
+  'detail.editWish': 'Edit wish',
   'detail.deleteWish': 'Delete wish',
-  'detail.deleteConfirm': 'Delete wish “{title}”? This action cannot be undone.',
+  'detail.deleteConfirm': 'Delete wish "{title}"? This action cannot be undone.',
   'detail.focusToday': 'In focus today',
   'detail.modal.notesHistory.title': 'Notes history',
   'detail.modal.stepsHistory.title': 'Steps history',
@@ -239,6 +244,10 @@ export const en = {
   'form.submit.saving': 'Saving…',
   'form.error.save': 'Could not save the wish. Please try again.',
   'form.error.imageLoad': 'Could not load the image. Please try another file.',
+  'form.actionItems.label': 'My steps',
+  'form.actionItems.hint': 'Create a list of specific steps to achieve your wish',
+  'form.actionItems.placeholder': 'For example: "Make an appointment with a doctor"',
+  'form.actionItems.add': 'Add step',
 
   // Contact indicators
   'contacts.entry': 'Notes',

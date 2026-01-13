@@ -241,6 +241,13 @@ function App() {
           desireId={selectedDesireId}
           onBack={handleBackToWheel}
           onSettingsClick={handleSettingsClick}
+          onEdit={async () => {
+            const desire = await desireService.getDesireById(selectedDesireId);
+            if (desire) {
+              setEditingDesire(desire);
+              setCurrentView('form');
+            }
+          }}
         />
         <SettingsModal
           isOpen={isSettingsModalOpen}

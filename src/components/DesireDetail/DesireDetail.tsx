@@ -1,9 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
-import type { Desire, Contact, DesireImage } from '../../types';
-import { desireService, contactService } from '../../services/db';
+import type { Desire, Contact, DesireImage, ActionItem } from '../../types';
+import { desireService, contactService, actionItemService } from '../../services/db';
 import ContactIndicators from '../ContactIndicators/ContactIndicators';
 import ImageGallery from '../ImageGallery/ImageGallery';
-import ImageEditor from '../ImageEditor/ImageEditor';
 import { formatDate, getTodayDateString } from '../../utils/date';
 import './DesireDetail.css';
 import { useI18n } from '../../i18n';
@@ -13,9 +12,10 @@ interface DesireDetailProps {
   desireId: string;
   onBack: () => void;
   onSettingsClick?: () => void;
+  onEdit?: () => void;
 }
 
-export default function DesireDetail({ desireId, onBack, onSettingsClick }: DesireDetailProps) {
+export default function DesireDetail({ desireId, onBack, onSettingsClick, onEdit }: DesireDetailProps) {
   const { t, locale } = useI18n();
   const [desire, setDesire] = useState<Desire | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -27,31 +27,20 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick }: Desi
   // Сегодняшние контакты
   const [todayEntry, setTodayEntry] = useState<Contact | null>(null);
   const [todayThought, setTodayThought] = useState<Contact | null>(null);
-  const [todayStep, setTodayStep] = useState<Contact | null>(null);
   const [entryText, setEntryText] = useState('');
-  const [stepText, setStepText] = useState('');
   
   // История контактов (все, но без сегодняшних)
   const [entryHistory, setEntryHistory] = useState<Contact[]>([]);
   const [thoughtHistory, setThoughtHistory] = useState<Contact[]>([]);
-  const [stepHistory, setStepHistory] = useState<Contact[]>([]);
   
   // Состояния для модальных окон истории
   const [showEntryHistory, setShowEntryHistory] = useState(false);
-  const [showStepHistory, setShowStepHistory] = useState(false);
   
-  // Состояния для редактирования
-  const [isEditingDescription, setIsEditingDescription] = useState(false);
-  const [editingDescription, setEditingDescription] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [saveConfirmation, setSaveConfirmation] = useState<string | null>(null);
   
-  // Состояния для модальных окон редактирования
-  const [showEditTitleModal, setShowEditTitleModal] = useState(false);
-  const [editingTitle, setEditingTitle] = useState('');
-  const [showEditDetailsModal, setShowEditDetailsModal] = useState(false);
-  const [editingDetails, setEditingDetails] = useState('');
-  const [showEditImagesModal, setShowEditImagesModal] = useState(false);
+  // Состояние для шагов (action items)
+  const [actionItems, setActionItems] = useState<ActionItem[]>([]);
 
   // IMPORTANT: хуки должны вызываться всегда, поэтому вычисления для details делаем до ранних return'ов
   const detailsText = (desire?.details || '').trim();
@@ -70,27 +59,14 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick }: Desi
   // но НЕ во время открытых модалок — иначе выбор файла (input type="file") может не успеть обработаться.
   useEffect(() => {
     const handleFocus = () => {
-      if (
-        showEditImagesModal ||
-        showEditTitleModal ||
-        showEditDetailsModal ||
-        showEntryHistory ||
-        showStepHistory
-      ) {
+      if (showEntryHistory) {
         return;
       }
       loadDesire();
     };
     window.addEventListener('focus', handleFocus);
     return () => window.removeEventListener('focus', handleFocus);
-  }, [
-    desireId,
-    showEditImagesModal,
-    showEditTitleModal,
-    showEditDetailsModal,
-    showEntryHistory,
-    showStepHistory,
-  ]);
+  }, [desireId, showEntryHistory]);
 
   const loadDesire = async () => {
     setIsLoading(true);
@@ -102,7 +78,10 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick }: Desi
       }
 
       setDesire(loadedDesire);
-      setEditingDescription(loadedDesire.description);
+      
+      // Загружаем шаги
+      const items = await actionItemService.getActionItemsByDesire(desireId);
+      setActionItems(items);
 
       // Загружаем сводку по последним 7 дням
       const summary = await contactService.getLast7DaysSummary(desireId);
@@ -111,7 +90,6 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick }: Desi
       // Загружаем сегодняшние контакты
       const todayEntryContact = await contactService.getTodayContact(desireId, 'entry');
       const todayThoughtContact = await contactService.getTodayContact(desireId, 'thought');
-      const todayStepContact = await contactService.getTodayContact(desireId, 'step');
       
       if (todayEntryContact) {
         setTodayEntry(todayEntryContact);
@@ -121,26 +99,16 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick }: Desi
         setEntryText('');
       }
       
-      if (todayStepContact) {
-        setTodayStep(todayStepContact);
-        setStepText(todayStepContact.text || '');
-      } else {
-        setTodayStep(null);
-        setStepText('');
-      }
-      
       setTodayThought(todayThoughtContact || null);
 
       // Загружаем историю контактов (все для каждого типа, исключая сегодняшние)
       const today = getTodayDateString();
       const entryContacts = await contactService.getContactsByType(desireId, 'entry');
       const thoughtContacts = await contactService.getContactsByType(desireId, 'thought');
-      const stepContacts = await contactService.getContactsByType(desireId, 'step');
       
       // Исключаем сегодняшние записи из истории
       setEntryHistory(entryContacts.filter(c => c.date !== today));
       setThoughtHistory(thoughtContacts.filter(c => c.date !== today));
-      setStepHistory(stepContacts.filter(c => c.date !== today));
     } catch (error) {
       console.error('Ошибка при загрузке желания:', error);
     } finally {
@@ -148,45 +116,34 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick }: Desi
     }
   };
 
-  // Унифицированная функция сохранения для Записей и Шагов
-  const handleSaveNoteOrStep = async (type: 'entry' | 'step', text: string) => {
+  const handleSaveEntry = async () => {
     if (!desire) return;
     
     setIsSaving(true);
     try {
-      const textToSave = text.trim();
+      const textToSave = entryText.trim();
       
       // Если текст пустой и был сохранён контакт ранее - удаляем контакт
       // Если текст есть - создаём/обновляем контакт
-      const todayContact = type === 'entry' ? todayEntry : todayStep;
-      
-      if (!textToSave && todayContact) {
+      if (!textToSave && todayEntry) {
         // Удаляем контакт, если текст пустой
-        await contactService.deleteContact(todayContact.id);
-        setSaveConfirmation(type);
+        await contactService.deleteContact(todayEntry.id);
+        setSaveConfirmation('entry');
         setTimeout(() => setSaveConfirmation(null), 2000);
       } else if (textToSave) {
         // Создаём/обновляем контакт только если есть текст
-        await contactService.createOrUpdateContact(desire.id, type, textToSave);
-        setSaveConfirmation(type);
+        await contactService.createOrUpdateContact(desire.id, 'entry', textToSave);
+        setSaveConfirmation('entry');
         setTimeout(() => setSaveConfirmation(null), 2000);
       }
       
       await loadDesire();
     } catch (error) {
-      console.error(`Ошибка при сохранении ${type === 'entry' ? 'записи' : 'шага'}:`, error);
-      alert(type === 'entry' ? t('detail.error.saveNote') : t('detail.error.saveStep'));
+      console.error('Ошибка при сохранении записи:', error);
+      alert(t('detail.error.saveNote'));
     } finally {
       setIsSaving(false);
     }
-  };
-
-  const handleSaveEntry = async () => {
-    await handleSaveNoteOrStep('entry', entryText);
-  };
-
-  const handleSaveStep = async () => {
-    await handleSaveNoteOrStep('step', stepText);
   };
 
   const handleThoughtClick = async () => {
@@ -206,65 +163,6 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick }: Desi
   };
 
 
-  const handleSaveDescription = async () => {
-    if (!desire) return;
-    
-    setIsSaving(true);
-    try {
-      await desireService.updateDesire(desire.id, { description: editingDescription });
-      setIsEditingDescription(false);
-      await loadDesire();
-    } catch (error) {
-      console.error('Ошибка при сохранении описания:', error);
-      alert(t('detail.error.saveDescription'));
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handleEditTitle = () => {
-    if (!desire) return;
-    setEditingTitle(desire.title);
-    setShowEditTitleModal(true);
-  };
-
-  const handleSaveTitle = async () => {
-    if (!desire || !editingTitle.trim()) return;
-    
-    setIsSaving(true);
-    try {
-      await desireService.updateDesire(desire.id, { title: editingTitle.trim() });
-      setShowEditTitleModal(false);
-      await loadDesire();
-    } catch (error) {
-      console.error('Ошибка при сохранении названия:', error);
-      alert(t('detail.error.saveTitle'));
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handleEditDetails = () => {
-    if (!desire) return;
-    setEditingDetails(desire.details || '');
-    setShowEditDetailsModal(true);
-  };
-
-  const handleSaveDetails = async () => {
-    if (!desire) return;
-    
-    setIsSaving(true);
-    try {
-      await desireService.updateDesire(desire.id, { details: editingDetails.trim() || null });
-      setShowEditDetailsModal(false);
-      await loadDesire();
-    } catch (error) {
-      console.error('Ошибка при сохранении описания:', error);
-      alert(t('detail.error.saveDescription'));
-    } finally {
-      setIsSaving(false);
-    }
-  };
 
   const handleDeleteDesire = async () => {
     if (!desire) return;
@@ -294,6 +192,19 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick }: Desi
     } catch (error) {
       console.error('Ошибка при пометке желания как выполненного:', error);
       alert(t('detail.error.completeWish'));
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleToggleActionItem = async (id: string) => {
+    setIsSaving(true);
+    try {
+      await actionItemService.toggleActionItem(id);
+      await loadDesire(); // Перезагружаем данные
+    } catch (error) {
+      console.error('Ошибка при переключении шага:', error);
+      alert(t('detail.error.toggleStep'));
     } finally {
       setIsSaving(false);
     }
@@ -352,17 +263,10 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick }: Desi
       <div className="desire-detail-content">
         {/* Описание желания (важно по Джиканти — показываем сразу) */}
         <div className="desire-detail-section">
-          <div className="desire-detail-section-header">
-            <div>
-              <h2 className="desire-detail-section-title">{t('detail.details.title')}</h2>
-              {!hasDetails && (
-                <p className="desire-detail-details-hint">{t('detail.details.hint')}</p>
-              )}
-            </div>
-            <button className="desire-detail-edit-button" onClick={handleEditDetails}>
-              {t('detail.edit')}
-            </button>
-          </div>
+          <h2 className="desire-detail-section-title">{t('detail.details.title')}</h2>
+          {!hasDetails && (
+            <p className="desire-detail-details-hint">{t('detail.details.hint')}</p>
+          )}
 
           <div className="desire-detail-details-box">
             <div
@@ -457,83 +361,37 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick }: Desi
           )}
         </div>
 
-        {/* Блок шагов */}
-        <div className="desire-detail-section">
-          <div className="desire-detail-section-header">
-            <h2 className="desire-detail-section-title">{t('detail.step.title')}</h2>
-            <button
-              className="desire-detail-history-button-small"
-              onClick={() => setShowStepHistory(true)}
-              title={t('detail.step.history')}
-            >
-              {t('detail.step.history')}
-            </button>
+        {/* Блок шагов действий (action items) */}
+        {actionItems.length > 0 && (
+          <div className="desire-detail-section">
+            <h2 className="desire-detail-section-title">{t('detail.actionItems.title')}</h2>
+            <div className="action-items-checklist">
+              {actionItems.map((item) => (
+                <label key={item.id} className="action-item-checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={item.isCompleted}
+                    onChange={() => handleToggleActionItem(item.id)}
+                    disabled={isSaving}
+                    className="action-item-checkbox"
+                  />
+                  <span className={`action-item-checkbox-text ${item.isCompleted ? 'completed' : ''}`}>
+                    {item.text}
+                  </span>
+                </label>
+              ))}
+            </div>
+            {actionItems.every((item) => item.isCompleted) && actionItems.length > 0 && (
+              <p className="action-items-all-completed">{t('detail.actionItems.allCompleted')}</p>
+            )}
           </div>
-          <textarea
-            className="desire-detail-entry-input"
-            value={stepText}
-            onChange={(e) => setStepText(e.target.value)}
-            onBlur={handleSaveStep}
-            placeholder={t('detail.step.placeholder')}
-            rows={4}
-            disabled={isSaving}
-          />
-          {stepText.trim() !== (todayStep?.text || '').trim() && stepText.trim() && (
-            <button
-              className="desire-detail-save-button"
-              onClick={handleSaveStep}
-              disabled={isSaving}
-            >
-              {isSaving ? t('common.saving') : t('detail.step.save')}
-            </button>
-          )}
-          {saveConfirmation === 'step' && (
-            <div className="desire-detail-confirmation">{t('detail.saved')}</div>
-          )}
-        </div>
+        )}
+
 
         {/* Эмоциональное описание */}
         <div className="desire-detail-section">
           <h2 className="desire-detail-section-title">{t('detail.feelings.title')}</h2>
-          {isEditingDescription ? (
-            <div className="desire-detail-description-edit">
-              <textarea
-                className="desire-detail-description-input"
-                value={editingDescription}
-                onChange={(e) => setEditingDescription(e.target.value)}
-                placeholder={t('form.feelings.placeholder')}
-                rows={3}
-              />
-              <div className="desire-detail-description-actions">
-                <button
-                  className="desire-detail-save-button"
-                  onClick={handleSaveDescription}
-                  disabled={isSaving}
-                >
-                  {t('common.save')}
-                </button>
-                <button
-                  className="desire-detail-cancel-button"
-                  onClick={() => {
-                    setEditingDescription(desire.description);
-                    setIsEditingDescription(false);
-                  }}
-                >
-                  {t('common.cancel')}
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="desire-detail-description-view">
-              <p>{desire.description || t('detail.feelings.notSet')}</p>
-              <button
-                className="desire-detail-edit-button"
-                onClick={() => setIsEditingDescription(true)}
-              >
-                {t('detail.edit')}
-              </button>
-            </div>
-          )}
+          <p>{desire.description || t('detail.feelings.notSet')}</p>
         </div>
 
         {/* Ориентир по времени */}
@@ -559,21 +417,9 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick }: Desi
           <div className="desire-detail-actions">
             <button
               className="desire-detail-secondary-button"
-              onClick={handleEditTitle}
+              onClick={() => onEdit && onEdit()}
             >
-              {t('detail.editTitle')}
-            </button>
-            <button
-              className="desire-detail-secondary-button"
-              onClick={() => setShowEditImagesModal(true)}
-            >
-              {t('detail.editImages')}
-            </button>
-            <button
-              className="desire-detail-secondary-button"
-              onClick={handleEditDetails}
-            >
-              {t('detail.editDetails')}
+              {t('detail.editWish')}
             </button>
             {!desire.isCompleted && (
               <button
@@ -647,180 +493,6 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick }: Desi
         </div>
       )}
 
-      {/* Модальное окно истории шагов */}
-      {showStepHistory && (
-        <div className="desire-detail-history-modal-overlay" onClick={() => setShowStepHistory(false)}>
-          <div className="desire-detail-history-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="desire-detail-history-modal-header">
-              <h2>{t('detail.modal.stepsHistory.title')}</h2>
-              <button
-                className="desire-detail-history-modal-close"
-                onClick={() => setShowStepHistory(false)}
-                aria-label={t('common.close')}
-              >
-                ×
-              </button>
-            </div>
-            <div className="desire-detail-history-modal-content">
-              {stepHistory.length === 0 ? (
-                <p className="desire-detail-history-empty">{t('detail.modal.empty')}</p>
-              ) : (
-                (() => {
-                  // Группируем шаги по датам
-                  const grouped = stepHistory.reduce((acc, contact) => {
-                    const date = contact.date;
-                    if (!acc[date]) {
-                      acc[date] = [];
-                    }
-                    acc[date].push(contact);
-                    return acc;
-                  }, {} as Record<string, Contact[]>);
-
-                  // Сортируем даты по убыванию
-                  const sortedDates = Object.keys(grouped).sort((a, b) => 
-                    new Date(b).getTime() - new Date(a).getTime()
-                  );
-
-                  return sortedDates.map((date) => (
-                    <div key={date} className="desire-detail-history-group">
-                      <div className="desire-detail-history-group-date">{formatDate(date, locale)}</div>
-                      {grouped[date].map((contact) => (
-                        <div key={contact.id} className="desire-detail-history-modal-item">
-                          {contact.text && (
-                            <div className="desire-detail-history-modal-text">{contact.text}</div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  ));
-                })()
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Модальное окно редактирования названия */}
-      {showEditTitleModal && (
-        <div className="desire-detail-history-modal-overlay" onClick={() => setShowEditTitleModal(false)}>
-          <div className="desire-detail-history-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="desire-detail-history-modal-header">
-              <h2>{t('detail.modal.editTitle.title')}</h2>
-              <button
-                className="desire-detail-history-modal-close"
-                onClick={() => setShowEditTitleModal(false)}
-                aria-label={t('common.close')}
-              >
-                ×
-              </button>
-            </div>
-            <div className="desire-detail-history-modal-content">
-              <div className="desire-detail-edit-form">
-                <input
-                  type="text"
-                  className="desire-detail-edit-input"
-                  value={editingTitle}
-                  onChange={(e) => setEditingTitle(e.target.value)}
-                  placeholder={t('form.title.label')}
-                  autoFocus
-                />
-                <div className="desire-detail-edit-form-actions">
-                  <button
-                    className="desire-detail-save-button"
-                    onClick={handleSaveTitle}
-                    disabled={isSaving || !editingTitle.trim()}
-                  >
-                    {isSaving ? t('common.saving') : t('common.save')}
-                  </button>
-                  <button
-                    className="desire-detail-cancel-button"
-                    onClick={() => setShowEditTitleModal(false)}
-                    disabled={isSaving}
-                  >
-                    {t('common.cancel')}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Модальное окно редактирования описания */}
-      {showEditDetailsModal && (
-        <div className="desire-detail-history-modal-overlay" onClick={() => setShowEditDetailsModal(false)}>
-          <div className="desire-detail-history-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="desire-detail-history-modal-header">
-              <h2>{t('detail.modal.editDetails.title')}</h2>
-              <button
-                className="desire-detail-history-modal-close"
-                onClick={() => setShowEditDetailsModal(false)}
-                aria-label={t('common.close')}
-              >
-                ×
-              </button>
-            </div>
-            <div className="desire-detail-history-modal-content">
-              <div className="desire-detail-edit-form">
-                <p className="desire-detail-edit-hint">
-                  {t('detail.modal.editDetails.hint')}
-                </p>
-                <textarea
-                  className="desire-detail-edit-textarea"
-                  value={editingDetails}
-                  onChange={(e) => setEditingDetails(e.target.value)}
-                  placeholder={t('form.details.placeholder')}
-                  rows={8}
-                  autoFocus
-                />
-                <div className="desire-detail-edit-form-actions">
-                  <button
-                    className="desire-detail-save-button"
-                    onClick={handleSaveDetails}
-                    disabled={isSaving}
-                  >
-                    {isSaving ? t('common.saving') : t('common.save')}
-                  </button>
-                  <button
-                    className="desire-detail-cancel-button"
-                    onClick={() => setShowEditDetailsModal(false)}
-                    disabled={isSaving}
-                  >
-                    {t('common.cancel')}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Модальное окно редактирования изображений */}
-      {showEditImagesModal && desire && (
-        <div className="desire-detail-history-modal-overlay" onClick={() => setShowEditImagesModal(false)}>
-          <div onClick={(e) => e.stopPropagation()}>
-            <ImageEditor
-              key={`image-editor-${desire.id}-${showEditImagesModal}`}
-              images={desire.images || []}
-              onSave={async (images: DesireImage[]) => {
-                setIsSaving(true);
-                try {
-                  await desireService.updateDesire(desire.id, { images });
-                  setShowEditImagesModal(false);
-                  await loadDesire();
-                } catch (error) {
-                  console.error('Ошибка при сохранении изображений:', error);
-                  alert(t('detail.error.saveImages'));
-                } finally {
-                  setIsSaving(false);
-                }
-              }}
-              onCancel={() => setShowEditImagesModal(false)}
-              maxImages={6}
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 }

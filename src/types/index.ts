@@ -59,6 +59,17 @@ export interface Feedback {
   createdAt: string; // ISO timestamp
 }
 
+// Шаг действия (action item) для желания
+export interface ActionItem {
+  id: string;
+  desireId: string;
+  text: string; // текст шага
+  isCompleted: boolean; // выполнено ли
+  order: number; // порядок отображения
+  createdAt: string; // ISO timestamp
+  completedAt: string | null; // ISO timestamp - когда было отмечено как выполненное
+}
+
 
 
 

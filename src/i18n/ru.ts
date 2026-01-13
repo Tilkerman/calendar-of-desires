@@ -18,6 +18,7 @@ export const ru: Record<TranslationKey, string> = {
   'common.save': 'Сохранить',
   'common.cancel': 'Отмена',
   'common.delete': 'Удалить',
+  'common.edit': 'Изменить',
   'common.close': 'Закрыть',
 
   // Settings
@@ -184,6 +185,9 @@ export const ru: Record<TranslationKey, string> = {
   'detail.step.history': 'История шагов',
   'detail.step.placeholder': 'Что это был за шаг? (необязательно)',
   'detail.step.save': 'Сохранить шаг',
+  'detail.actionItems.title': 'Мои шаги',
+  'detail.actionItems.allCompleted': '🎉 Все шаги выполнены!',
+  'detail.error.toggleStep': 'Не удалось изменить статус шага',
   'detail.thoughts.title': 'Мысли',
   'detail.thoughts.action': 'Я сегодня возвращался к этому желанию мыслями',
   'detail.thoughts.done': '✓ Уже отмечено сегодня',
@@ -198,6 +202,7 @@ export const ru: Record<TranslationKey, string> = {
   'detail.editTitle': 'Изменить название',
   'detail.editImages': 'Изменить изображения',
   'detail.editDetails': 'Изменить описание',
+  'detail.editWish': 'Изменить желание',
   'detail.completeWish': 'Осуществить желание',
   'detail.completeConfirm': 'Отметить желание «{title}» как выполненное?',
   'detail.deleteWish': 'Удалить желание',
@@ -241,6 +246,10 @@ export const ru: Record<TranslationKey, string> = {
   'form.submit.saving': 'Сохранение...',
   'form.error.save': 'Не удалось сохранить желание. Попробуйте ещё раз.',
   'form.error.imageLoad': 'Не удалось загрузить изображение. Попробуйте другой файл.',
+  'form.actionItems.label': 'Мои шаги',
+  'form.actionItems.hint': 'Создайте список конкретных шагов для достижения желания',
+  'form.actionItems.placeholder': 'Например: "Записаться к врачу"',
+  'form.actionItems.add': 'Добавить шаг',
 
   // Contact indicators
   'contacts.entry': 'Записи',

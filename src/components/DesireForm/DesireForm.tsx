@@ -1,6 +1,6 @@
-import { useState, useRef } from 'react';
-import type { Desire, DesireImage, LifeArea } from '../../types';
-import { desireService } from '../../services/db';
+import { useState, useRef, useEffect } from 'react';
+import type { Desire, DesireImage, LifeArea, ActionItem } from '../../types';
+import { desireService, actionItemService } from '../../services/db';
 import './DesireForm.css';
 import { useI18n } from '../../i18n';
 import HeaderActions from '../Header/HeaderActions';
@@ -27,6 +27,25 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Состояние для шагов (action items)
+  const [actionItems, setActionItems] = useState<ActionItem[]>([]);
+  const [newActionItemText, setNewActionItemText] = useState('');
+  const [editingActionItemId, setEditingActionItemId] = useState<string | null>(null);
+  const [editingActionItemText, setEditingActionItemText] = useState('');
+
+  // Загружаем шаги при редактировании существующего желания
+  useEffect(() => {
+    const loadActionItems = async () => {
+      if (initialDesire) {
+        const items = await actionItemService.getActionItemsByDesire(initialDesire.id);
+        setActionItems(items);
+      } else {
+        setActionItems([]);
+      }
+    };
+    loadActionItems();
+  }, [initialDesire]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -64,6 +83,48 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
     setImages(updated);
   };
 
+  // Обработчики для шагов
+  const handleAddActionItem = () => {
+    if (!newActionItemText.trim()) return;
+    
+    const newItem: ActionItem = {
+      id: `temp-${Date.now()}-${Math.random()}`,
+      desireId: initialDesire?.id || '',
+      text: newActionItemText.trim(),
+      isCompleted: false,
+      order: actionItems.length,
+      createdAt: new Date().toISOString(),
+      completedAt: null,
+    };
+    
+    setActionItems([...actionItems, newItem]);
+    setNewActionItemText('');
+  };
+
+  const handleEditActionItem = (id: string) => {
+    const item = actionItems.find((it) => it.id === id);
+    if (item) {
+      setEditingActionItemId(id);
+      setEditingActionItemText(item.text);
+    }
+  };
+
+  const handleSaveActionItem = (id: string) => {
+    if (!editingActionItemText.trim()) return;
+    
+    setActionItems(
+      actionItems.map((it) =>
+        it.id === id ? { ...it, text: editingActionItemText.trim() } : it
+      )
+    );
+    setEditingActionItemId(null);
+    setEditingActionItemText('');
+  };
+
+  const handleDeleteActionItem = (id: string) => {
+    setActionItems(actionItems.filter((it) => it.id !== id).map((it, index) => ({ ...it, order: index })));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -71,12 +132,40 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
     setIsLoading(true);
     try {
       if (initialDesire) {
+        // Редактирование существующего желания
         await desireService.updateDesire(initialDesire.id, {
           title: title.trim() || '',
           details: details.trim() || null,
           description: description.trim() || '',
           images: images, // Всегда передаем массив, даже если пустой
         });
+        
+        // Сохраняем шаги
+        const existingItems = await actionItemService.getActionItemsByDesire(initialDesire.id);
+        const currentIds = new Set(actionItems.map((it) => it.id));
+        
+        // Удаляем шаги, которых больше нет
+        for (const existing of existingItems) {
+          if (!currentIds.has(existing.id) && !existing.id.startsWith('temp-')) {
+            await actionItemService.deleteActionItem(existing.id);
+          }
+        }
+        
+        // Создаём или обновляем шаги
+        for (let i = 0; i < actionItems.length; i++) {
+          const item = actionItems[i];
+          if (item.id.startsWith('temp-')) {
+            // Новый шаг
+            await actionItemService.createActionItem(initialDesire.id, item.text, i);
+          } else {
+            // Обновляем существующий
+            await actionItemService.updateActionItem(item.id, {
+              text: item.text,
+              order: i,
+            });
+          }
+        }
+        
         onSave();
       } else {
         // Создание нового желания
@@ -89,6 +178,12 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
           area: presetArea ?? null,
           isActive: true, // Новое желание автоматически становится "Сегодня в фокусе"
         });
+        
+        // Создаём шаги
+        for (let i = 0; i < actionItems.length; i++) {
+          await actionItemService.createActionItem(desireId, actionItems[i].text, i);
+        }
+        
         // Устанавливаем фокус на новое желание
         await desireService.setFocusDesire(desireId);
         onSave(desireId);
@@ -213,6 +308,106 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
           {images.length > 0 && (
             <p className="form-hint">{t('form.visual.count', { count: images.length })}</p>
           )}
+        </div>
+
+        {/* 5. Шаги действий (action items) */}
+        <div className="form-group">
+          <label>{t('form.actionItems.label')}</label>
+          <p className="form-label-hint">{t('form.actionItems.hint')}</p>
+          
+          {/* Список существующих шагов */}
+          {actionItems.length > 0 && (
+            <div className="action-items-list">
+              {actionItems.map((item) => (
+                <div key={item.id} className="action-item-row">
+                  {editingActionItemId === item.id ? (
+                    <>
+                      <input
+                        type="text"
+                        className="action-item-edit-input"
+                        value={editingActionItemText}
+                        onChange={(e) => setEditingActionItemText(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            handleSaveActionItem(item.id);
+                          } else if (e.key === 'Escape') {
+                            setEditingActionItemId(null);
+                            setEditingActionItemText('');
+                          }
+                        }}
+                        autoFocus
+                      />
+                      <button
+                        type="button"
+                        className="action-item-save-btn"
+                        onClick={() => handleSaveActionItem(item.id)}
+                        title={t('common.save')}
+                      >
+                        ✓
+                      </button>
+                      <button
+                        type="button"
+                        className="action-item-cancel-btn"
+                        onClick={() => {
+                          setEditingActionItemId(null);
+                          setEditingActionItemText('');
+                        }}
+                        title={t('common.cancel')}
+                      >
+                        ✕
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <span className="action-item-text">{item.text}</span>
+                      <button
+                        type="button"
+                        className="action-item-edit-btn"
+                        onClick={() => handleEditActionItem(item.id)}
+                        title={t('common.edit')}
+                      >
+                        ✎
+                      </button>
+                      <button
+                        type="button"
+                        className="action-item-delete-btn"
+                        onClick={() => handleDeleteActionItem(item.id)}
+                        title={t('common.delete')}
+                      >
+                        ✕
+                      </button>
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+          
+          {/* Поле для добавления нового шага */}
+          <div className="action-item-add">
+            <input
+              type="text"
+              className="action-item-input"
+              value={newActionItemText}
+              onChange={(e) => setNewActionItemText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleAddActionItem();
+                }
+              }}
+              placeholder={t('form.actionItems.placeholder')}
+            />
+            <button
+              type="button"
+              className="action-item-add-btn"
+              onClick={handleAddActionItem}
+              disabled={!newActionItemText.trim()}
+              title={t('form.actionItems.add')}
+            >
+              +
+            </button>
+          </div>
         </div>
 
         {/* Кнопка действия */}
