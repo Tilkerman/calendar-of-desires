@@ -103,11 +103,19 @@
   background: var(--bg-hover);
 }
 
+.life-wheel-label-group {
+  transition: opacity 0.2s;
+}
+
+.life-wheel-label-group:hover {
+  opacity: 0.8;
+}
+
 .life-wheel-label {
   font-size: 11px;
   fill: var(--text-tertiary);
   user-select: none;
-  pointer-events: none; /* чтобы тапы проходили в колесо */
+  pointer-events: none; /* чтобы тапы проходили в эллипс, а не в текст */
 }
 
 .life-wheel-ring {

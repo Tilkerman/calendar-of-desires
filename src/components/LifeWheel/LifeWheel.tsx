@@ -197,18 +197,47 @@ export default function LifeWheel({
               // Keep text readable: flip on bottom half
               const flip = rotate > 90 && rotate < 270;
               const textRotate = flip ? rotate + 180 : rotate;
+              
+              // Обработчик клика на название сферы
+              const handleLabelClick = (e: React.MouseEvent) => {
+                e.stopPropagation(); // Предотвращаем всплытие к колесу
+                const count = counts[area] ?? 0;
+                if (count > 0) {
+                  onShowAllDesires(area);
+                } else {
+                  onCreateWishInArea(area);
+                }
+              };
+              
               return (
-                <text
+                <g
                   key={`lbl-${area}`}
-                  x={p.x}
-                  y={p.y}
-                  className="life-wheel-label"
-                  textAnchor="middle"
-                  dominantBaseline="middle"
-                  transform={`rotate(${textRotate} ${p.x} ${p.y})`}
+                  onClick={handleLabelClick}
+                  className="life-wheel-label-group"
+                  style={{ cursor: 'pointer' }}
                 >
-                  {t(`areas.${area}` as never)}
-                </text>
+                  {/* Невидимая кликабельная область (эллипс) */}
+                  <ellipse
+                    cx={p.x}
+                    cy={p.y}
+                    rx="35"
+                    ry="15"
+                    fill="transparent"
+                    pointerEvents="all"
+                    transform={`rotate(${textRotate} ${p.x} ${p.y})`}
+                  />
+                  <text
+                    x={p.x}
+                    y={p.y}
+                    className="life-wheel-label"
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    transform={`rotate(${textRotate} ${p.x} ${p.y})`}
+                    pointerEvents="none"
+                  >
+                    {t(`areas.${area}` as never)}
+                  </text>
+                </g>
               );
             })}
           </svg>

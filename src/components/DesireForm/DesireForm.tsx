@@ -242,31 +242,7 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
           />
         </div>
 
-        {/* 2. Описание желания (НОВОЕ ПОЛЕ) */}
-        <div className="form-group">
-          <label htmlFor="details">{t('form.details.label')}</label>
-          <textarea
-            id="details"
-            value={details}
-            onChange={(e) => setDetails(e.target.value)}
-            placeholder={t('form.details.placeholder')}
-            rows={8}
-          />
-        </div>
-
-        {/* 3. Эмоциональное состояние */}
-        <div className="form-group">
-          <label htmlFor="description">{t('form.feelings.label')}</label>
-          <textarea
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder={t('form.feelings.placeholder')}
-            rows={4}
-          />
-        </div>
-
-        {/* 4. Визуальный образ (опционально, до 6 изображений) */}
+        {/* 2. Визуальный образ (опционально, до 6 изображений) */}
         <div className="form-group">
           <label htmlFor="image">{t('form.visual.label')}</label>
           <input
@@ -306,6 +282,30 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
           {images.length > 0 && (
             <p className="form-hint">{t('form.visual.count', { count: images.length })}</p>
           )}
+        </div>
+
+        {/* 3. Описание желания (НОВОЕ ПОЛЕ) */}
+        <div className="form-group">
+          <label htmlFor="details">{t('form.details.label')}</label>
+          <textarea
+            id="details"
+            value={details}
+            onChange={(e) => setDetails(e.target.value)}
+            placeholder={t('form.details.placeholder')}
+            rows={8}
+          />
+        </div>
+
+        {/* 4. Эмоциональное состояние */}
+        <div className="form-group">
+          <label htmlFor="description">{t('form.feelings.label')}</label>
+          <textarea
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder={t('form.feelings.placeholder')}
+            rows={4}
+          />
         </div>
 
         {/* 5. Шаги действий (action items) */}
