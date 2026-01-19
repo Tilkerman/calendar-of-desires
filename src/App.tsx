@@ -13,11 +13,9 @@ import TutorialPage from './components/Settings/TutorialPage';
 import InstallPage from './components/Settings/InstallPage';
 import SettingsPage from './components/Settings/SettingsPage';
 import FeedbackPage from './components/Settings/FeedbackPage';
-import BackupPage from './components/Settings/BackupPage';
 import StatisticsPage from './components/Settings/StatisticsPage';
-import BackupReminder from './components/BackupReminder/BackupReminder';
 
-type View = 'wheel' | 'list' | 'form' | 'detail' | 'about' | 'tutorial' | 'install' | 'settings' | 'feedback' | 'backup' | 'statistics' | 'completed';
+type View = 'wheel' | 'list' | 'form' | 'detail' | 'about' | 'tutorial' | 'install' | 'settings' | 'feedback' | 'statistics' | 'completed';
 
 function App() {
   const { t } = useI18n();
@@ -30,6 +28,8 @@ function App() {
   const [askAreaAfterSave, setAskAreaAfterSave] = useState(false);
   const [pendingAreaForDesireId, setPendingAreaForDesireId] = useState<string | null>(null);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [previousView, setPreviousView] = useState<View | null>(null);
+  const [previousViewBeforeEdit, setPreviousViewBeforeEdit] = useState<View | null>(null);
 
   // Проверяем наличие желаний при загрузке
   useEffect(() => {
@@ -60,6 +60,14 @@ function App() {
         setPendingAreaForDesireId(desireId);
         setCurrentView('wheel');
       } else {
+        // Если редактировали желание, восстанавливаем previousView, который был до редактирования
+        // Иначе устанавливаем 'form' как previousView
+        if (previousViewBeforeEdit !== null) {
+          setPreviousView(previousViewBeforeEdit);
+          setPreviousViewBeforeEdit(null);
+        } else {
+          setPreviousView('form');
+        }
         setSelectedDesireId(desireId);
         setCurrentView('detail');
       }
@@ -73,7 +81,9 @@ function App() {
 
   const handleBackToWheel = () => {
     setSelectedDesireId(null);
-    setCurrentView('wheel');
+    // Возвращаемся на предыдущую страницу, если она была сохранена, иначе на wheel
+    setCurrentView(previousView || 'wheel');
+    setPreviousView(null);
   };
 
   const handleSettingsClick = () => {
@@ -98,19 +108,12 @@ function App() {
       case 'feedback':
         setCurrentView('feedback');
         break;
-      case 'backup':
-        setCurrentView('backup');
-        break;
       case 'statistics':
         setCurrentView('statistics');
         break;
     }
   };
 
-  const handleBackupReminderClick = () => {
-    setCurrentView('backup');
-    setIsSettingsModalOpen(false);
-  };
 
   const handleBackFromSettings = () => {
     setCurrentView('wheel');
@@ -169,6 +172,7 @@ function App() {
             await desireService.updateDesire(pendingAreaForDesireId, { area });
             const id = pendingAreaForDesireId;
             setPendingAreaForDesireId(null);
+            setPreviousView('wheel');
             setSelectedDesireId(id);
             setCurrentView('detail');
           }}
@@ -178,7 +182,6 @@ function App() {
           onClose={() => setIsSettingsModalOpen(false)}
           onMenuItemClick={handleSettingsMenuItemClick}
         />
-        <BackupReminder onBackupClick={handleBackupReminderClick} />
       </>
     );
   }
@@ -194,6 +197,7 @@ function App() {
           }}
           useAreaBorderColors
           onDesireClick={(desire) => {
+            setPreviousView('list');
             setSelectedDesireId(desire.id);
             setCurrentView('detail');
           }}
@@ -209,7 +213,6 @@ function App() {
           onClose={() => setIsSettingsModalOpen(false)}
           onMenuItemClick={handleSettingsMenuItemClick}
         />
-        <BackupReminder onBackupClick={handleBackupReminderClick} />
       </>
     );
   }
@@ -221,7 +224,16 @@ function App() {
           onSave={handleDesireSaved} 
           initialDesire={editingDesire}
           presetArea={presetArea}
-          onBack={() => setCurrentView('wheel')}
+          onBack={() => {
+            // Если редактируем желание, возвращаемся на detail, иначе на wheel
+            if (editingDesire && previousView === 'detail') {
+              setCurrentView('detail');
+              setPreviousView(null);
+            } else {
+              setCurrentView(previousView || 'wheel');
+              setPreviousView(null);
+            }
+          }}
           onSettingsClick={handleSettingsClick}
         />
         <SettingsModal
@@ -229,7 +241,6 @@ function App() {
           onClose={() => setIsSettingsModalOpen(false)}
           onMenuItemClick={handleSettingsMenuItemClick}
         />
-        <BackupReminder onBackupClick={handleBackupReminderClick} />
       </>
     );
   }
@@ -244,6 +255,9 @@ function App() {
           onEdit={async () => {
             const desire = await desireService.getDesireById(selectedDesireId);
             if (desire) {
+              // Сохраняем текущий previousView перед переходом на форму редактирования
+              // чтобы после сохранения вернуться на исходную страницу (list, wheel, etc)
+              setPreviousViewBeforeEdit(previousView);
               setEditingDesire(desire);
               setCurrentView('form');
             }
@@ -335,20 +349,6 @@ function App() {
     );
   }
 
-  if (currentView === 'backup') {
-    return (
-      <>
-        <BackupPage onBack={handleBackFromSettings} onSettingsClick={handleSettingsClick} />
-        <SettingsModal
-          isOpen={isSettingsModalOpen}
-          onClose={() => setIsSettingsModalOpen(false)}
-          onMenuItemClick={handleSettingsMenuItemClick}
-        />
-        <BackupReminder onBackupClick={handleBackupReminderClick} />
-      </>
-    );
-  }
-
   if (currentView === 'statistics') {
     return (
       <>
@@ -356,6 +356,7 @@ function App() {
           onBack={handleBackFromSettings}
           onSettingsClick={handleSettingsClick}
           onDesireClick={(desireId) => {
+            setPreviousView('statistics');
             setSelectedDesireId(desireId);
             setCurrentView('detail');
           }}
@@ -377,6 +378,7 @@ function App() {
           onBack={() => setCurrentView('wheel')}
           useAreaBorderColors
           onDesireClick={(desire) => {
+            setPreviousView('completed');
             setSelectedDesireId(desire.id);
             setCurrentView('detail');
           }}
@@ -392,7 +394,6 @@ function App() {
           onClose={() => setIsSettingsModalOpen(false)}
           onMenuItemClick={handleSettingsMenuItemClick}
         />
-        <BackupReminder onBackupClick={handleBackupReminderClick} />
       </>
     );
   }

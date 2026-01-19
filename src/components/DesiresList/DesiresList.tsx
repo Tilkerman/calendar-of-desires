@@ -88,14 +88,8 @@ export default function DesiresList({
           const hasTodayContact = (today?.types?.length ?? 0) > 0;
           
           // Если есть контакт сегодня и время до 23:00, автоматически устанавливаем isActive
+          // (может быть несколько желаний в фокусе одновременно)
           if (hasTodayContact && currentHour < 23 && !desire.isActive) {
-            // Деактивируем все остальные желания
-            await Promise.all(
-              allDesires
-                .filter((d) => d.id !== desire.id && d.isActive)
-                .map((d) => desireService.updateDesire(d.id, { isActive: false }))
-            );
-            // Активируем текущее желание
             await desireService.updateDesire(desire.id, { isActive: true });
             desire.isActive = true;
           }
@@ -135,21 +129,14 @@ export default function DesiresList({
 
   const handleDesireClick = async (desire: Desire) => {
     // При клике на желание устанавливаем его "в фокусе" (если время до 23:00 и желание не выполнено)
+    // Может быть несколько желаний в фокусе одновременно
     // НО НЕ создаём контакт автоматически! Контакт создаётся только при явном действии.
     if (!showCompleted && !desire.isCompleted) {
       const now = new Date();
       const currentHour = now.getHours();
       
       if (currentHour < 23) {
-        // Деактивируем все остальные желания
-        const allDesires = await desireService.getAllDesires();
-        await Promise.all(
-          allDesires
-            .filter((d) => d.id !== desire.id && d.isActive)
-            .map((d) => desireService.updateDesire(d.id, { isActive: false }))
-        );
-        
-        // Активируем текущее желание
+        // Активируем текущее желание (может быть несколько желаний в фокусе одновременно)
         await desireService.updateDesire(desire.id, { isActive: true });
         
         // НЕ создаём контакт автоматически!

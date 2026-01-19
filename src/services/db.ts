@@ -357,17 +357,10 @@ export const contactService = {
     }
 
     // Автоматически устанавливаем желание "в фокусе" при создании контакта (если время до 23:00)
+    // Может быть несколько желаний в фокусе одновременно
     const now = new Date();
     const currentHour = now.getHours();
     if (currentHour < 23) {
-      // Деактивируем все остальные желания
-      const allDesires = await db.desires.toArray();
-      await Promise.all(
-        allDesires
-          .filter((d) => d.id !== desireId && d.isActive)
-          .map((d) => db.desires.update(d.id, { isActive: false }))
-      );
-      // Активируем текущее желание
       await db.desires.update(desireId, { isActive: true });
     }
 

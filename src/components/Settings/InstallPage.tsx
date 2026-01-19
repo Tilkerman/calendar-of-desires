@@ -15,7 +15,8 @@ export default function InstallPage({ onBack, onSettingsClick, onDataCleared }: 
   const [isClearing, setIsClearing] = useState(false);
 
   const handleShare = async () => {
-    const url = window.location.origin + window.location.pathname;
+    // Используем ссылку на GitHub Pages вместо локальной
+    const url = 'https://tilkerman.github.io/calendar-of-desires/';
     const title = t('header.appName');
     const text = t('settings.share.text');
 
@@ -86,12 +87,16 @@ export default function InstallPage({ onBack, onSettingsClick, onDataCleared }: 
           <div className="settings-section" style={{ marginTop: '2rem' }}>
             <h2 className="settings-section-title">{t('settings.install.title')}</h2>
             <div className="settings-page-text">
-              <p>{t('settings.install.text1')}</p>
+              <p><strong>{t('settings.install.text1')}</strong></p>
+              <p>{t('settings.install.offline')}</p>
+              <p>{t('settings.install.installSteps')}</p>
               <ul className="settings-page-list">
                 <li>{t('settings.install.item1')}</li>
                 <li>{t('settings.install.item2')}</li>
+                <li>{t('settings.install.item3')}</li>
               </ul>
               <p>{t('settings.install.text2')}</p>
+              <p><strong>{t('settings.install.afterInstall')}</strong></p>
             </div>
           </div>
 

@@ -33,7 +33,6 @@ export default function SettingsModal({ isOpen, onClose, onMenuItemClick }: Sett
     { id: 'install', icon: '📱', label: t('settings.menu.install') },
     { id: 'settings', icon: '⚙️', label: t('settings.menu.settings') },
     { id: 'feedback', icon: '✉️', label: t('settings.menu.feedback') },
-    { id: 'backup', icon: '💾', label: t('settings.menu.backup') },
     { id: 'statistics', icon: '📊', label: t('settings.menu.statistics') },
   ];
 

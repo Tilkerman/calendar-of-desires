@@ -15,55 +15,48 @@ export default function FeedbackPage({ onBack, onSettingsClick }: FeedbackPagePr
   const [rating, setRating] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const sendViaEmail = (text: string, rating: number | null) => {
-    const subject = encodeURIComponent(t('settings.feedback.emailSubject'));
-    const ratingText = rating ? `\n\n${t('settings.feedback.rating')}: ${rating}/5 ⭐` : '';
+  const sendViaEmail = async (text: string, rating: number | null) => {
+    const email = import.meta.env.VITE_FEEDBACK_EMAIL || 'vasil.ev81@mail.ru';
+    const ratingText = rating ? `\n\nОценка: ${rating}/5 ⭐` : '';
     const footer = t('settings.feedback.emailFooter');
-    const body = encodeURIComponent(`${text}${ratingText}\n\n---\n${footer}`);
-    // Email можно настроить через переменную окружения или оставить пустым (пользователь введёт сам)
-    const email = import.meta.env.VITE_FEEDBACK_EMAIL || '';
-    if (email) {
-      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-    } else {
-      // Если email не настроен, открываем mailto без адреса (пользователь введёт сам)
-      window.location.href = `mailto:?subject=${subject}&body=${body}`;
-    }
-  };
-
-  const sendViaTelegram = async (text: string, rating: number | null) => {
-    // Telegram Bot API - нужен токен бота
-    const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN || '';
-    const chatId = import.meta.env.VITE_TELEGRAM_CHAT_ID || '';
+    const message = `${text}${ratingText}\n\n---\n${footer}`;
     
-    if (!botToken || !chatId) {
-      // Если токен не настроен, используем mailto как fallback
-      sendViaEmail(text, rating);
-      return;
-    }
-
     try {
-      const ratingText = rating ? `\n\n⭐ Оценка: ${rating}/5` : '';
-      const message = `📝 Обратная связь из "Календарь желаний"\n\n${text}${ratingText}`;
+      // Используем FormSubmit для отправки email
+      // После активации формы через письмо, она будет работать автоматически
+      const formData = new FormData();
+      formData.append('email', email);
+      formData.append('subject', t('settings.feedback.emailSubject'));
+      formData.append('message', message);
+      formData.append('_captcha', 'false'); // Отключаем капчу для упрощения
+      formData.append('_template', 'box'); // Простой шаблон
       
-      const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      // Используем email напрямую (после активации формы это работает)
+      const response = await fetch('https://formsubmit.co/ajax/' + email, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: message,
-          parse_mode: 'HTML',
-        }),
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
       });
 
-      if (!response.ok) {
-        throw new Error('Telegram API error');
+      const result = await response.json();
+      
+      if (result.success) {
+        return true;
+      } else {
+        throw new Error('Failed to send email');
       }
     } catch (error) {
-      console.error('Ошибка отправки в Telegram:', error);
-      // Fallback на email
-      sendViaEmail(text, rating);
+      console.error('Ошибка отправки email:', error);
+      // Fallback на mailto
+      const subject = encodeURIComponent(t('settings.feedback.emailSubject'));
+      const body = encodeURIComponent(message);
+      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+      return false;
     }
   };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,17 +67,22 @@ export default function FeedbackPage({ onBack, onSettingsClick }: FeedbackPagePr
       // Сохраняем обратную связь в IndexedDB
       await feedbackService.saveFeedback(feedbackText, rating);
       
-      // Предлагаем отправить на email или Telegram
+      // Предлагаем отправить на email
       const sendChoice = window.confirm(
         t('settings.feedback.sendChoice')
       );
 
       if (sendChoice) {
-        // Пробуем отправить в Telegram, если настроено, иначе email
-        await sendViaTelegram(feedbackText, rating);
+        // Отправляем на email
+        const emailSent = await sendViaEmail(feedbackText, rating);
+        if (emailSent) {
+          alert(t('settings.feedback.thanks') + ' Письмо отправлено!');
+        } else {
+          alert(t('settings.feedback.thanks') + ' Открыт почтовый клиент для отправки.');
+        }
+      } else {
+        alert(t('settings.feedback.thanks'));
       }
-
-      alert(t('settings.feedback.thanks'));
       setFeedback('');
       setRating(null);
     } catch (error) {

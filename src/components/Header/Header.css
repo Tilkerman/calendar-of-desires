@@ -51,12 +51,14 @@
 .logo-icon-svg {
   width: 1.5rem;
   height: 1.5rem;
-  color: var(--text-primary);
+  color: var(--accent-color);
   flex-shrink: 0;
 }
 
 .logo-text {
   font-size: 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .header-actions {

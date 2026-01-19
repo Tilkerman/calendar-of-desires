@@ -38,8 +38,8 @@ export default function StatisticsPage({ onBack, onSettingsClick, onDesireClick 
   const loadStatistics = async () => {
     setIsLoading(true);
     try {
-      // Получаем все желания, включая выполненные
-      const allDesires = await desireService.getAllDesires(true);
+      // Получаем только активные желания (не удаленные и не выполненные)
+      const allDesires = await desireService.getAllDesires(false);
       
       // Для каждого желания получаем статистику
       const desiresWithStats = await Promise.all(
@@ -198,26 +198,102 @@ export default function StatisticsPage({ onBack, onSettingsClick, onDesireClick 
           {/* Секция "Как читать статистику" */}
           {desires.length > 0 && (
             <div className="statistics-help-section">
-              <details className="statistics-help-details">
+              <details className="statistics-help-details" open>
                 <summary className="statistics-help-summary">
-                  <span className="statistics-help-icon">ℹ️</span>
                   <span>{t('settings.statistics.howToRead.title')}</span>
                 </summary>
                 <div className="statistics-help-content">
+                  <p className="statistics-help-intro">{t('settings.statistics.howToRead.intro')}</p>
+                  
                   <div className="statistics-help-item">
-                    <h4 className="statistics-help-item-title">{t('settings.statistics.howToRead.activityPercent.title')}</h4>
+                    <div className="statistics-help-item-header">
+                      <span className="statistics-help-item-icon">📈</span>
+                      <h4 className="statistics-help-item-title">{t('settings.statistics.howToRead.activityPercent.title')}</h4>
+                    </div>
                     <p className="statistics-help-item-text">{t('settings.statistics.howToRead.activityPercent.text')}</p>
+                    <div className="statistics-help-visual">
+                      <div className="statistics-help-example">
+                        <div className="statistics-help-example-bar">
+                          <div className="statistics-help-example-fill" style={{ width: '50%' }}></div>
+                        </div>
+                        <span className="statistics-help-example-label">50% = каждый второй день</span>
+                      </div>
+                      <div className="statistics-help-example">
+                        <div className="statistics-help-example-bar">
+                          <div className="statistics-help-example-fill" style={{ width: '100%' }}></div>
+                        </div>
+                        <span className="statistics-help-example-label">100% = каждый день</span>
+                      </div>
+                    </div>
                   </div>
+                  
                   <div className="statistics-help-item">
-                    <h4 className="statistics-help-item-title">{t('settings.statistics.howToRead.avgActivity.title')}</h4>
+                    <div className="statistics-help-item-header">
+                      <span className="statistics-help-item-icon">⚡</span>
+                      <h4 className="statistics-help-item-title">{t('settings.statistics.howToRead.avgActivity.title')}</h4>
+                    </div>
                     <p className="statistics-help-item-text">{t('settings.statistics.howToRead.avgActivity.text')}</p>
+                    <div className="statistics-help-visual">
+                      <div className="statistics-help-activity-example">
+                        <span className="statistics-help-activity-icon">📝</span>
+                        <span>Запись</span>
+                        <span className="statistics-help-activity-plus">+</span>
+                        <span className="statistics-help-activity-icon">💭</span>
+                        <span>Мысль</span>
+                        <span className="statistics-help-activity-plus">+</span>
+                        <span className="statistics-help-activity-icon">👣</span>
+                        <span>Шаг</span>
+                        <span className="statistics-help-activity-equals">=</span>
+                        <strong>Активность</strong>
+                      </div>
+                    </div>
                   </div>
+                  
                   <div className="statistics-help-item">
-                    <h4 className="statistics-help-item-title">{t('settings.statistics.howToRead.indicators.title')}</h4>
+                    <div className="statistics-help-item-header">
+                      <span className="statistics-help-item-icon">🎯</span>
+                      <h4 className="statistics-help-item-title">{t('settings.statistics.howToRead.indicators.title')}</h4>
+                    </div>
                     <p className="statistics-help-item-text">{t('settings.statistics.howToRead.indicators.text')}</p>
+                    <div className="statistics-help-visual">
+                      <div className="statistics-help-levels">
+                        <div className="statistics-help-level">
+                          <span className="statistics-help-level-icon">🐌</span>
+                          <div className="statistics-help-level-info">
+                            <strong>Низкая</strong>
+                            <span>Возвращаетесь редко</span>
+                          </div>
+                        </div>
+                        <div className="statistics-help-level">
+                          <span className="statistics-help-level-icon">📊</span>
+                          <div className="statistics-help-level-info">
+                            <strong>Умеренная</strong>
+                            <span>Неплохо, но можно активнее</span>
+                          </div>
+                        </div>
+                        <div className="statistics-help-level">
+                          <span className="statistics-help-level-icon">⭐</span>
+                          <div className="statistics-help-level-info">
+                            <strong>Высокая</strong>
+                            <span>Отлично работаете!</span>
+                          </div>
+                        </div>
+                        <div className="statistics-help-level">
+                          <span className="statistics-help-level-icon">🔥</span>
+                          <div className="statistics-help-level-info">
+                            <strong>Очень высокая</strong>
+                            <span>Вы в топе!</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
+                  
                   <div className="statistics-help-item">
-                    <h4 className="statistics-help-item-title">{t('settings.statistics.howToRead.correlation.title')}</h4>
+                    <div className="statistics-help-item-header">
+                      <span className="statistics-help-item-icon">💡</span>
+                      <h4 className="statistics-help-item-title">{t('settings.statistics.howToRead.correlation.title')}</h4>
+                    </div>
                     <p className="statistics-help-item-text">{t('settings.statistics.howToRead.correlation.text')}</p>
                   </div>
                 </div>

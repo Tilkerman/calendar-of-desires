@@ -33,6 +33,7 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
   const [newActionItemText, setNewActionItemText] = useState('');
   const [editingActionItemId, setEditingActionItemId] = useState<string | null>(null);
   const [editingActionItemText, setEditingActionItemText] = useState('');
+  const tempActionItemIdRef = useRef<string | null>(null); // ID временного шага
 
   // Загружаем шаги при редактировании существующего желания
   useEffect(() => {
@@ -43,9 +44,56 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
       } else {
         setActionItems([]);
       }
+      // Сбрасываем временный шаг при загрузке
+      tempActionItemIdRef.current = null;
+      setNewActionItemText('');
     };
     loadActionItems();
   }, [initialDesire]);
+
+  const handleNewActionItemTextChange = (value: string) => {
+    setNewActionItemText(value);
+    const trimmedText = value.trim();
+
+    // Синхронизируем "черновик шага" сразу в onChange (без useEffect),
+    // чтобы при нажатии "Создать" он гарантированно попал в actionItems.
+    if (trimmedText) {
+      setActionItems((prev) => {
+        if (tempActionItemIdRef.current) {
+          return prev.map((item) =>
+            item.id === tempActionItemIdRef.current ? { ...item, text: trimmedText } : item
+          );
+        }
+
+        const tempId = `temp-${Date.now()}-${Math.random()}`;
+        tempActionItemIdRef.current = tempId;
+
+        const newItem: ActionItem = {
+          id: tempId,
+          desireId: initialDesire?.id || '',
+          text: trimmedText,
+          isCompleted: false,
+          order: prev.length,
+          createdAt: new Date().toISOString(),
+          completedAt: null,
+        };
+
+        return [...prev, newItem];
+      });
+      return;
+    }
+
+    // Если поле очистили — удаляем черновик шага из списка.
+    if (tempActionItemIdRef.current) {
+      const tempId = tempActionItemIdRef.current;
+      tempActionItemIdRef.current = null;
+      setActionItems((prev) =>
+        prev
+          .filter((item) => item.id !== tempId)
+          .map((item, index) => ({ ...item, order: index }))
+      );
+    }
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -85,20 +133,85 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
 
   // Обработчики для шагов
   const handleAddActionItem = () => {
-    if (!newActionItemText.trim()) return;
-    
-    const newItem: ActionItem = {
-      id: `temp-${Date.now()}-${Math.random()}`,
-      desireId: initialDesire?.id || '',
-      text: newActionItemText.trim(),
-      isCompleted: false,
-      order: actionItems.length,
-      createdAt: new Date().toISOString(),
-      completedAt: null,
-    };
-    
-    setActionItems([...actionItems, newItem]);
+    // Кнопка "+" фиксирует текущий введённый шаг и очищает поле для следующего шага.
+    const draftText = newActionItemText.trim();
+    if (!draftText) return;
+
+    const draftId = tempActionItemIdRef.current;
+    // Важно: setActionItems из onChange может ещё не успеть примениться,
+    // поэтому при фиксации через "+" мы обязаны добавить шаг в список гарантированно.
+    const committedId = `temp-${Date.now()}-${Math.random()}`;
+    setActionItems((prev) => {
+      const hasDraft = draftId ? prev.some((it) => it.id === draftId) : false;
+
+      if (draftId && hasDraft) {
+        // "Отвязываем" зафиксированный шаг от черновика, чтобы он больше не затирался при вводе следующего.
+        return prev
+          .map((it) => (it.id === draftId ? { ...it, id: committedId, text: draftText } : it))
+          .map((it, index) => ({ ...it, order: index }));
+      }
+
+      // Если черновика ещё нет в state (или draftId отсутствует) — просто добавляем новый шаг.
+      return [
+        ...prev,
+        {
+          id: committedId,
+          desireId: initialDesire?.id || '',
+          text: draftText,
+          isCompleted: false,
+          order: prev.length,
+          createdAt: new Date().toISOString(),
+          completedAt: null,
+        },
+      ].map((it, index) => ({ ...it, order: index }));
+    });
+
+    tempActionItemIdRef.current = null;
     setNewActionItemText('');
+  };
+
+  const buildActionItemsForSave = (): ActionItem[] => {
+    const draftText = newActionItemText.trim();
+    const tempId = tempActionItemIdRef.current;
+
+    let items: ActionItem[] = [...actionItems];
+
+    // Если в поле ввода есть текст — гарантируем, что он есть в items.
+    if (draftText) {
+      if (tempId) {
+        const exists = items.some((it) => it.id === tempId);
+        if (exists) {
+          items = items.map((it) => (it.id === tempId ? { ...it, text: draftText } : it));
+        } else {
+          items.push({
+            id: tempId,
+            desireId: initialDesire?.id || '',
+            text: draftText,
+            isCompleted: false,
+            order: items.length,
+            createdAt: new Date().toISOString(),
+            completedAt: null,
+          });
+        }
+      } else {
+        // Текст есть, но tempId ещё не выставлен (редкий случай) — добавляем как новый temp.
+        const newTempId = `temp-${Date.now()}-${Math.random()}`;
+        items.push({
+          id: newTempId,
+          desireId: initialDesire?.id || '',
+          text: draftText,
+          isCompleted: false,
+          order: items.length,
+          createdAt: new Date().toISOString(),
+          completedAt: null,
+        });
+      }
+    }
+
+    // Нормализуем порядок и убираем пустые.
+    return items
+      .map((it, index) => ({ ...it, text: it.text.trim(), order: index }))
+      .filter((it) => Boolean(it.text));
   };
 
   const handleEditActionItem = (id: string) => {
@@ -131,6 +244,8 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
 
     setIsLoading(true);
     try {
+      const itemsToSave = buildActionItemsForSave();
+
       if (initialDesire) {
         // Редактирование существующего желания
         await desireService.updateDesire(initialDesire.id, {
@@ -142,7 +257,7 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
         
         // Сохраняем шаги
         const existingItems = await actionItemService.getActionItemsByDesire(initialDesire.id);
-        const currentIds = new Set(actionItems.map((it) => it.id));
+        const currentIds = new Set(itemsToSave.map((it) => it.id));
         
         // Удаляем шаги, которых больше нет
         for (const existing of existingItems) {
@@ -152,8 +267,8 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
         }
         
         // Создаём или обновляем шаги
-        for (let i = 0; i < actionItems.length; i++) {
-          const item = actionItems[i];
+        for (let i = 0; i < itemsToSave.length; i++) {
+          const item = itemsToSave[i];
           if (item.id.startsWith('temp-')) {
             // Новый шаг
             await actionItemService.createActionItem(initialDesire.id, item.text, i);
@@ -179,9 +294,9 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
           isActive: true, // Новое желание автоматически становится "Сегодня в фокусе"
         });
         
-        // Создаём шаги
-        for (let i = 0; i < actionItems.length; i++) {
-          await actionItemService.createActionItem(desireId, actionItems[i].text, i);
+        // Создаём шаги (включая черновик шага из поля ввода)
+        for (let i = 0; i < itemsToSave.length; i++) {
+          await actionItemService.createActionItem(desireId, itemsToSave[i].text, i);
         }
         
         // Устанавливаем фокус на новое желание
@@ -387,7 +502,7 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
               type="text"
               className="action-item-input"
               value={newActionItemText}
-              onChange={(e) => setNewActionItemText(e.target.value)}
+              onChange={(e) => handleNewActionItemTextChange(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   e.preventDefault();
@@ -406,6 +521,11 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
               +
             </button>
           </div>
+          {newActionItemText.trim() && (
+            <p className="form-hint" style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary, #666666)' }}>
+              {t('form.actionItems.autoSaveHint')}
+            </p>
+          )}
         </div>
 
         {/* Кнопка действия */}

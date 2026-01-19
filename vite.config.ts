@@ -19,9 +19,9 @@ export default defineConfig(({ mode }) => {
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'apple-touch-icon.svg', 'vite.svg'],
         manifest: {
-          name: 'Calendar of Desires',
-          short_name: 'CoD',
-          description: 'Календарь желаний - ежедневный ритуал работы с желаниями',
+          name: 'LUMI',
+          short_name: 'LUMI',
+          description: 'LUMI — ежедневный ритуал работы с желаниями',
           theme_color: '#646cff',
           background_color: '#ffffff',
           display: 'standalone',
