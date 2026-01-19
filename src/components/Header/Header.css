@@ -49,10 +49,16 @@
 }
 
 .logo-icon-svg {
-  width: auto;
-  height: 1.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
   color: var(--accent-color);
   flex-shrink: 0;
+}
+
+.logo-text {
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .header-actions {
@@ -183,7 +189,8 @@
   }
 
   .logo-icon-svg {
-    height: 1.5rem;
+    width: 1.25rem;
+    height: 1.25rem;
   }
 }
 
