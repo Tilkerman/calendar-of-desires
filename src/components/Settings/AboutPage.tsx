@@ -24,6 +24,11 @@ export default function AboutPage({ onBack, onSettingsClick }: AboutPageProps) {
         <div className="settings-page-content">
           <h1 className="settings-page-title">{t('settings.about.title')}</h1>
           <div className="settings-page-text">
+            <div className="about-lumi-intro">
+              <h2 className="about-lumi-subtitle">{t('settings.about.subtitle')}</h2>
+              <p className="about-lumi-subtitle-ru">{t('settings.about.subtitleRu')}</p>
+              <p className="about-lumi-description">{t('settings.about.description')}</p>
+            </div>
             <p>{t('settings.about.text1')}</p>
             <p>{t('settings.about.text2')}</p>
             <p>{t('settings.about.text3')}</p>

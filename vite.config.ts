@@ -17,7 +17,7 @@ export default defineConfig(({ mode }) => {
       react(),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['favicon.ico', 'apple-touch-icon.svg', 'vite.svg'],
+        includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'apple-touch-icon.svg', 'vite.svg'],
         manifest: {
           name: 'LUMI',
           short_name: 'LUMI',
@@ -31,6 +31,13 @@ export default defineConfig(({ mode }) => {
         icons: [
           {
             // Важно для GitHub Pages: в проде иконка должна быть внутри base path
+            src: isProduction ? '/calendar-of-desires/apple-touch-icon.png' : '/apple-touch-icon.png',
+            sizes: '180x180',
+            type: 'image/png',
+            purpose: 'any maskable'
+          },
+          {
+            // Fallback SVG для других платформ
             src: isProduction ? '/calendar-of-desires/apple-touch-icon.svg' : '/apple-touch-icon.svg',
             sizes: '180x180',
             type: 'image/svg+xml',
