@@ -14,6 +14,7 @@ import InstallPage from './components/Settings/InstallPage';
 import SettingsPage from './components/Settings/SettingsPage';
 import FeedbackPage from './components/Settings/FeedbackPage';
 import StatisticsPage from './components/Settings/StatisticsPage';
+import { startReminderScheduler } from './services/reminderScheduler';
 
 type View = 'wheel' | 'list' | 'form' | 'detail' | 'about' | 'tutorial' | 'install' | 'settings' | 'feedback' | 'statistics' | 'completed';
 
@@ -46,6 +47,16 @@ function App() {
     };
 
     checkDesires();
+  }, []);
+
+  // Инициализируем планировщик напоминаний при загрузке
+  useEffect(() => {
+    // Ждем регистрации service worker перед запуском планировщика
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then(() => {
+        startReminderScheduler();
+      }).catch(console.error);
+    }
   }, []);
 
   const handleCreateDesire = () => {

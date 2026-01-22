@@ -220,6 +220,61 @@
   font-style: italic;
 }
 
+.settings-hint-error {
+  color: #c44d58;
+  font-style: normal;
+}
+
+.settings-time-container {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.settings-time-label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.settings-time-input {
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-family: inherit;
+  max-width: 200px;
+}
+
+.settings-time-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+.settings-test-button {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.settings-test-button:hover {
+  background: var(--button-bg-hover);
+}
+
+.settings-test-button:active {
+  transform: scale(0.98);
+}
+
 .feedback-form {
   margin-top: 1rem;
 }
