@@ -26,7 +26,9 @@ export default function Header({ onSettingsClick, onLogoClick, leftSlot }: Heade
             type="button"
           >
             <LogoIcon />
-            <span className="logo-text">{t('header.appName')}</span>
+            <span className={`logo-text ${leftSlot ? 'logo-text-hidden' : ''}`}>
+              {t('header.appName')}
+            </span>
           </button>
         </div>
 
