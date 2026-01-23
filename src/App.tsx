@@ -21,7 +21,7 @@ type View = 'welcome' | 'wheel' | 'list' | 'form' | 'detail' | 'about' | 'tutori
 
 function App() {
   const { t } = useI18n();
-  const [currentView, setCurrentView] = useState<View>('list');
+  const [currentView, setCurrentView] = useState<View>('welcome'); // Начальное состояние - welcome
   const [selectedDesireId, setSelectedDesireId] = useState<string | null>(null);
   const [editingDesire, setEditingDesire] = useState<Desire | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
@@ -146,6 +146,14 @@ function App() {
     // При клике на START переходим на колесо жизни
     setCurrentView('wheel');
   };
+
+  // Показываем Welcome Screen во время загрузки, если текущий view - welcome
+  // Это гарантирует, что при первом запуске пользователь сразу увидит Welcome Screen
+  if (isLoading && currentView === 'welcome') {
+    return (
+      <WelcomeScreen onStart={handleWelcomeStart} />
+    );
+  }
 
   if (isLoading) {
     return (
@@ -453,3 +461,4 @@ function App() {
 }
 
 export default App;
+
