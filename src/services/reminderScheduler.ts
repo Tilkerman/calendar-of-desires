@@ -3,7 +3,6 @@
 import { areNotificationsEnabled, getNotificationTime, showDailyReminder } from '../utils/notifications';
 
 let reminderInterval: number | null = null;
-let scheduledTime: string | null = null;
 
 /**
  * Парсит время в формате "HH:mm" и возвращает количество миллисекунд до этого времени сегодня
@@ -35,7 +34,6 @@ export function startReminderScheduler(): void {
   }
 
   const time = getNotificationTime();
-  scheduledTime = time;
 
   // Планируем первое напоминание
   const msUntilTime = getMillisecondsUntilTime(time);
@@ -63,7 +61,6 @@ export function stopReminderScheduler(): void {
     clearInterval(reminderInterval);
     reminderInterval = null;
   }
-  scheduledTime = null;
 }
 
 /**

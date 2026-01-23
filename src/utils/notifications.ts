@@ -130,14 +130,18 @@ export async function showDailyReminder(): Promise<void> {
 
   const registration = await navigator.serviceWorker.ready;
   const iconPath = getIconPath();
-  
-  await registration.showNotification('LUMI', {
+
+  // TS lib.dom тип NotificationOptions не везде содержит `vibrate`,
+  // но на части платформ (особенно Android) оно поддерживается.
+  const options: NotificationOptions & { vibrate?: number[] } = {
     body: 'Время для ежедневного ритуала! Вернитесь к своим желаниям.',
     icon: iconPath,
     badge: iconPath,
     tag: 'daily-reminder',
     requireInteraction: false,
     vibrate: [200, 100, 200],
-  });
+  };
+
+  await registration.showNotification('LUMI', options);
 }
 

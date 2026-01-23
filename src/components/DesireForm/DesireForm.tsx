@@ -53,33 +53,28 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
     loadActionItems();
   }, [initialDesire]);
 
-  // Скроллим в самый верх при открытии формы (особенно при редактировании)
-  // Скроллим в самый верх при редактировании желания
+  // Скроллим в самый верх при редактировании (к названию желания).
+  // Важно: не трогаем скролл при создании нового желания.
   useEffect(() => {
-    if (initialDesire) {
-      // Небольшая задержка, чтобы компонент успел отрендериться
-      const timer = setTimeout(() => {
-        // Сначала скроллим в самый верх страницы (к началу документа)
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        
-        // Затем скроллим к заголовку формы или полю названия
-        setTimeout(() => {
-          if (formHeaderRef.current) {
-            // Скроллим к заголовку формы (где название желания)
-            formHeaderRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          } else if (titleInputRef.current) {
-            // Если заголовок не найден, скроллим к полю названия
-            titleInputRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }, 200);
-      }, 150);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [initialDesire?.id]); // Зависимость от ID желания, чтобы срабатывало при каждом редактировании
-    
-    return () => clearTimeout(timer);
-  }, [initialDesire]);
+    if (!initialDesire) return;
+
+    // Небольшая задержка, чтобы компонент успел отрендериться
+    const timer = window.setTimeout(() => {
+      // Сначала скроллим в самый верх страницы (к началу документа)
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Затем скроллим к заголовку формы или полю названия
+      window.setTimeout(() => {
+        if (formHeaderRef.current) {
+          formHeaderRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (titleInputRef.current) {
+          titleInputRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 200);
+    }, 150);
+
+    return () => window.clearTimeout(timer);
+  }, [initialDesire?.id]);
 
   const handleNewActionItemTextChange = (value: string) => {
     setNewActionItemText(value);
