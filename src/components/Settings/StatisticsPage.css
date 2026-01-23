@@ -839,6 +839,40 @@
   }
 }
 
+/* Кнопка "Активность" */
+.statistics-card-activity-button-container {
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: center;
+}
+
+.statistics-card-activity-button {
+  background: var(--accent-color, #646cff);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.statistics-card-activity-button:hover {
+  background: var(--accent-color-hover, #535bf2);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(100, 108, 255, 0.3);
+}
+
+.statistics-card-activity-button:active {
+  transform: translateY(0);
+}
+
 /* Адаптивность для мобильных */
 @media (max-width: 768px) {
   .statistics-grid {

@@ -27,6 +27,8 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const titleInputRef = useRef<HTMLInputElement>(null);
+  const formHeaderRef = useRef<HTMLElement>(null);
   
   // Состояние для шагов (action items)
   const [actionItems, setActionItems] = useState<ActionItem[]>([]);
@@ -49,6 +51,34 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
       setNewActionItemText('');
     };
     loadActionItems();
+  }, [initialDesire]);
+
+  // Скроллим в самый верх при открытии формы (особенно при редактировании)
+  // Скроллим в самый верх при редактировании желания
+  useEffect(() => {
+    if (initialDesire) {
+      // Небольшая задержка, чтобы компонент успел отрендериться
+      const timer = setTimeout(() => {
+        // Сначала скроллим в самый верх страницы (к началу документа)
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // Затем скроллим к заголовку формы или полю названия
+        setTimeout(() => {
+          if (formHeaderRef.current) {
+            // Скроллим к заголовку формы (где название желания)
+            formHeaderRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          } else if (titleInputRef.current) {
+            // Если заголовок не найден, скроллим к полю названия
+            titleInputRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 200);
+      }, 150);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [initialDesire?.id]); // Зависимость от ID желания, чтобы срабатывало при каждом редактировании
+    
+    return () => clearTimeout(timer);
   }, [initialDesire]);
 
   const handleNewActionItemTextChange = (value: string) => {
@@ -314,7 +344,7 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
   return (
     <div className="desire-form-container">
       {/* Шапка экрана (sticky) */}
-      <header className="desire-form-header">
+      <header ref={formHeaderRef} className="desire-form-header">
         {onBack && (
           <button
             type="button"
@@ -346,6 +376,7 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
         <div className="form-group">
           <label htmlFor="title">{t('form.title.label')}</label>
           <input
+            ref={titleInputRef}
             id="title"
             type="text"
             value={title}

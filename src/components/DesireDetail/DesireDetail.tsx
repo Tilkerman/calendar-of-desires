@@ -108,8 +108,15 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick, onEdit
     }
   };
 
-  const handleSaveEntry = async () => {
+  const handleSaveEntry = async (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (!desire) return;
+    
+    // Сохраняем текущую позицию скролла
+    const scrollPosition = window.scrollY;
     
     setIsSaving(true);
     try {
@@ -130,6 +137,11 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick, onEdit
       }
       
       await loadDesire();
+      
+      // Восстанавливаем позицию скролла после перезагрузки
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: scrollPosition, behavior: 'auto' });
+      });
     } catch (error) {
       console.error('Ошибка при сохранении записи:', error);
       alert(t('detail.error.saveNote'));
@@ -138,8 +150,15 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick, onEdit
     }
   };
 
-  const handleThoughtClick = async () => {
+  const handleThoughtClick = async (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (!desire || todayThought) return; // Уже есть контакт за сегодня
+    
+    // Сохраняем текущую позицию скролла
+    const scrollPosition = window.scrollY;
     
     setIsSaving(true);
     try {
@@ -147,6 +166,11 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick, onEdit
       setSaveConfirmation('thought');
       setTimeout(() => setSaveConfirmation(null), 2000);
       await loadDesire();
+      
+      // Восстанавливаем позицию скролла после перезагрузки
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: scrollPosition, behavior: 'auto' });
+      });
     } catch (error) {
       console.error('Ошибка при сохранении мыслей:', error);
     } finally {
@@ -189,11 +213,24 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick, onEdit
     }
   };
 
-  const handleToggleActionItem = async (id: string) => {
+  const handleToggleActionItem = async (id: string, e?: React.ChangeEvent<HTMLInputElement>) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    // Сохраняем текущую позицию скролла
+    const scrollPosition = window.scrollY;
+    
     setIsSaving(true);
     try {
       await actionItemService.toggleActionItem(id);
       await loadDesire(); // Перезагружаем данные
+      
+      // Восстанавливаем позицию скролла после перезагрузки
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: scrollPosition, behavior: 'auto' });
+      });
     } catch (error) {
       console.error('Ошибка при переключении шага:', error);
       alert(t('detail.error.toggleStep'));
@@ -298,13 +335,18 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick, onEdit
             className="desire-detail-entry-input"
             value={entryText}
             onChange={(e) => setEntryText(e.target.value)}
-            onBlur={handleSaveEntry}
+            onBlur={(e) => {
+              // Предотвращаем скролл при потере фокуса
+              e.preventDefault();
+              handleSaveEntry();
+            }}
             placeholder={t('detail.notes.placeholder')}
             rows={4}
             disabled={isSaving}
           />
           {entryText.trim() !== (todayEntry?.text || '').trim() && entryText.trim() && (
             <button
+              type="button"
               className="desire-detail-save-button"
               onClick={handleSaveEntry}
               disabled={isSaving}
@@ -321,6 +363,7 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick, onEdit
         <div className="desire-detail-section">
           <h2 className="desire-detail-section-title desire-detail-section-title-spaced">{t('detail.thoughts.title')}</h2>
           <button
+            type="button"
             className={`desire-detail-action-button ${todayThought ? 'desire-detail-action-button-done' : ''}`}
             onClick={handleThoughtClick}
             disabled={isSaving || !!todayThought}
@@ -351,7 +394,7 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick, onEdit
                   <input
                     type="checkbox"
                     checked={item.isCompleted}
-                    onChange={() => handleToggleActionItem(item.id)}
+                    onChange={(e) => handleToggleActionItem(item.id, e)}
                     disabled={isSaving}
                     className="action-item-checkbox"
                   />

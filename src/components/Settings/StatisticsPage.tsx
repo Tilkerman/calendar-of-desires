@@ -7,6 +7,7 @@ import { desireService, contactService, actionItemService } from '../../services
 import type { Desire } from '../../types';
 import { formatStatValue } from '../../utils/formatStats';
 import { getActivityIndicator, compareWithAverage } from '../../utils/activityIndicators';
+import ActivityCalendarModal from '../ActivityCalendar/ActivityCalendarModal';
 
 interface StatisticsPageProps {
   onBack: () => void;
@@ -30,6 +31,8 @@ export default function StatisticsPage({ onBack, onSettingsClick, onDesireClick 
   const { t, locale } = useI18n();
   const [desires, setDesires] = useState<DesireStatistics[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [activityCalendarOpen, setActivityCalendarOpen] = useState(false);
+  const [selectedDesireForCalendar, setSelectedDesireForCalendar] = useState<{ id: string; title: string } | null>(null);
 
   useEffect(() => {
     loadStatistics();
@@ -127,6 +130,17 @@ export default function StatisticsPage({ onBack, onSettingsClick, onDesireClick 
     }
   };
 
+  const handleActivityClick = (e: React.MouseEvent, desire: DesireStatistics) => {
+    e.stopPropagation(); // Предотвращаем клик по карточке
+    setSelectedDesireForCalendar({ id: desire.id, title: desire.title });
+    setActivityCalendarOpen(true);
+  };
+
+  const handleCloseActivityCalendar = () => {
+    setActivityCalendarOpen(false);
+    setSelectedDesireForCalendar(null);
+  };
+
   const getMainImage = (desire: Desire): string | null => {
     if (desire.images && desire.images.length > 0) {
       return desire.images[0].url;
@@ -216,13 +230,13 @@ export default function StatisticsPage({ onBack, onSettingsClick, onDesireClick 
                         <div className="statistics-help-example-bar">
                           <div className="statistics-help-example-fill" style={{ width: '50%' }}></div>
                         </div>
-                        <span className="statistics-help-example-label">50% = каждый второй день</span>
+                        <span className="statistics-help-example-label">{t('settings.statistics.howToRead.activityPercent.example50')}</span>
                       </div>
                       <div className="statistics-help-example">
                         <div className="statistics-help-example-bar">
                           <div className="statistics-help-example-fill" style={{ width: '100%' }}></div>
                         </div>
-                        <span className="statistics-help-example-label">100% = каждый день</span>
+                        <span className="statistics-help-example-label">{t('settings.statistics.howToRead.activityPercent.example100')}</span>
                       </div>
                     </div>
                   </div>
@@ -236,15 +250,15 @@ export default function StatisticsPage({ onBack, onSettingsClick, onDesireClick 
                     <div className="statistics-help-visual">
                       <div className="statistics-help-activity-example">
                         <span className="statistics-help-activity-icon">📝</span>
-                        <span>Запись</span>
+                        <span>{t('settings.statistics.howToRead.avgActivity.entry')}</span>
                         <span className="statistics-help-activity-plus">+</span>
                         <span className="statistics-help-activity-icon">💭</span>
-                        <span>Мысль</span>
+                        <span>{t('settings.statistics.howToRead.avgActivity.thought')}</span>
                         <span className="statistics-help-activity-plus">+</span>
                         <span className="statistics-help-activity-icon">👣</span>
-                        <span>Шаг</span>
+                        <span>{t('settings.statistics.howToRead.avgActivity.step')}</span>
                         <span className="statistics-help-activity-equals">=</span>
-                        <strong>Активность</strong>
+                        <strong>{t('settings.statistics.howToRead.avgActivity.activity')}</strong>
                       </div>
                     </div>
                   </div>
@@ -260,29 +274,29 @@ export default function StatisticsPage({ onBack, onSettingsClick, onDesireClick 
                         <div className="statistics-help-level">
                           <span className="statistics-help-level-icon">🐌</span>
                           <div className="statistics-help-level-info">
-                            <strong>Низкая</strong>
-                            <span>Возвращаетесь редко</span>
+                            <strong>{t('settings.statistics.howToRead.indicators.low.title')}</strong>
+                            <span>{t('settings.statistics.howToRead.indicators.low.text')}</span>
                           </div>
                         </div>
                         <div className="statistics-help-level">
                           <span className="statistics-help-level-icon">📊</span>
                           <div className="statistics-help-level-info">
-                            <strong>Умеренная</strong>
-                            <span>Неплохо, но можно активнее</span>
+                            <strong>{t('settings.statistics.howToRead.indicators.moderate.title')}</strong>
+                            <span>{t('settings.statistics.howToRead.indicators.moderate.text')}</span>
                           </div>
                         </div>
                         <div className="statistics-help-level">
                           <span className="statistics-help-level-icon">⭐</span>
                           <div className="statistics-help-level-info">
-                            <strong>Высокая</strong>
-                            <span>Отлично работаете!</span>
+                            <strong>{t('settings.statistics.howToRead.indicators.high.title')}</strong>
+                            <span>{t('settings.statistics.howToRead.indicators.high.text')}</span>
                           </div>
                         </div>
                         <div className="statistics-help-level">
                           <span className="statistics-help-level-icon">🔥</span>
                           <div className="statistics-help-level-info">
-                            <strong>Очень высокая</strong>
-                            <span>Вы в топе!</span>
+                            <strong>{t('settings.statistics.howToRead.indicators.veryHigh.title')}</strong>
+                            <span>{t('settings.statistics.howToRead.indicators.veryHigh.text')}</span>
                           </div>
                         </div>
                       </div>
@@ -533,6 +547,17 @@ export default function StatisticsPage({ onBack, onSettingsClick, onDesireClick 
                         </span>
                       </div>
                     </div>
+
+                    {/* Кнопка "Активность" */}
+                    <div className="statistics-card-activity-button-container">
+                      <button
+                        type="button"
+                        className="statistics-card-activity-button"
+                        onClick={(e) => handleActivityClick(e, desire)}
+                      >
+                        📅 {t('activityCalendar.button')}
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
@@ -540,6 +565,16 @@ export default function StatisticsPage({ onBack, onSettingsClick, onDesireClick 
           </div>
         </div>
       </div>
+
+      {/* Модальное окно календаря активности */}
+      {selectedDesireForCalendar && (
+        <ActivityCalendarModal
+          isOpen={activityCalendarOpen}
+          onClose={handleCloseActivityCalendar}
+          desireId={selectedDesireForCalendar.id}
+          desireTitle={selectedDesireForCalendar.title}
+        />
+      )}
     </>
   );
 }

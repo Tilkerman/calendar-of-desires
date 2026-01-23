@@ -14,9 +14,10 @@ import InstallPage from './components/Settings/InstallPage';
 import SettingsPage from './components/Settings/SettingsPage';
 import FeedbackPage from './components/Settings/FeedbackPage';
 import StatisticsPage from './components/Settings/StatisticsPage';
+import WelcomeScreen from './components/WelcomeScreen/WelcomeScreen';
 import { startReminderScheduler } from './services/reminderScheduler';
 
-type View = 'wheel' | 'list' | 'form' | 'detail' | 'about' | 'tutorial' | 'install' | 'settings' | 'feedback' | 'statistics' | 'completed';
+type View = 'welcome' | 'wheel' | 'list' | 'form' | 'detail' | 'about' | 'tutorial' | 'install' | 'settings' | 'feedback' | 'statistics' | 'completed';
 
 function App() {
   const { t } = useI18n();
@@ -36,11 +37,16 @@ function App() {
   useEffect(() => {
     const checkDesires = async () => {
       try {
-        await desireService.getAllDesires();
-        setCurrentView('list');
+        const desires = await desireService.getAllDesires();
+        if (desires.length === 0) {
+          // Если нет желаний, показываем WelcomeScreen
+          setCurrentView('welcome');
+        } else {
+          setCurrentView('list');
+        }
       } catch (error) {
         console.error('Ошибка при проверке желаний:', error);
-        setCurrentView('list');
+        setCurrentView('welcome');
       } finally {
         setIsLoading(false);
       }
@@ -131,9 +137,14 @@ function App() {
   };
 
   const handleDataCleared = () => {
-    // После очистки данных возвращаемся на главный экран
-    setCurrentView('wheel');
+    // После очистки данных показываем WelcomeScreen
+    setCurrentView('welcome');
     window.location.reload();
+  };
+
+  const handleWelcomeStart = () => {
+    // При клике на START переходим на колесо жизни
+    setCurrentView('wheel');
   };
 
   if (isLoading) {
@@ -149,6 +160,12 @@ function App() {
       }}>
         <div style={{ fontSize: '1rem', textAlign: 'center' }}>{t('common.loading')}</div>
       </div>
+    );
+  }
+
+  if (currentView === 'welcome') {
+    return (
+      <WelcomeScreen onStart={handleWelcomeStart} />
     );
   }
 
