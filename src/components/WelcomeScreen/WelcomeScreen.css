@@ -57,9 +57,10 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  opacity: 0.42;
-  filter: drop-shadow(0 10px 26px rgba(0, 0, 0, 0.04)) saturate(1.05);
-  mix-blend-mode: soft-light;
+  /* IMPORTANT: this must match the provided PNG and stay readable on iOS */
+  opacity: 0.62;
+  mix-blend-mode: normal;
+  filter: drop-shadow(0 10px 26px rgba(0, 0, 0, 0.04)) brightness(1.08) contrast(1.06) saturate(1.08);
   user-select: none;
   pointer-events: none;
 }
