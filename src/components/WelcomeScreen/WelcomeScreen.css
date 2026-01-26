@@ -77,7 +77,7 @@
 }
 
 .welcome-motivation-img {
-  width: min(160px, 41vw);
+  width: min(190px, 48vw);
   height: auto;
   display: block;
   filter: drop-shadow(0 1px 8px rgba(0, 0, 0, 0.08));
@@ -87,7 +87,7 @@
 
 /* Кнопка START */
 .welcome-start-button {
-  width: min(170px, 43vw);
+  width: min(210px, 54vw);
   padding: 0;
   background: transparent;
   border: 0;
