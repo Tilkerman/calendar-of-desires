@@ -31,15 +31,16 @@
 
 /* Логотип Lumi */
 .welcome-logo {
-  font-size: clamp(2.7rem, 9vw, 4.1rem);
+  font-size: clamp(2.9rem, 10vw, 4.4rem);
   font-weight: 400;
   font-style: italic;
   color: #ffffff;
   text-align: center;
   margin: 0;
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.12);
-  letter-spacing: 0.015em;
-  font-family: 'Playfair Display', 'Georgia', 'Times New Roman', serif;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  font-family: 'Bodoni Moda', 'Didot', 'Baskerville', 'Georgia', 'Times New Roman', serif;
 }
 
 /* Мандала */
@@ -52,18 +53,12 @@
   justify-content: center;
 }
 
-.welcome-mandala-picture {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
 .welcome-mandala-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  opacity: 0.34;
-  filter: drop-shadow(0 10px 26px rgba(0, 0, 0, 0.06));
+  opacity: 0.24;
+  filter: drop-shadow(0 10px 26px rgba(0, 0, 0, 0.05));
   user-select: none;
   pointer-events: none;
 }
@@ -93,7 +88,7 @@
   font-weight: 500;
   color: rgba(255, 255, 255, 0.9);
   background: transparent;
-  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.85);
   border-radius: 999px;
   cursor: pointer;
   transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
@@ -101,6 +96,31 @@
   text-transform: uppercase;
   font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Avenir, Helvetica, Arial,
     sans-serif;
+  position: relative;
+  isolation: isolate;
+}
+
+.welcome-start-button::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  pointer-events: none;
+}
+
+.welcome-start-button::after {
+  content: '';
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 7px;
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0));
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.6;
 }
 
 .welcome-start-button:hover {
