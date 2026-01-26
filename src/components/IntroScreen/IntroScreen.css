@@ -1,0 +1,51 @@
+.intro-screen {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  background: linear-gradient(180deg, #826fb2 0%, #fdf588 100%);
+  padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px)
+    env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+}
+
+.intro-stage {
+  width: min(100%, 440px);
+  /* Fits the original design ratio from the provided SVG */
+  aspect-ratio: 440 / 956;
+  position: relative;
+  align-self: center;
+}
+
+.intro-art {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* GO button hit area based on SVG coordinates:
+   viewBox: 440x956
+   button approx box: x=98.5..342.5, y=822.5..882.5
+*/
+.intro-go-hit {
+  position: absolute;
+  left: 22.39%;
+  top: 86.03%;
+  width: 55.45%;
+  height: 6.28%;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.intro-go-hit:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.85);
+  outline-offset: 3px;
+  border-radius: 14px;
+}
+
+

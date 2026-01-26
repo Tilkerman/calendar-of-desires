@@ -15,9 +15,25 @@ import SettingsPage from './components/Settings/SettingsPage';
 import FeedbackPage from './components/Settings/FeedbackPage';
 import StatisticsPage from './components/Settings/StatisticsPage';
 import WelcomeScreen from './components/WelcomeScreen/WelcomeScreen';
+import IntroScreen from './components/IntroScreen/IntroScreen';
 import { startReminderScheduler } from './services/reminderScheduler';
 
-type View = 'welcome' | 'wheel' | 'list' | 'form' | 'detail' | 'about' | 'tutorial' | 'install' | 'settings' | 'feedback' | 'statistics' | 'completed';
+type View =
+  | 'welcome'
+  | 'intro'
+  | 'wheel'
+  | 'list'
+  | 'form'
+  | 'detail'
+  | 'about'
+  | 'tutorial'
+  | 'install'
+  | 'settings'
+  | 'feedback'
+  | 'statistics'
+  | 'completed';
+
+const ONBOARDING_DONE_KEY = 'lumi-onboarding-done-v1';
 
 function App() {
   const { t } = useI18n();
@@ -39,8 +55,9 @@ function App() {
       try {
         const desires = await desireService.getAllDesires();
         if (desires.length === 0) {
-          // Если нет желаний, показываем WelcomeScreen
-          setCurrentView('welcome');
+          // Если нет желаний, показываем WelcomeScreen (или пропускаем, если онбординг уже пройден)
+          const onboardingDone = localStorage.getItem(ONBOARDING_DONE_KEY) === '1';
+          setCurrentView(onboardingDone ? 'wheel' : 'welcome');
         } else {
           setCurrentView('list');
         }
@@ -143,7 +160,13 @@ function App() {
   };
 
   const handleWelcomeStart = () => {
-    // При клике на START переходим на колесо жизни
+    // При клике на START открываем 2-й экран (онбординг)
+    setCurrentView('intro');
+  };
+
+  const handleIntroGo = () => {
+    // По клику GO — переходим на главную страницу (колесо)
+    localStorage.setItem(ONBOARDING_DONE_KEY, '1');
     setCurrentView('wheel');
   };
 
@@ -175,6 +198,10 @@ function App() {
     return (
       <WelcomeScreen onStart={handleWelcomeStart} />
     );
+  }
+
+  if (currentView === 'intro') {
+    return <IntroScreen onGo={handleIntroGo} />;
   }
 
   if (currentView === 'wheel') {
