@@ -1,6 +1,7 @@
 import './WelcomeScreen.css';
 import { useI18n } from '../../i18n';
 import mandalaSvg from '../../assets/mandala.svg';
+import mandalaPng from '../../assets/Мандала.png';
 
 interface WelcomeScreenProps {
   onStart: () => void;
@@ -19,13 +20,16 @@ export default function WelcomeScreen({ onStart }: WelcomeScreenProps) {
       <main className="welcome-center" aria-hidden="true">
         {/* Декоративный элемент */}
         <div className="welcome-mandala">
-          <img
-            className="welcome-mandala-img"
-            src={mandalaSvg}
-            alt=""
-            draggable={false}
-            loading="eager"
-          />
+          <picture className="welcome-mandala-picture">
+            <source srcSet={mandalaSvg} type="image/svg+xml" />
+            <img
+              className="welcome-mandala-img"
+              src={mandalaPng}
+              alt=""
+              draggable={false}
+              loading="eager"
+            />
+          </picture>
         </div>
       </main>
 
