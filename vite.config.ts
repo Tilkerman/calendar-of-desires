@@ -17,13 +17,19 @@ export default defineConfig(({ mode }) => {
       react(),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'apple-touch-icon.svg', 'vite.svg'],
+        includeAssets: [
+          'apple-touch-icon.png',
+          'favicon-16.png',
+          'favicon-32.png',
+          'icon-192.png',
+          'icon-512.png'
+        ],
         manifest: {
           name: 'LUMI',
           short_name: 'LUMI',
           description: 'LUMI — ежедневный ритуал работы с желаниями',
-          theme_color: '#646cff',
-          background_color: '#ffffff',
+          theme_color: '#58C8C7',
+          background_color: '#58C8C7',
           display: 'standalone',
           orientation: 'portrait',
           scope: isProduction ? '/calendar-of-desires/' : '/',
@@ -31,16 +37,22 @@ export default defineConfig(({ mode }) => {
         icons: [
           {
             // Важно для GitHub Pages: в проде иконка должна быть внутри base path
-            src: isProduction ? '/calendar-of-desires/apple-touch-icon.png' : '/apple-touch-icon.png',
-            sizes: '180x180',
+            src: isProduction ? '/calendar-of-desires/icon-192.png' : '/icon-192.png',
+            sizes: '192x192',
             type: 'image/png',
             purpose: 'any maskable'
           },
           {
-            // Fallback SVG для других платформ
-            src: isProduction ? '/calendar-of-desires/apple-touch-icon.svg' : '/apple-touch-icon.svg',
+            src: isProduction ? '/calendar-of-desires/icon-512.png' : '/icon-512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable'
+          },
+          {
+            // iOS touch icon
+            src: isProduction ? '/calendar-of-desires/apple-touch-icon.png' : '/apple-touch-icon.png',
             sizes: '180x180',
-            type: 'image/svg+xml',
+            type: 'image/png',
             purpose: 'any maskable'
           }
         ]

@@ -48,10 +48,11 @@
   font-size: 1.5rem;
 }
 
-.logo-icon-svg {
+.logo-icon-img {
   width: 1.5rem;
   height: 1.5rem;
-  color: var(--accent-color);
+  object-fit: contain;
+  opacity: 0.95;
   flex-shrink: 0;
 }
 
@@ -192,7 +193,7 @@
     padding: 0.75rem 1rem;
   }
 
-  .logo-icon-svg {
+  .logo-icon-img {
     width: 1.25rem;
     height: 1.25rem;
   }
