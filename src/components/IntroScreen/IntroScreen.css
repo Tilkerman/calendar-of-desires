@@ -36,7 +36,7 @@
 .intro-mandala {
   display: flex;
   justify-content: center;
-  margin-top: 4px;
+  margin-top: 0;
 }
 
 .intro-mandala-circle {
@@ -88,7 +88,7 @@
   letter-spacing: 0.06em;
   line-height: 1.35;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 14px;
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.10);
 }
 
@@ -105,7 +105,7 @@
   line-height: 1.45;
   white-space: pre-line;
   font-weight: 500;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .intro-go {
@@ -160,12 +160,7 @@
     gap: 12px;
   }
 
-  .intro-step-text {
-    font-size: 12.5px;
-  }
-
   .intro-footer-text {
-    font-size: 12px;
     line-height: 1.35;
   }
 }
