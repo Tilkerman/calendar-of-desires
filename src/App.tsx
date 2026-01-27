@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import DesireForm from './components/DesireForm/DesireForm';
 import DesireDetail from './components/DesireDetail/DesireDetail';
 import type { Desire, LifeArea } from './types';
