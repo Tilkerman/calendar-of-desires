@@ -130,18 +130,10 @@ export default function LifeWheel({
 
       <div className="life-wheel-content">
         <div className="life-wheel-title-row">
-          <div className="life-wheel-instructions">
-            <div className="life-wheel-instruction">
-              <div className="life-wheel-title-main">{t('wheel.title')}</div>
-              <div className="life-wheel-title-sub">{t('wheel.subtitle')}</div>
-            </div>
-
-            <div className="life-wheel-instruction">
-              <div className="life-wheel-title-main">{t('wheel.cardsTitle')}</div>
-              <div className="life-wheel-title-sub">{t('wheel.cardsHint')}</div>
-            </div>
+          <div className="life-wheel-title">
+            <div className="life-wheel-title-main">{t('wheel.title')}</div>
+            <div className="life-wheel-title-sub">{t('wheel.subtitle')}</div>
           </div>
-
           {completedDesires.length > 0 && onShowCompleted && (
             <button
               type="button"
@@ -251,27 +243,22 @@ export default function LifeWheel({
           </svg>
         </div>
 
-        <div className="life-wheel-areas">
+        <div className="life-wheel-grid">
           {AREAS.map((area) => (
             <button
               key={area}
               type="button"
-              className="life-wheel-area"
+              className="life-area-tile"
               onClick={() => {
                 const count = counts[area] ?? 0;
                 if (count > 0) return onShowAllDesires(area);
                 return onCreateWishInArea(area);
               }}
             >
-              <span
-                className="life-wheel-area-swatch"
-                style={{ background: AREA_COLORS[area] }}
-                aria-hidden="true"
-              />
-              <span className="life-wheel-area-text">{t(`areas.${area}` as never)}</span>
-              <span className="life-wheel-area-count" aria-label={`${counts[area] ?? 0}`}>
-                {counts[area] ?? 0}
-              </span>
+              <div className="life-area-label">{t(`areas.${area}` as never)}</div>
+              <div className="life-area-square" style={{ background: AREA_COLORS[area] }}>
+                <div className="life-area-count">{counts[area] ?? 0}</div>
+              </div>
             </button>
           ))}
         </div>
