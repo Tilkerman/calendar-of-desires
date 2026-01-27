@@ -36,7 +36,10 @@
 .intro-mandala {
   display: flex;
   justify-content: center;
-  margin-top: 0;
+  /* 1) lift the logo circle a bit higher */
+  margin-top: -10px;
+  /* 1) add more space AFTER the logo circle */
+  margin-bottom: 10px;
 }
 
 .intro-mandala-circle {
@@ -88,8 +91,14 @@
   letter-spacing: 0.06em;
   line-height: 1.35;
   font-weight: 600;
-  font-size: 14px;
+  /* Slightly larger to match the original mock feel */
+  font-size: 15px;
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.10);
+}
+
+/* 2) more spacing after the last bullet ("describe steps...") */
+.intro-step:last-child {
+  margin-bottom: 12px;
 }
 
 .intro-footer {
@@ -151,6 +160,11 @@
     gap: 12px;
   }
 
+  .intro-mandala {
+    margin-top: -8px;
+    margin-bottom: 8px;
+  }
+
   .intro-mandala-circle {
     width: clamp(92px, 26vw, 120px);
     height: clamp(92px, 26vw, 120px);
@@ -158,6 +172,10 @@
 
   .intro-steps {
     gap: 12px;
+  }
+
+  .intro-step:last-child {
+    margin-bottom: 10px;
   }
 
   .intro-footer-text {
