@@ -193,11 +193,11 @@ export const en = {
   'welcome.start': 'START',
 
   // Intro (onboarding)
-  'intro.step1': 'Rate and color each life area in the balance wheel',
-  'intro.step2': 'Fill wish cards for every area',
-  'intro.step3': 'Make sure to upload inspiring images',
-  'intro.step4': 'Describe steps toward your goal',
-  'intro.footer': 'WHEN EVERYTHING IS DONE —\nINTENTION IS LAUNCHED —\nJUST WATCH FOR SIGNS',
+  'intro.step1': 'Color each life area in the balance wheel',
+  'intro.step2': 'Fill wish cards for each area',
+  'intro.step3': 'Upload inspiring images',
+  'intro.step4': 'Describe your first steps toward the dream',
+  'intro.footer': 'WHEN EVERYTHING IS DONE —\nINTENTION IS LAUNCHED —\nMAGIC BEGINS',
   'intro.go': 'GO',
 
   // Desires list
