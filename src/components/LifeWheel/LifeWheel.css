@@ -39,6 +39,7 @@
   letter-spacing: 0.02em;
   color: var(--text-primary);
   text-transform: uppercase;
+  white-space: pre-line;
 }
 
 .life-wheel-title-sub {
@@ -46,6 +47,7 @@
   font-size: 0.85rem;
   font-weight: 400;
   color: var(--text-tertiary);
+  white-space: pre-line;
 }
 
 .life-wheel-completed-button {

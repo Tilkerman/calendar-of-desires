@@ -217,8 +217,8 @@ export const en = {
   'desires.contact7days': 'Contact in 7 days:',
 
   // Wheel
-  'wheel.title': 'RATE EACH LIFE AREA FROM 1 TO 10',
-  'wheel.subtitle': 'Color as many segments as your rating (max 10)',
+  'wheel.title': 'RATE EACH LIFE AREA\nFROM 1 TO 10',
+  'wheel.subtitle': 'Color as many segments as\nyour rating (max 10)',
   'wheel.cardsTitle': 'FILL WISH CARDS FOR EACH LIFE AREA',
   'wheel.cardsHint': 'Upload inspiring images and describe steps',
   'wheel.create': 'Create wish',
