@@ -130,10 +130,18 @@ export default function LifeWheel({
 
       <div className="life-wheel-content">
         <div className="life-wheel-title-row">
-          <div className="life-wheel-title">
-            <div className="life-wheel-title-main">{t('wheel.title')}</div>
-            <div className="life-wheel-title-sub">{t('wheel.subtitle')}</div>
+          <div className="life-wheel-instructions">
+            <div className="life-wheel-instruction">
+              <div className="life-wheel-title-main">{t('wheel.title')}</div>
+              <div className="life-wheel-title-sub">{t('wheel.subtitle')}</div>
+            </div>
+
+            <div className="life-wheel-instruction">
+              <div className="life-wheel-title-main">{t('wheel.cardsTitle')}</div>
+              <div className="life-wheel-title-sub">{t('wheel.cardsHint')}</div>
+            </div>
           </div>
+
           {completedDesires.length > 0 && onShowCompleted && (
             <button
               type="button"
@@ -243,22 +251,19 @@ export default function LifeWheel({
           </svg>
         </div>
 
-        <div className="life-wheel-grid">
+        <div className="life-wheel-areas">
           {AREAS.map((area) => (
             <button
               key={area}
               type="button"
-              className="life-area-tile"
+              className="life-wheel-area"
               onClick={() => {
                 const count = counts[area] ?? 0;
                 if (count > 0) return onShowAllDesires(area);
                 return onCreateWishInArea(area);
               }}
             >
-              <div className="life-area-label">{t(`areas.${area}` as never)}</div>
-              <div className="life-area-square" style={{ background: AREA_COLORS[area] }}>
-                <div className="life-area-count">{counts[area] ?? 0}</div>
-              </div>
+              {t(`areas.${area}` as never)}
             </button>
           ))}
         </div>

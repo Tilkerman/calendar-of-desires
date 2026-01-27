@@ -18,10 +18,19 @@
   flex-wrap: wrap;
 }
 
-.life-wheel-title {
-  text-align: center;
+.life-wheel-instructions {
   flex: 1;
   min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  text-align: center;
+}
+
+.life-wheel-instruction {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .life-wheel-title-main {
@@ -29,6 +38,7 @@
   font-weight: 600;
   letter-spacing: 0.02em;
   color: var(--text-primary);
+  text-transform: uppercase;
 }
 
 .life-wheel-title-sub {
@@ -135,44 +145,37 @@
   stroke-width: 1.2;
 }
 
-.life-wheel-grid {
+.life-wheel-areas {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.9rem;
-  margin-top: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 1.5rem;
+  row-gap: 0.75rem;
+  margin: 0.5rem auto 0;
+  width: min(420px, 100%);
 }
 
-.life-area-tile {
+.life-wheel-area {
+  appearance: none;
+  border: 0;
   background: transparent;
-  border: none;
-  padding: 0;
-  text-align: left;
+  padding: 0.25rem 0;
   cursor: pointer;
+  text-align: left;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-primary);
 }
 
-.life-area-label {
-  font-size: 0.75rem;
-  color: var(--text-tertiary);
-  margin: 0 0 0.35rem;
-  font-weight: 400;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.life-wheel-area:hover {
+  opacity: 0.85;
 }
 
-.life-area-square {
-  border-radius: 10px;
-  height: 54px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-}
-
-.life-area-count {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.95);
+.life-wheel-area:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--button-bg) 70%, transparent);
+  outline-offset: 4px;
+  border-radius: 8px;
 }
 
 .life-wheel-bottom {
@@ -214,14 +217,6 @@
 @media (max-width: 480px) {
   .life-wheel-content {
     padding: 1.25rem 1rem 5.5rem;
-  }
-
-  .life-wheel-grid {
-    gap: 0.75rem;
-  }
-
-  .life-area-square {
-    height: 52px;
   }
 }
 

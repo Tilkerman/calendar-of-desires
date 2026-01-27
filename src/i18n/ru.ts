@@ -219,8 +219,10 @@ export const ru: Record<TranslationKey, string> = {
   'desires.contact7days': 'Контакт за 7 дней:',
 
   // Wheel
-  'wheel.title': 'Оцени и заполни цветом каждую сферу своей жизни от 1 до 10',
-  'wheel.subtitle': 'Заполняй вдумчиво 3–5 дней',
+  'wheel.title': 'ОЦЕНИ КАЖДУЮ СФЕРУ ЖИЗНИ ОТ 1 ДО 10',
+  'wheel.subtitle': 'Выдели столько делений, насколько оцениваешь сферу (максимум 10)',
+  'wheel.cardsTitle': 'ЗАПОЛНИ КАРТОЧКИ ЖЕЛАНИЙ ПО КАЖДОЙ СФЕРЕ',
+  'wheel.cardsHint': 'Загружай вдохновляющие картинки и описывай шаги',
   'wheel.create': 'Создать желание',
   'wheel.allDesires': 'Все желания',
   'wheel.pickArea.title': 'К какой сфере отнести это желание?',
