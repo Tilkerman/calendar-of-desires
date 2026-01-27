@@ -219,7 +219,7 @@ export const en = {
   // Wheel
   'wheel.title': 'RATE EACH LIFE AREA\nFROM 1 TO 10',
   'wheel.subtitle': 'Color as many segments as\nyour rating (max 10)',
-  'wheel.cardsTitle': 'FILL WISH CARDS FOR EACH LIFE AREA',
+  'wheel.cardsTitle': 'FILL WISH CARDS\nFOR EACH LIFE AREA',
   'wheel.cardsHint': 'Upload inspiring images and describe steps',
   'wheel.create': 'Create wish',
   'wheel.allDesires': 'All wishes',

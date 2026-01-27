@@ -19,18 +19,15 @@
 }
 
 .life-wheel-instructions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.9rem;
   flex: 1;
-  min-width: 200px;
-  display: flex;
-  flex-direction: column;
-  gap: 1.1rem;
-  text-align: center;
+  min-width: 260px;
 }
 
 .life-wheel-instruction {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  text-align: center;
 }
 
 .life-wheel-title-main {
@@ -38,7 +35,6 @@
   font-weight: 600;
   letter-spacing: 0.02em;
   color: var(--text-primary);
-  text-transform: uppercase;
   white-space: pre-line;
 }
 
@@ -81,6 +77,69 @@
   .life-wheel-completed-button {
     align-self: center;
   }
+}
+
+.life-wheel-areas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 34px;
+  margin-top: 1.25rem;
+  padding: 0.25rem 0.1rem;
+}
+
+.life-wheel-area {
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: 14px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.life-wheel-area-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.10);
+}
+
+.life-wheel-area-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.life-wheel-area-count {
+  min-width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--border-color) 35%, transparent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--text-tertiary);
+}
+
+.life-wheel-area:active {
+  transform: translateY(1px);
+}
+
+.life-wheel-area:focus-visible {
+  outline: 2px solid rgba(88, 200, 199, 0.6);
+  outline-offset: 6px;
+  border-radius: 8px;
 }
 
 .life-wheel-wrapper {
@@ -147,37 +206,44 @@
   stroke-width: 1.2;
 }
 
-.life-wheel-areas {
+.life-wheel-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: 1.5rem;
-  row-gap: 0.75rem;
-  margin: 0.5rem auto 0;
-  width: min(420px, 100%);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.9rem;
+  margin-top: 1rem;
 }
 
-.life-wheel-area {
-  appearance: none;
-  border: 0;
+.life-area-tile {
   background: transparent;
-  padding: 0.25rem 0;
-  cursor: pointer;
+  border: none;
+  padding: 0;
   text-align: left;
-  font-size: 0.9rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-primary);
+  cursor: pointer;
 }
 
-.life-wheel-area:hover {
-  opacity: 0.85;
+.life-area-label {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  margin: 0 0 0.35rem;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.life-wheel-area:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--button-bg) 70%, transparent);
-  outline-offset: 4px;
-  border-radius: 8px;
+.life-area-square {
+  border-radius: 10px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.life-area-count {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .life-wheel-bottom {
@@ -219,6 +285,15 @@
 @media (max-width: 480px) {
   .life-wheel-content {
     padding: 1.25rem 1rem 5.5rem;
+  }
+
+  .life-wheel-areas {
+    gap: 16px 26px;
+  }
+
+  .life-wheel-area {
+    font-size: 0.95rem;
+    gap: 10px;
   }
 }
 

@@ -263,7 +263,15 @@ export default function LifeWheel({
                 return onCreateWishInArea(area);
               }}
             >
-              {t(`areas.${area}` as never)}
+              <span
+                className="life-wheel-area-swatch"
+                style={{ background: AREA_COLORS[area] }}
+                aria-hidden="true"
+              />
+              <span className="life-wheel-area-text">{t(`areas.${area}` as never)}</span>
+              <span className="life-wheel-area-count" aria-label={`${counts[area] ?? 0}`}>
+                {counts[area] ?? 0}
+              </span>
             </button>
           ))}
         </div>

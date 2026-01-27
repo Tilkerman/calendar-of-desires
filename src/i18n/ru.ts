@@ -221,7 +221,7 @@ export const ru: Record<TranslationKey, string> = {
   // Wheel
   'wheel.title': 'ОЦЕНИ КАЖДУЮ СФЕРУ\nЖИЗНИ ОТ 1 ДО 10',
   'wheel.subtitle': 'Выдели столько делений, насколько\nоцениваешь сферу (максимум 10)',
-  'wheel.cardsTitle': 'ЗАПОЛНИ КАРТОЧКИ ЖЕЛАНИЙ ПО КАЖДОЙ СФЕРЕ',
+  'wheel.cardsTitle': 'ЗАПОЛНИ КАРТОЧКИ ЖЕЛАНИЙ\nПО КАЖДОЙ СФЕРЕ',
   'wheel.cardsHint': 'Загружай вдохновляющие картинки и описывай шаги',
   'wheel.create': 'Создать желание',
   'wheel.allDesires': 'Все желания',
