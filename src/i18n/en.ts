@@ -192,6 +192,14 @@ export const en = {
   'welcome.motivation': 'START TODAY AND TOMORROW WILL CHANGE!',
   'welcome.start': 'START',
 
+  // Intro (onboarding)
+  'intro.step1': 'Rate and color each life area in the balance wheel',
+  'intro.step2': 'Fill wish cards for every area',
+  'intro.step3': 'Make sure to upload inspiring images',
+  'intro.step4': 'Describe steps toward your goal',
+  'intro.footer': 'WHEN EVERYTHING IS DONE —\nINTENTION IS LAUNCHED —\nJUST WATCH FOR SIGNS',
+  'intro.go': 'GO',
+
   // Desires list
   'desires.count': 'You have {count} {noun}',
   'desires.noun.one': 'wish',

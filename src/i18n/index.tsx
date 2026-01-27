@@ -9,9 +9,7 @@ const STORAGE_KEY = 'locale';
 function detectInitialLocale(): Locale {
   const saved = localStorage.getItem(STORAGE_KEY);
   if (saved === 'ru' || saved === 'en') return saved;
-
-  const lang = (navigator.language || '').toLowerCase();
-  if (lang.startsWith('ru')) return 'ru';
+  // Product decision: default UI language is English unless user explicitly chose otherwise.
   return 'en';
 }
 

@@ -2,8 +2,7 @@ import './WelcomeScreen.css';
 import { useI18n } from '../../i18n';
 import mandalaPng from '../../assets/Мандала.png';
 import logoSvg from '../../assets/logo.svg';
-import motivationSvg from '../../assets/motivation.svg';
-import startButtonSvg from '../../assets/start-button.svg';
+import LanguageToggle from '../LanguageToggle/LanguageToggle';
 
 interface WelcomeScreenProps {
   onStart: () => void;
@@ -14,10 +13,16 @@ export default function WelcomeScreen({ onStart }: WelcomeScreenProps) {
 
   return (
     <div className="welcome-screen">
+      <header className="onboarding-topbar">
+        <div className="onboarding-topbar-inner">
+          <LanguageToggle />
+        </div>
+      </header>
+
       <header className="welcome-header">
         {/* Логотип Lumi (из макета) */}
         <h1 className="welcome-logo">
-          <img className="welcome-logo-img" src={logoSvg} alt="Lumi" draggable={false} />
+          <img className="welcome-logo-img" src={logoSvg} alt="" aria-hidden="true" draggable={false} />
         </h1>
       </header>
 
@@ -31,13 +36,12 @@ export default function WelcomeScreen({ onStart }: WelcomeScreenProps) {
       <footer className="welcome-footer">
         {/* Мотивационный текст (из макета) */}
         <div className="welcome-motivation">
-          <img className="welcome-motivation-img" src={motivationSvg} alt="" aria-hidden="true" draggable={false} />
-          <span className="sr-only">{t('welcome.motivation')}</span>
+          <p className="welcome-motivation-text">{t('welcome.motivation')}</p>
         </div>
 
         {/* Кнопка START */}
         <button onClick={onStart} className="welcome-start-button" aria-label={t('welcome.start')}>
-          <img className="welcome-start-button-img" src={startButtonSvg} alt="" aria-hidden="true" draggable={false} />
+          <span className="welcome-start-button-text">{t('welcome.start')}</span>
         </button>
       </footer>
     </div>

@@ -192,7 +192,15 @@ export const ru: Record<TranslationKey, string> = {
 
   // Welcome
   'welcome.motivation': 'НАЧНИ СЕГОДНЯ И ЗАВТРА ИЗМЕНИТСЯ!',
-  'welcome.start': 'START',
+  'welcome.start': 'СТАРТ',
+
+  // Intro (onboarding)
+  'intro.step1': 'ОЦЕНИ И ЗАПОЛНИ ЦВЕТОМ КАЖДУЮ СФЕРУ ТВОЕЙ ЖИЗНИ В КОЛЕСЕ БАЛАНСА',
+  'intro.step2': 'ЗАПОЛНИ КАРТОЧКИ ЖЕЛАНИЙ ПО КАЖДОМУ СЕКТОРУ',
+  'intro.step3': 'ОБЯЗАТЕЛЬНО ЗАГРУЗИ ВДОХНОВЛЯЮЩИЕ КАРТИНКИ',
+  'intro.step4': 'ОПИШИ ШАГИ К ДОСТИЖЕНИЮ ЦЕЛИ',
+  'intro.footer': 'КОГДА ВСЁ СДЕЛАНО —\nНАМЕРЕНИЕ ЗАПУЩЕНО —\nПРОСТО ЖДИ ЗНАКОВ',
+  'intro.go': 'GO',
 
   // Desires list
   'desires.count': 'Сейчас у вас {count} {noun}',
