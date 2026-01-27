@@ -38,6 +38,27 @@ const ONBOARDING_DONE_KEY = 'lumi-onboarding-done-v1';
 function App() {
   const { t } = useI18n();
   const [currentView, setCurrentView] = useState<View>('welcome'); // Начальное состояние - welcome
+  const forcedView = useMemo<View | null>(() => {
+    const raw = new URLSearchParams(window.location.search).get('view');
+    if (!raw) return null;
+    const candidate = raw.toLowerCase();
+    const allowed: View[] = [
+      'welcome',
+      'intro',
+      'wheel',
+      'list',
+      'form',
+      'detail',
+      'about',
+      'tutorial',
+      'install',
+      'settings',
+      'feedback',
+      'statistics',
+      'completed',
+    ];
+    return (allowed as string[]).includes(candidate) ? (candidate as View) : null;
+  }, []);
   const [selectedDesireId, setSelectedDesireId] = useState<string | null>(null);
   const [editingDesire, setEditingDesire] = useState<Desire | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
@@ -53,6 +74,12 @@ function App() {
   useEffect(() => {
     const checkDesires = async () => {
       try {
+        // Dev/QA helper: allow forcing a view via URL without wiping data
+        // Example: http://localhost:5173/?view=welcome or ?view=intro
+        if (forcedView) {
+          setCurrentView(forcedView);
+          return;
+        }
         const desires = await desireService.getAllDesires();
         if (desires.length === 0) {
           // Если нет желаний, показываем WelcomeScreen (или пропускаем, если онбординг уже пройден)
@@ -70,7 +97,7 @@ function App() {
     };
 
     checkDesires();
-  }, []);
+  }, [forcedView]);
 
   // Инициализируем планировщик напоминаний при загрузке
   useEffect(() => {
