@@ -2,11 +2,12 @@
   min-height: 100vh;
   min-height: 100svh;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   background: linear-gradient(180deg, #826fb2 0%, #fdf588 100%);
-  padding: calc(env(safe-area-inset-top, 0px) + 54px) env(safe-area-inset-right, 0px)
-    calc(env(safe-area-inset-bottom, 0px) + 16px) env(safe-area-inset-left, 0px);
+  padding: calc(env(safe-area-inset-top, 0px) + 48px) env(safe-area-inset-right, 0px)
+    calc(env(safe-area-inset-bottom, 0px) + 10px) env(safe-area-inset-left, 0px);
   position: relative;
 }
 
@@ -26,6 +27,7 @@
 
 .intro-stage {
   width: min(100%, 440px);
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -37,9 +39,9 @@
   display: flex;
   justify-content: center;
   /* 1) lift the logo circle a bit higher */
-  margin-top: -10px;
-  /* 1) add more space AFTER the logo circle */
-  margin-bottom: 10px;
+  margin-top: -14px;
+  /* Space after the logo circle (between mandala and steps) */
+  margin-bottom: 12px;
 }
 
 .intro-mandala-circle {
@@ -102,6 +104,8 @@
 }
 
 .intro-footer {
+  /* Push footer+button closer to the bottom, reducing "empty" top/bottom feel */
+  margin-top: auto;
   padding-top: 2px;
 }
 
@@ -120,6 +124,7 @@
 .intro-go {
   width: min(248px, 76vw);
   align-self: center;
+  margin-top: 6px;
   padding: 12px 16px;
   background: rgba(255, 255, 255, 0.22);
   border: 2px solid rgba(255, 255, 255, 0.45);
@@ -152,8 +157,8 @@
 /* Extra compact layout for short screens */
 @media (max-height: 740px) {
   .intro-screen {
-    padding: calc(env(safe-area-inset-top, 0px) + 46px) env(safe-area-inset-right, 0px)
-      calc(env(safe-area-inset-bottom, 0px) + 12px) env(safe-area-inset-left, 0px);
+    padding: calc(env(safe-area-inset-top, 0px) + 44px) env(safe-area-inset-right, 0px)
+      calc(env(safe-area-inset-bottom, 0px) + 8px) env(safe-area-inset-left, 0px);
   }
 
   .intro-stage {
@@ -161,8 +166,8 @@
   }
 
   .intro-mandala {
-    margin-top: -8px;
-    margin-bottom: 8px;
+    margin-top: -12px;
+    margin-bottom: 10px;
   }
 
   .intro-mandala-circle {
