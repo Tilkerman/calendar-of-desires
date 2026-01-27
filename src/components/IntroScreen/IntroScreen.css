@@ -5,8 +5,8 @@
   align-items: center;
   justify-content: center;
   background: linear-gradient(180deg, #826fb2 0%, #fdf588 100%);
-  padding: calc(env(safe-area-inset-top, 0px) + 64px) env(safe-area-inset-right, 0px)
-    calc(env(safe-area-inset-bottom, 0px) + 22px) env(safe-area-inset-left, 0px);
+  padding: calc(env(safe-area-inset-top, 0px) + 54px) env(safe-area-inset-right, 0px)
+    calc(env(safe-area-inset-bottom, 0px) + 16px) env(safe-area-inset-left, 0px);
   position: relative;
 }
 
@@ -29,8 +29,8 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 22px;
-  padding: 0 22px;
+  gap: 16px;
+  padding: 0 18px;
 }
 
 .intro-mandala {
@@ -40,8 +40,8 @@
 }
 
 .intro-mandala-circle {
-  width: clamp(120px, 30vw, 150px);
-  height: clamp(120px, 30vw, 150px);
+  width: clamp(104px, 28vw, 138px);
+  height: clamp(104px, 28vw, 138px);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.82);
   display: grid;
@@ -64,7 +64,7 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 14px;
 }
 
 .intro-step {
@@ -88,12 +88,12 @@
   letter-spacing: 0.06em;
   line-height: 1.35;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.10);
 }
 
 .intro-footer {
-  padding-top: 6px;
+  padding-top: 2px;
 }
 
 .intro-footer-text {
@@ -102,16 +102,16 @@
   color: rgba(255, 255, 255, 0.70);
   text-transform: uppercase;
   letter-spacing: 0.10em;
-  line-height: 1.55;
+  line-height: 1.45;
   white-space: pre-line;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .intro-go {
-  width: min(260px, 78vw);
+  width: min(248px, 76vw);
   align-self: center;
-  padding: 14px 18px;
+  padding: 12px 16px;
   background: rgba(255, 255, 255, 0.22);
   border: 2px solid rgba(255, 255, 255, 0.45);
   border-radius: 18px;
@@ -138,6 +138,36 @@
 .intro-go:focus-visible {
   outline: 2px solid rgba(255, 255, 255, 0.9);
   outline-offset: 3px;
+}
+
+/* Extra compact layout for short screens */
+@media (max-height: 740px) {
+  .intro-screen {
+    padding: calc(env(safe-area-inset-top, 0px) + 46px) env(safe-area-inset-right, 0px)
+      calc(env(safe-area-inset-bottom, 0px) + 12px) env(safe-area-inset-left, 0px);
+  }
+
+  .intro-stage {
+    gap: 12px;
+  }
+
+  .intro-mandala-circle {
+    width: clamp(92px, 26vw, 120px);
+    height: clamp(92px, 26vw, 120px);
+  }
+
+  .intro-steps {
+    gap: 12px;
+  }
+
+  .intro-step-text {
+    font-size: 12.5px;
+  }
+
+  .intro-footer-text {
+    font-size: 12px;
+    line-height: 1.35;
+  }
 }
 
 
