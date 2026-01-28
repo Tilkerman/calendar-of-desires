@@ -197,11 +197,12 @@ export const ru: Record<TranslationKey, string> = {
 
   // Intro (onboarding)
   'intro.step1': 'ОКРАСЬ КАЖДУЮ СФЕРУ ЖИЗНИ В КОЛЕСЕ БАЛАНСА',
-  'intro.step2': 'ЗАПОЛНИ КАРТОЧКИ ЖЕЛАНИЙ ПО СЕКТОРАМ',
-  'intro.step3': 'ЗАГРУЗИ ВДОХНОВЛЯЮЩИЕ КАРТИНКИ',
-  'intro.step4': 'ОПИШИ ПЕРВЫЕ ШАГИ К МЕЧТЕ',
-  'intro.footer': 'КОГДА ВСЁ СДЕЛАНО —\nНАМЕРЕНИЕ ЗАПУЩЕНО —\nВОЛШЕБСТВО НАЧИНАЕТСЯ',
-  'intro.go': 'GO',
+  'intro.step2': 'ЗАПОЛНИ КАРТОЧКИ',
+  'intro.step3': 'ЗАГРУЗИ КАРТИНКИ',
+  'intro.step4': 'ЗАПИШИ ШАГИ',
+  'intro.title': 'СТАНЬ АВТОРОМ\nСВОЕЙ РЕАЛЬНОСТИ',
+  'intro.footer': 'НАЧНИ СЕГОДНЯ И\n“ЗАВТРА” ИЗМЕНИТСЯ',
+  'intro.go': 'В ПУТЬ',
 
   // Desires list
   'desires.count': 'Сейчас у вас {count} {noun}',

@@ -245,7 +245,16 @@ function App() {
   }
 
   if (currentView === 'intro') {
-    return <IntroScreen onGo={handleIntroGo} />;
+    return (
+      <>
+        <IntroScreen onGo={handleIntroGo} onSettingsClick={handleSettingsClick} />
+        <SettingsModal
+          isOpen={isSettingsModalOpen}
+          onClose={() => setIsSettingsModalOpen(false)}
+          onMenuItemClick={handleSettingsMenuItemClick}
+        />
+      </>
+    );
   }
 
   if (currentView === 'wheel') {
