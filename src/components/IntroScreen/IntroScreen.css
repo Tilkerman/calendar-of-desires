@@ -114,15 +114,17 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  align-items: center; /* центрируем строки */
+  align-items: center; /* центрируем ВЕСЬ блок списка */
 }
 
 .intro-step {
-  display: flex;
+  /* Важно: единая колонка под квадратик и единый левый край текста */
+  display: grid;
+  grid-template-columns: 28px auto;
+  column-gap: 14px;
   align-items: center;
-  justify-content: center; /* квадратик + текст как единый блок по центру */
-  gap: 14px;
-  width: 100%;
+  width: fit-content; /* строка не растягивается на всю ширину */
+  justify-items: start;
 }
 
 .intro-checkbox {
@@ -134,7 +136,7 @@
 }
 
 .intro-step-text {
-  text-align: left; /* как в макете: текст слева от строки, но сама строка центрирована */
+  text-align: left; /* текст выровнен по левому краю относительно общей колонки */
   color: rgba(255, 255, 255, 0.92);
   text-transform: uppercase;
   letter-spacing: 0.06em;
