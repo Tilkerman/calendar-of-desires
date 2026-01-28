@@ -196,9 +196,9 @@ export const ru: Record<TranslationKey, string> = {
   'welcome.start': 'НАЧАТЬ',
 
   // Intro (onboarding)
-  'intro.step1': 'ОКРАСЬ КАЖДУЮ СФЕРУ ЖИЗНИ В КОЛЕСЕ БАЛАНСА',
-  'intro.step2': 'ЗАПОЛНИ КАРТОЧКИ',
-  'intro.step3': 'ЗАГРУЗИ КАРТИНКИ',
+  'intro.step1': 'ЗАПОЛНИ КАРТОЧКИ',
+  'intro.step2': 'ЗАГРУЗИ КАРТИНКИ',
+  'intro.step3': 'ЗАПИШИ ШАГИ',
   'intro.step4': 'ЗАПИШИ ШАГИ',
   'intro.title': 'СТАНЬ АВТОРОМ\nСВОЕЙ РЕАЛЬНОСТИ',
   'intro.footer': 'НАЧНИ СЕГОДНЯ И\n“ЗАВТРА” ИЗМЕНИТСЯ',

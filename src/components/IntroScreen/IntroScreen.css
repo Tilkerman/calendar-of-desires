@@ -114,13 +114,15 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  align-items: center; /* центрируем строки */
 }
 
 .intro-step {
-  display: grid;
-  grid-template-columns: 28px 1fr;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* квадратик + текст как единый блок по центру */
   gap: 14px;
-  align-items: start;
+  width: 100%;
 }
 
 .intro-checkbox {
@@ -132,6 +134,7 @@
 }
 
 .intro-step-text {
+  text-align: left; /* как в макете: текст слева от строки, но сама строка центрирована */
   color: rgba(255, 255, 255, 0.92);
   text-transform: uppercase;
   letter-spacing: 0.06em;
