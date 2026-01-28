@@ -1,128 +1,75 @@
 .welcome-screen {
   min-height: 100vh;
-  min-height: 100svh;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  justify-items: center;
-  padding: calc(env(safe-area-inset-top, 0px) + 44px) 24px calc(env(safe-area-inset-bottom, 0px) + 34px);
-  background: linear-gradient(180deg, #58c8c7 0%, #f4927a 100%);
+  padding: 2rem 1.5rem;
+  background: linear-gradient(180deg, #4ECDC4 0%, #FFE5B4 100%);
   position: relative;
   overflow: hidden;
 }
 
-.onboarding-topbar {
-  position: absolute;
-  inset: 0 0 auto 0;
-  padding: calc(env(safe-area-inset-top, 0px) + 12px) 14px 0;
-  z-index: 2;
-  pointer-events: none;
-}
-
-.onboarding-topbar-inner {
-  display: flex;
-  justify-content: flex-end;
-  pointer-events: auto;
-}
-
-.welcome-header,
-.welcome-center,
-.welcome-footer {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.welcome-header {
-  align-self: start;
-}
-
-.welcome-footer {
-  align-self: end;
-  gap: 18px;
-}
-
 /* Логотип Lumi */
 .welcome-logo {
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-.welcome-logo-img {
-  width: min(190px, 52vw);
-  height: auto;
-  display: block;
-  filter: none;
-  user-select: none;
-  pointer-events: none;
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  font-weight: 300;
+  font-style: italic;
+  color: #ffffff;
+  text-align: center;
+  margin: 0 0 2rem 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  letter-spacing: 2px;
+  font-family: 'Georgia', 'Times New Roman', serif;
 }
 
 /* Мандала */
 .welcome-mandala {
-  width: clamp(260px, 74vw, 380px);
-  height: clamp(260px, 74vw, 380px);
-  margin: 0;
+  width: clamp(200px, 60vw, 300px);
+  height: clamp(200px, 60vw, 300px);
+  margin: 1rem 0 3rem 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.welcome-mandala-img {
+.welcome-mandala-svg {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  /* IMPORTANT: this must match the provided PNG and stay readable on iOS */
-  opacity: 0.62;
-  mix-blend-mode: normal;
-  filter: drop-shadow(0 10px 26px rgba(0, 0, 0, 0.04)) brightness(1.08) contrast(1.06) saturate(1.08);
-  user-select: none;
-  pointer-events: none;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
 }
 
 /* Мотивационный текст */
 .welcome-motivation {
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-.welcome-motivation-text {
-  margin: 0;
-  width: min(340px, 86vw);
+  font-size: clamp(1rem, 3vw, 1.4rem);
+  line-height: 1.5;
+  color: #FFE5B4;
+  margin-bottom: 3rem;
   text-align: center;
-  text-transform: uppercase;
   font-weight: 500;
-  letter-spacing: 0.08em;
-  line-height: 1.35;
-  color: rgba(255, 255, 255, 0.92);
-  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.10);
+  padding: 0 1.5rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
 }
 
 /* Кнопка START */
 .welcome-start-button {
-  width: min(240px, 64vw);
-  padding: 14px 18px;
-  background: rgba(255, 255, 255, 0.22);
-  border: 2px solid rgba(255, 255, 255, 0.45);
-  border-radius: 18px;
+  padding: 0;
+  border: 0;
+  background: transparent;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
   -webkit-tap-highlight-color: transparent;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 
-.welcome-start-button-text {
-  display: inline-block;
-  width: 100%;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.95);
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+.welcome-start-button__img {
+  width: min(279px, 85vw);
+  height: auto;
+  display: block;
+  user-select: none;
 }
 
 .welcome-start-button:active {
@@ -131,35 +78,33 @@
 
 .welcome-start-button:focus-visible {
   outline: 2px solid rgba(255, 255, 255, 0.9);
-  outline-offset: 3px;
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+  outline-offset: 6px;
 }
 
 /* Адаптивность */
 @media (max-width: 480px) {
   .welcome-screen {
-    padding: calc(env(safe-area-inset-top, 0px) + 38px) 18px calc(env(safe-area-inset-bottom, 0px) + 28px);
+    padding: 1.5rem 1rem;
   }
 
-  .welcome-footer {
-    gap: 16px;
+  .welcome-logo {
+    margin-bottom: 1.5rem;
+  }
+
+  .welcome-mandala {
+    margin: 0.5rem 0 2rem 0;
+  }
+
+  .welcome-motivation {
+    margin-bottom: 2rem;
+    padding: 0 1rem;
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .welcome-start-button {
-    transition: none;
+/* Темная тема (если нужно) */
+@media (prefers-color-scheme: dark) {
+  .welcome-screen {
+    background: linear-gradient(180deg, #2a7a75 0%, #8b6f47 100%);
   }
 }
 
