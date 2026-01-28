@@ -24,6 +24,9 @@
 
 .welcome-header-left {
   justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .welcome-header-center {
@@ -35,7 +38,7 @@
 }
 
 .welcome-header-logo {
-  width: min(160px, 44vw);
+  width: 86px; /* маленький логотип в шапке слева */
   height: auto;
   display: block;
 }
@@ -44,22 +47,48 @@
   appearance: none;
   border: 0;
   background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.92);
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  font-size: 22px;
-  line-height: 1;
+  width: 62px;
+  height: 52px;
+  border-radius: 8px;
   cursor: pointer;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.welcome-burger-icon {
+  display: grid;
+  gap: 8px;
+}
+
+.welcome-burger-line {
+  width: 44px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  display: block;
+}
+
+.welcome-hero-logo-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 0.75rem;
+}
+
+.welcome-hero-logo {
+  width: min(220px, 72vw); /* большой логотип после шапки */
+  height: auto;
+  display: block;
 }
 
 /* Мандала */
 .welcome-mandala {
   width: min(250px, 68vw);
   height: auto;
-  margin: 3.25rem 0 1.5rem;
+  margin: 1.75rem 0 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -141,7 +170,7 @@
   }
 
   .welcome-mandala {
-    margin: 2.75rem 0 1.25rem;
+    margin: 1.6rem 0 1.15rem;
   }
 }
 

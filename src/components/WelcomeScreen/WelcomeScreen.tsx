@@ -17,11 +17,10 @@ export default function WelcomeScreen({ onStart, onSettingsClick }: WelcomeScree
     <div className="welcome-screen">
       <header className="welcome-header">
         <div className="welcome-header-left">
+          <img className="welcome-header-logo" src={logoMark} alt="LUMI" draggable={false} />
           <LanguageToggle />
         </div>
-        <div className="welcome-header-center">
-          <img className="welcome-header-logo" src={logoMark} alt="LUMI" draggable={false} />
-        </div>
+        <div className="welcome-header-center" />
         <div className="welcome-header-right">
           <button
             type="button"
@@ -29,10 +28,18 @@ export default function WelcomeScreen({ onStart, onSettingsClick }: WelcomeScree
             onClick={onSettingsClick}
             aria-label={t('header.settings')}
           >
-            ☰
+            <span className="welcome-burger-icon" aria-hidden="true">
+              <span className="welcome-burger-line" />
+              <span className="welcome-burger-line" />
+              <span className="welcome-burger-line" />
+            </span>
           </button>
         </div>
       </header>
+
+      <div className="welcome-hero-logo-wrap">
+        <img className="welcome-hero-logo" src={logoMark} alt="LUMI" draggable={false} />
+      </div>
 
       <div className="welcome-mandala" aria-hidden="true">
         <img className="welcome-mandala-img" src={mandalaPng} alt="" draggable={false} loading="eager" />
