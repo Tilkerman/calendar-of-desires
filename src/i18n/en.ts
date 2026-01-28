@@ -190,9 +190,10 @@ export const en = {
   'app.unknownState': 'Error: unknown app state',
 
   // Welcome
-<<<<<<< HEAD
-  'welcome.motivation': 'THE SIMPLEST APP\nFOR WISH FULFILLMENT',
-  'welcome.start': 'START',
+  'welcome.title': 'LUMI',
+  'welcome.subtitle.line1': 'RATE AND FILL WITH COLOR',
+  'welcome.subtitle.line2': 'EACH SECTOR OF YOUR LIFE',
+  'welcome.button': 'START',
 
   // Intro (onboarding)
   'intro.step1': 'Fill in wish cards',
@@ -200,12 +201,8 @@ export const en = {
   'intro.step3': 'Write down steps',
   'intro.step4': 'Write down steps',
   'intro.title': 'BECOME THE AUTHOR\nOF YOUR REALITY',
-  'intro.footer': 'START TODAY AND\n“TOMORROW” WILL CHANGE',
+  'intro.footer': 'START TODAY AND\n"TOMORROW" WILL CHANGE',
   'intro.go': 'GO',
-  'welcome.title': 'LUMI',
-  'welcome.subtitle.line1': 'RATE AND FILL WITH COLOR',
-  'welcome.subtitle.line2': 'EACH SECTOR OF YOUR LIFE',
-  'welcome.button': 'START',
 
   // Desires list
   'desires.count': 'You have {count} {noun}',

@@ -192,9 +192,10 @@ export const ru: Record<TranslationKey, string> = {
   'app.unknownState': 'Ошибка: неизвестное состояние приложения',
 
   // Welcome
-<<<<<<< HEAD
-  'welcome.motivation': 'САМОЕ ПРОСТОЕ ПРИЛОЖЕНИЕ\nДЛЯ ИСПОЛНЕНИЯ ЖЕЛАНИЙ',
-  'welcome.start': 'НАЧАТЬ',
+  'welcome.title': 'LUMI',
+  'welcome.subtitle.line1': 'ОЦЕНИ И ЗАПОЛНИ ЦВЕТОМ',
+  'welcome.subtitle.line2': 'КАЖДЫЙ СЕКТОР СВОЕЙ ЖИЗНИ',
+  'welcome.button': 'НАЧАТЬ',
 
   // Intro (onboarding)
   'intro.step1': 'ЗАПОЛНИ КАРТОЧКИ',
@@ -202,12 +203,8 @@ export const ru: Record<TranslationKey, string> = {
   'intro.step3': 'ЗАПИШИ ШАГИ',
   'intro.step4': 'ЗАПИШИ ШАГИ',
   'intro.title': 'СТАНЬ АВТОРОМ\nСВОЕЙ РЕАЛЬНОСТИ',
-  'intro.footer': 'НАЧНИ СЕГОДНЯ И\n“ЗАВТРА” ИЗМЕНИТСЯ',
+  'intro.footer': 'НАЧНИ СЕГОДНЯ И\n"ЗАВТРА" ИЗМЕНИТСЯ',
   'intro.go': 'В ПУТЬ',
-  'welcome.title': 'LUMI',
-  'welcome.subtitle.line1': 'ОЦЕНИ И ЗАПОЛНИ ЦВЕТОМ',
-  'welcome.subtitle.line2': 'КАЖДЫЙ СЕКТОР СВОЕЙ ЖИЗНИ',
-  'welcome.button': 'НАЧАТЬ',
 
   // Desires list
   'desires.count': 'Сейчас у вас {count} {noun}',

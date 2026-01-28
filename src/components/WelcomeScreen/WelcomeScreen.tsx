@@ -6,7 +6,7 @@ interface WelcomeScreenProps {
   onSettingsClick?: () => void;
 }
 
-export default function WelcomeScreen({ onStart, onSettingsClick }: WelcomeScreenProps) {
+export default function WelcomeScreen({ onStart }: WelcomeScreenProps) {
   const { t, locale, setLocale } = useI18n();
 
   return (
