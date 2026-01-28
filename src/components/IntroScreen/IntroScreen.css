@@ -115,6 +115,8 @@
   flex-direction: column;
   gap: 12px;
   align-items: center; /* центрируем ВЕСЬ блок списка */
+  width: max-content;  /* одна общая ширина по самой длинной строке */
+  max-width: 100%;
 }
 
 .intro-step {
@@ -123,7 +125,7 @@
   grid-template-columns: 28px auto;
   column-gap: 14px;
   align-items: center;
-  width: fit-content; /* строка не растягивается на всю ширину */
+  width: 100%; /* все строки одной ширины (берут ширину списка) */
   justify-items: start;
 }
 
