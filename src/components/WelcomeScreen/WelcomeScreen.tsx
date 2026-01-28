@@ -18,10 +18,10 @@ export default function WelcomeScreen({ onStart, onSettingsClick }: WelcomeScree
       <header className="welcome-header">
         <div className="welcome-header-left">
           <img className="welcome-header-logo" src={logoMark} alt="LUMI" draggable={false} />
-          <LanguageToggle />
         </div>
         <div className="welcome-header-center" />
         <div className="welcome-header-right">
+          <LanguageToggle />
           <button
             type="button"
             className="welcome-burger"
@@ -49,15 +49,17 @@ export default function WelcomeScreen({ onStart, onSettingsClick }: WelcomeScree
       <p className="welcome-motivation">{t('welcome.motivation')}</p>
 
       {/* Кнопка */}
-      <button
-        type="button"
-        onClick={onStart}
-        className="welcome-start-button"
-        aria-label={t('welcome.start')}
-      >
-        <img className="welcome-start-button__bg" src={welcomeButton} alt="" aria-hidden="true" draggable={false} />
-        <span className="welcome-start-button__text">{t('welcome.start')}</span>
-      </button>
+      <div className="welcome-bottom">
+        <button
+          type="button"
+          onClick={onStart}
+          className="welcome-start-button"
+          aria-label={t('welcome.start')}
+        >
+          <img className="welcome-start-button__bg" src={welcomeButton} alt="" aria-hidden="true" draggable={false} />
+          <span className="welcome-start-button__text">{t('welcome.start')}</span>
+        </button>
+      </div>
     </div>
   );
 }
