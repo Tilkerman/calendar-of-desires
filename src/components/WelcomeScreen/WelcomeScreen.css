@@ -2,74 +2,83 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  padding: 2rem 1.5rem;
-  background: linear-gradient(180deg, #4ECDC4 0%, #FFE5B4 100%);
+  padding: calc(2.75rem + env(safe-area-inset-top)) 1.5rem 2.25rem;
+  background: radial-gradient(1200px 800px at 50% 15%, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 55%),
+    linear-gradient(180deg, #0c0c0f 0%, #101015 100%);
   position: relative;
   overflow: hidden;
 }
 
-/* Логотип Lumi */
-.welcome-logo {
-  font-size: clamp(2.5rem, 8vw, 4rem);
-  font-weight: 300;
-  font-style: italic;
-  color: #ffffff;
-  text-align: center;
-  margin: 0 0 2rem 0;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  letter-spacing: 2px;
-  font-family: 'Georgia', 'Times New Roman', serif;
+.welcome-top {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.welcome-logo-mark {
+  width: min(220px, 70vw);
+  height: auto;
+  display: block;
+  margin-top: 0.25rem;
 }
 
 /* Мандала */
 .welcome-mandala {
-  width: clamp(200px, 60vw, 300px);
-  height: clamp(200px, 60vw, 300px);
-  margin: 1rem 0 3rem 0;
+  width: min(310px, 78vw);
+  height: auto;
+  margin: 2.25rem 0 2.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.welcome-mandala-svg {
+.welcome-mandala-img {
   width: 100%;
   height: 100%;
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
+  display: block;
+  /* делаем белой как на тёмном макете */
+  filter: brightness(0) invert(1);
+  opacity: 0.86;
 }
 
 /* Мотивационный текст */
 .welcome-motivation {
-  font-size: clamp(1rem, 3vw, 1.4rem);
-  line-height: 1.5;
-  color: #FFE5B4;
-  margin-bottom: 3rem;
+  font-size: 0.78rem;
+  line-height: 1.25;
+  color: rgba(255, 255, 255, 0.92);
+  margin: 0 0 2.25rem;
   text-align: center;
-  font-weight: 500;
+  font-weight: 700;
   padding: 0 1.5rem;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
+  max-width: 340px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 /* Кнопка START */
 .welcome-start-button {
-  padding: 0;
-  border: 0;
-  background: transparent;
+  width: min(310px, 86vw);
+  height: 58px;
+  border: none;
+  background: rgba(217, 217, 217, 0.95);
   cursor: pointer;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
-  line-height: 0;
   -webkit-tap-highlight-color: transparent;
+  /* важное: разные скругления углов (как на макете) */
+  border-radius: 14px 14px 10px 10px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
 }
 
-.welcome-start-button__img {
-  width: min(279px, 85vw);
-  height: auto;
-  display: block;
-  user-select: none;
+.welcome-start-button__text {
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.62);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .welcome-start-button:active {
@@ -84,27 +93,15 @@
 /* Адаптивность */
 @media (max-width: 480px) {
   .welcome-screen {
-    padding: 1.5rem 1rem;
-  }
-
-  .welcome-logo {
-    margin-bottom: 1.5rem;
-  }
-
-  .welcome-mandala {
-    margin: 0.5rem 0 2rem 0;
+    padding: calc(2.25rem + env(safe-area-inset-top)) 1rem 1.75rem;
   }
 
   .welcome-motivation {
-    margin-bottom: 2rem;
     padding: 0 1rem;
   }
-}
 
-/* Темная тема (если нужно) */
-@media (prefers-color-scheme: dark) {
-  .welcome-screen {
-    background: linear-gradient(180deg, #2a7a75 0%, #8b6f47 100%);
+  .welcome-mandala {
+    margin: 2rem 0 2rem;
   }
 }
 

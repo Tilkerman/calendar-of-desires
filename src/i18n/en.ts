@@ -190,7 +190,7 @@ export const en = {
   'app.unknownState': 'Error: unknown app state',
 
   // Welcome
-  'welcome.motivation': 'START TODAY AND TOMORROW WILL CHANGE!',
+  'welcome.motivation': 'THE SIMPLEST APP\nFOR WISH FULFILLMENT',
   'welcome.start': 'START',
 
   // Intro (onboarding)

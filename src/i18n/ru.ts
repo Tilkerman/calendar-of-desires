@@ -192,8 +192,8 @@ export const ru: Record<TranslationKey, string> = {
   'app.unknownState': 'Ошибка: неизвестное состояние приложения',
 
   // Welcome
-  'welcome.motivation': 'НАЧНИ СЕГОДНЯ И ЗАВТРА ИЗМЕНИТСЯ!',
-  'welcome.start': 'СТАРТ',
+  'welcome.motivation': 'САМОЕ ПРОСТОЕ ПРИЛОЖЕНИЕ\nДЛЯ ИСПОЛНЕНИЯ ЖЕЛАНИЙ',
+  'welcome.start': 'НАЧАТЬ',
 
   // Intro (onboarding)
   'intro.step1': 'ОКРАСЬ КАЖДУЮ СФЕРУ ЖИЗНИ В КОЛЕСЕ БАЛАНСА',
