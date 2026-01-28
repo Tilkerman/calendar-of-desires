@@ -1,34 +1,65 @@
 .welcome-screen {
-  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  padding: calc(2.75rem + env(safe-area-inset-top)) 1.5rem 2.25rem;
+  padding: 0 1.5rem 0;
   background: radial-gradient(1200px 800px at 50% 15%, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 55%),
     linear-gradient(180deg, #0c0c0f 0%, #101015 100%);
   position: relative;
   overflow: hidden;
 }
 
-.welcome-top {
+.welcome-header {
+  position: sticky;
+  top: 0;
   width: 100%;
-  display: flex;
-  justify-content: center;
+  padding: calc(0.75rem + env(safe-area-inset-top)) 0 0.75rem;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  z-index: 2;
 }
 
-.welcome-logo-mark {
-  width: min(220px, 70vw);
+.welcome-header-left {
+  justify-self: start;
+}
+
+.welcome-header-center {
+  justify-self: center;
+}
+
+.welcome-header-right {
+  justify-self: end;
+}
+
+.welcome-header-logo {
+  width: min(160px, 44vw);
   height: auto;
   display: block;
-  margin-top: 0.25rem;
+}
+
+.welcome-burger {
+  appearance: none;
+  border: 0;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.92);
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 /* Мандала */
 .welcome-mandala {
-  width: min(310px, 78vw);
+  width: min(250px, 68vw);
   height: auto;
-  margin: 2.25rem 0 2.25rem;
+  margin: 3.25rem 0 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -48,7 +79,7 @@
   font-size: 0.78rem;
   line-height: 1.25;
   color: rgba(255, 255, 255, 0.92);
-  margin: 0 0 2.25rem;
+  margin: 0 0 0;
   text-align: center;
   font-weight: 700;
   padding: 0 1.5rem;
@@ -59,21 +90,30 @@
 
 /* Кнопка START */
 .welcome-start-button {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(24px + env(safe-area-inset-bottom));
   width: min(310px, 86vw);
   height: 58px;
   border: none;
-  background: rgba(217, 217, 217, 0.95);
+  background: transparent;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   -webkit-tap-highlight-color: transparent;
-  /* важное: разные скругления углов (как на макете) */
-  border-radius: 14px 14px 10px 10px;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+  padding: 0;
+}
+
+.welcome-start-button__bg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .welcome-start-button__text {
+  position: absolute;
   font-size: 1rem;
   font-weight: 500;
   color: rgba(0, 0, 0, 0.62);
@@ -82,7 +122,7 @@
 }
 
 .welcome-start-button:active {
-  transform: translateY(1px);
+  transform: translateX(-50%) translateY(1px);
 }
 
 .welcome-start-button:focus-visible {
@@ -93,7 +133,7 @@
 /* Адаптивность */
 @media (max-width: 480px) {
   .welcome-screen {
-    padding: calc(2.25rem + env(safe-area-inset-top)) 1rem 1.75rem;
+    padding: 0 1rem 0;
   }
 
   .welcome-motivation {
@@ -101,7 +141,7 @@
   }
 
   .welcome-mandala {
-    margin: 2rem 0 2rem;
+    margin: 2.75rem 0 1.25rem;
   }
 }
 

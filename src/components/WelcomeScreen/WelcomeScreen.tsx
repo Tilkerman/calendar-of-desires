@@ -2,19 +2,37 @@ import './WelcomeScreen.css';
 import { useI18n } from '../../i18n';
 import logoMark from '../../assets/group-29.svg';
 import mandalaPng from '../../assets/Мандала.png';
+import welcomeButton from '../../assets/welcome-button.svg';
+import LanguageToggle from '../LanguageToggle/LanguageToggle';
 
 interface WelcomeScreenProps {
   onStart: () => void;
+  onSettingsClick?: () => void;
 }
 
-export default function WelcomeScreen({ onStart }: WelcomeScreenProps) {
+export default function WelcomeScreen({ onStart, onSettingsClick }: WelcomeScreenProps) {
   const { t } = useI18n();
 
   return (
     <div className="welcome-screen">
-      <div className="welcome-top">
-        <img className="welcome-logo-mark" src={logoMark} alt="LUMI" draggable={false} />
-      </div>
+      <header className="welcome-header">
+        <div className="welcome-header-left">
+          <LanguageToggle />
+        </div>
+        <div className="welcome-header-center">
+          <img className="welcome-header-logo" src={logoMark} alt="LUMI" draggable={false} />
+        </div>
+        <div className="welcome-header-right">
+          <button
+            type="button"
+            className="welcome-burger"
+            onClick={onSettingsClick}
+            aria-label={t('header.settings')}
+          >
+            ☰
+          </button>
+        </div>
+      </header>
 
       <div className="welcome-mandala" aria-hidden="true">
         <img className="welcome-mandala-img" src={mandalaPng} alt="" draggable={false} loading="eager" />
@@ -30,6 +48,7 @@ export default function WelcomeScreen({ onStart }: WelcomeScreenProps) {
         className="welcome-start-button"
         aria-label={t('welcome.start')}
       >
+        <img className="welcome-start-button__bg" src={welcomeButton} alt="" aria-hidden="true" draggable={false} />
         <span className="welcome-start-button__text">{t('welcome.start')}</span>
       </button>
     </div>

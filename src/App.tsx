@@ -204,7 +204,14 @@ function App() {
   // Это гарантирует, что при первом запуске пользователь сразу увидит Welcome Screen
   if (isLoading && currentView === 'welcome') {
     return (
-      <WelcomeScreen onStart={handleWelcomeStart} />
+      <>
+        <WelcomeScreen onStart={handleWelcomeStart} onSettingsClick={handleSettingsClick} />
+        <SettingsModal
+          isOpen={isSettingsModalOpen}
+          onClose={() => setIsSettingsModalOpen(false)}
+          onMenuItemClick={handleSettingsMenuItemClick}
+        />
+      </>
     );
   }
 
@@ -226,7 +233,14 @@ function App() {
 
   if (currentView === 'welcome') {
     return (
-      <WelcomeScreen onStart={handleWelcomeStart} />
+      <>
+        <WelcomeScreen onStart={handleWelcomeStart} onSettingsClick={handleSettingsClick} />
+        <SettingsModal
+          isOpen={isSettingsModalOpen}
+          onClose={() => setIsSettingsModalOpen(false)}
+          onMenuItemClick={handleSettingsMenuItemClick}
+        />
+      </>
     );
   }
 
