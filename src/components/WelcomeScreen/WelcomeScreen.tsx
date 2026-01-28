@@ -1,9 +1,5 @@
 import './WelcomeScreen.css';
 import { useI18n } from '../../i18n';
-import logoMark from '../../assets/group-29.svg';
-import mandalaPng from '../../assets/Мандала.png';
-import welcomeButton from '../../assets/welcome-button.svg';
-import LanguageToggle from '../LanguageToggle/LanguageToggle';
 
 interface WelcomeScreenProps {
   onStart: () => void;
@@ -11,55 +7,104 @@ interface WelcomeScreenProps {
 }
 
 export default function WelcomeScreen({ onStart, onSettingsClick }: WelcomeScreenProps) {
-  const { t } = useI18n();
+  const { t, locale, setLocale } = useI18n();
 
   return (
     <div className="welcome-screen">
-      <header className="welcome-header">
-        <div className="welcome-header-left">
-          <img className="welcome-header-logo" src={logoMark} alt="LUMI" draggable={false} />
-        </div>
-        <div className="welcome-header-center" />
-        <div className="welcome-header-right">
-          <LanguageToggle />
-          <button
-            type="button"
-            className="welcome-burger"
-            onClick={onSettingsClick}
-            aria-label={t('header.settings')}
-          >
-            <span className="welcome-burger-icon" aria-hidden="true">
-              <span className="welcome-burger-line" />
-              <span className="welcome-burger-line" />
-              <span className="welcome-burger-line" />
-            </span>
-          </button>
-        </div>
-      </header>
-
-      <div className="welcome-hero-logo-wrap">
-        <img className="welcome-hero-logo" src={logoMark} alt="LUMI" draggable={false} />
-      </div>
-
-      <div className="welcome-mandala" aria-hidden="true">
-        <img className="welcome-mandala-img" src={mandalaPng} alt="" draggable={false} loading="eager" />
-      </div>
-
-      {/* Мотивационный текст */}
-      <p className="welcome-motivation">{t('welcome.motivation')}</p>
-
-      {/* Кнопка */}
-      <div className="welcome-bottom">
+      {/* Language switcher */}
+      <div className="welcome-lang-switcher">
         <button
           type="button"
-          onClick={onStart}
-          className="welcome-start-button"
-          aria-label={t('welcome.start')}
+          className={`welcome-lang-btn ${locale === 'ru' ? 'active' : ''}`}
+          onClick={() => setLocale('ru')}
         >
-          <img className="welcome-start-button__bg" src={welcomeButton} alt="" aria-hidden="true" draggable={false} />
-          <span className="welcome-start-button__text">{t('welcome.start')}</span>
+          RU
+        </button>
+        <span className="welcome-lang-separator">|</span>
+        <button
+          type="button"
+          className={`welcome-lang-btn ${locale === 'en' ? 'active' : ''}`}
+          onClick={() => setLocale('en')}
+        >
+          EN
         </button>
       </div>
+
+      {/* Logo */}
+      <h1 className="welcome-logo">
+        {t('welcome.title')}
+      </h1>
+
+      {/* Mandala */}
+      <div className="welcome-mandala">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          {/* Outer circle */}
+          <circle cx="100" cy="100" r="95" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.3" />
+          <circle cx="100" cy="100" r="85" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.2" />
+          
+          {/* Inner circles */}
+          <circle cx="100" cy="100" r="70" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.3" />
+          <circle cx="100" cy="100" r="55" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.4" />
+          <circle cx="100" cy="100" r="40" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.5" />
+          <circle cx="100" cy="100" r="25" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+          
+          {/* Petals / rays */}
+          {Array.from({ length: 8 }).map((_, i) => {
+            const angle = (i * 45) * Math.PI / 180;
+            const x1 = 100 + Math.cos(angle) * 25;
+            const y1 = 100 + Math.sin(angle) * 25;
+            const x2 = 100 + Math.cos(angle) * 70;
+            const y2 = 100 + Math.sin(angle) * 70;
+            return (
+              <line
+                key={i}
+                x1={x1}
+                y1={y1}
+                x2={x2}
+                y2={y2}
+                stroke="currentColor"
+                strokeWidth="0.5"
+                opacity="0.4"
+              />
+            );
+          })}
+          
+          {/* Decorative dots */}
+          {Array.from({ length: 16 }).map((_, i) => {
+            const angle = (i * 22.5) * Math.PI / 180;
+            const r = 80;
+            const x = 100 + Math.cos(angle) * r;
+            const y = 100 + Math.sin(angle) * r;
+            return (
+              <circle
+                key={i}
+                cx={x}
+                cy={y}
+                r="1.5"
+                fill="currentColor"
+                opacity="0.5"
+              />
+            );
+          })}
+          
+          {/* Center dot */}
+          <circle cx="100" cy="100" r="3" fill="currentColor" opacity="0.6" />
+        </svg>
+      </div>
+
+      {/* Subtitle */}
+      <div className="welcome-subtitle">
+        <div className="welcome-subtitle-line">{t('welcome.subtitle.line1')}</div>
+        <div className="welcome-subtitle-line">{t('welcome.subtitle.line2')}</div>
+      </div>
+
+      {/* Primary button */}
+      <button
+        onClick={onStart}
+        className="welcome-button"
+      >
+        {t('welcome.button')}
+      </button>
     </div>
   );
 }
