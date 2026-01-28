@@ -1,21 +1,23 @@
 import { useEffect, useMemo, useState } from 'react';
-import type { LifeArea, Desire } from '../../types';
+import type { LifeArea } from '../../types';
 import { desireService, lifeAreaService } from '../../services/db';
 import Header from '../Header/Header';
 import './LifeWheel.css';
 import { useI18n } from '../../i18n';
+import mandalaPng from '../../assets/Мандала.png';
 
 const AREAS: LifeArea[] = ['health', 'love', 'growth', 'family', 'home', 'work', 'hobby', 'finance'];
 
-const AREA_COLORS: Record<LifeArea, string> = {
-  health: '#49a078',
-  love: '#f2b6c6',
-  growth: '#5a7ba7',
-  family: '#9aa0a6',
-  home: '#58c6d6',
-  work: '#2d4f7a',
-  hobby: '#f4c542',
-  finance: '#c44d58',
+// Палитра под новые "карточки" сфер (как в макете 3-го экрана)
+const AREA_TILE_COLORS: Record<LifeArea, string> = {
+  health: '#9BE57A',
+  love: '#E79BD6',
+  growth: '#66AEEB',
+  family: '#79E3E6',
+  home: '#E9E17A',
+  work: '#4B63A6',
+  hobby: '#F2BE62',
+  finance: '#E45D6D',
 };
 
 function clamp(n: number, min: number, max: number) {
@@ -38,13 +40,11 @@ export default function LifeWheel({
   onCreateWishInArea,
   onShowAllDesires,
   onSettingsClick,
-  onShowCompleted,
 }: {
   onCreateWish: () => void;
   onCreateWishInArea: (area: LifeArea) => void;
   onShowAllDesires: (area?: LifeArea) => void;
   onSettingsClick?: () => void;
-  onShowCompleted?: () => void;
 }) {
   const { t } = useI18n();
   const [scores, setScores] = useState<Record<LifeArea, number>>(() => {
@@ -57,17 +57,13 @@ export default function LifeWheel({
     for (const a of AREAS) init[a] = 0;
     return init;
   });
-  const [completedDesires, setCompletedDesires] = useState<Desire[]>([]);
-
   const load = async () => {
-    const [s, c, completed] = await Promise.all([
+    const [s, c] = await Promise.all([
       lifeAreaService.getAll(),
       desireService.getCountsByArea(AREAS),
-      desireService.getCompletedDesires(),
     ]);
     setScores((prev) => ({ ...prev, ...s }));
     setCounts(c);
-    setCompletedDesires(completed);
   };
 
   useEffect(() => {
@@ -75,14 +71,14 @@ export default function LifeWheel({
   }, []);
 
   // SVG geometry
-  // Рендерим SVG в 280px, но viewBox делаем больше, чтобы подписи по внешнему контуру не обрезались
-  const pxSize = 280;
-  const viewSize = 340;
+  // Делаем viewBox больше, чтобы подписи вокруг колеса не обрезались.
+  // Делаем большой viewBox с запасом, чтобы подписи вокруг колеса не обрезались
+  const viewSize = 440;
   const cx = viewSize / 2;
   const cy = viewSize / 2;
-  // Увеличиваем круг, чтобы он подходил ближе к подписям по внешнему контуру
-  const R = 140;
+  const R = 138;
   const ringStep = R / 10;
+  // Подписи должны быть максимально близко к внешней окружности (как на макете)
   const labelR = R + 18;
 
   const angles = useMemo(() => {
@@ -129,30 +125,36 @@ export default function LifeWheel({
       />
 
       <div className="life-wheel-content">
-        <div className="life-wheel-title-row">
-          <div className="life-wheel-title">
-            <div className="life-wheel-title-main">{t('wheel.title')}</div>
-            <div className="life-wheel-title-sub">{t('wheel.subtitle')}</div>
-          </div>
-          {completedDesires.length > 0 && onShowCompleted && (
-            <button
-              type="button"
-              className="life-wheel-completed-button"
-              onClick={onShowCompleted}
-            >
-              {t('wheel.completed.title')} ({completedDesires.length})
-            </button>
-          )}
+        <div className="life-wheel-title">
+          <div className="life-wheel-title-main">{t('wheel.title')}</div>
+          <div className="life-wheel-title-sub">{t('wheel.subtitle')}</div>
         </div>
 
         <div className="life-wheel-wrapper">
           <svg
             className="life-wheel-svg"
-            width={pxSize}
-            height={pxSize}
             viewBox={`0 0 ${viewSize} ${viewSize}`}
             onPointerDown={(e) => handlePointer(e.clientX, e.clientY, e.currentTarget)}
           >
+            <defs>
+              <filter id="wheelGlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="10" result="blur" />
+                <feColorMatrix
+                  in="blur"
+                  type="matrix"
+                  values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.45 0"
+                  result="glow"
+                />
+                <feMerge>
+                  <feMergeNode in="glow" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
+            {/* мягкое свечение как на макете */}
+            <circle cx={cx} cy={cy} r={R + 8} className="life-wheel-glow" filter="url(#wheelGlow)" />
+
             {/* rings */}
             {Array.from({ length: 10 }).map((_, i) => (
               <circle
@@ -179,8 +181,8 @@ export default function LifeWheel({
                 <path
                   key={`fill-${area}`}
                   d={sectorPath(cx, cy, r, a0, a1)}
-                  fill={AREA_COLORS[area]}
-                  opacity={0.75}
+                  fill={AREA_TILE_COLORS[area]}
+                  opacity={0.28}
                 />
               );
             })}
@@ -188,11 +190,26 @@ export default function LifeWheel({
             {/* outer circle */}
             <circle cx={cx} cy={cy} r={R} className="life-wheel-outline" />
 
+            {/* центральная мандала */}
+            <g className="life-wheel-center">
+              <circle cx={cx} cy={cy} r={18} className="life-wheel-center-bg" />
+              <image
+                href={mandalaPng}
+                x={cx - 13}
+                y={cy - 13}
+                width={26}
+                height={26}
+                opacity={0.95}
+                preserveAspectRatio="xMidYMid meet"
+              />
+            </g>
+
             {/* labels around wheel (one per sector) */}
             {angles.map(({ area, a0, a1 }) => {
               const mid = (a0 + a1) / 2;
               const p = polarToCartesian(cx, cy, labelR, mid);
-              // Пишем по касательной к внешнему контуру
+
+              // Пишем по касательной к внешнему контуру (как на референсе)
               const rotate = (mid * 180) / Math.PI + 90;
               // Keep text readable: flip on bottom half
               const flip = rotate > 90 && rotate < 270;
@@ -216,12 +233,13 @@ export default function LifeWheel({
                   className="life-wheel-label-group"
                   style={{ cursor: 'pointer' }}
                 >
-                  {/* Невидимая кликабельная область (эллипс) */}
-                  <ellipse
-                    cx={p.x}
-                    cy={p.y}
-                    rx="35"
-                    ry="15"
+                  {/* Невидимая кликабельная область */}
+                  <rect
+                    x={p.x - 55}
+                    y={p.y - 12}
+                    width="110"
+                    height="24"
+                    rx="12"
                     fill="transparent"
                     pointerEvents="all"
                     transform={`rotate(${textRotate} ${p.x} ${p.y})`}
@@ -243,6 +261,9 @@ export default function LifeWheel({
           </svg>
         </div>
 
+        <div className="life-wheel-cards-title">{t('wheel.cardsTitle')}</div>
+        <div className="life-wheel-cards-sub">{t('wheel.cardsHint')}</div>
+
         <div className="life-wheel-grid">
           {AREAS.map((area) => (
             <button
@@ -256,7 +277,7 @@ export default function LifeWheel({
               }}
             >
               <div className="life-area-label">{t(`areas.${area}` as never)}</div>
-              <div className="life-area-square" style={{ background: AREA_COLORS[area] }}>
+              <div className="life-area-rect" style={{ background: AREA_TILE_COLORS[area] }}>
                 <div className="life-area-count">{counts[area] ?? 0}</div>
               </div>
             </button>
@@ -266,11 +287,11 @@ export default function LifeWheel({
 
       <div className="life-wheel-bottom">
         <div className="life-wheel-bottom-row">
-          <button className="life-wheel-all-button" onClick={() => onShowAllDesires()} type="button">
-            {t('wheel.allDesires')}
-          </button>
           <button className="life-wheel-create" onClick={onCreateWish} type="button">
             {t('wheel.create')}
+          </button>
+          <button className="life-wheel-all-button" onClick={() => onShowAllDesires()} type="button">
+            {t('wheel.allDesires')}
           </button>
         </div>
       </div>

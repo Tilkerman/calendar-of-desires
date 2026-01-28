@@ -29,6 +29,7 @@ export const en = {
   'settings.menu.feedback': 'Feedback',
   'settings.menu.backup': 'Backup',
   'settings.menu.statistics': 'Statistics',
+  'settings.menu.completed': 'Completed',
   'settings.menu.clear': 'Clear Data',
   'settings.menu.share': 'Share App',
   'settings.share.text': 'Try LUMI — an app for working with dreams',

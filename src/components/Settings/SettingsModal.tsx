@@ -34,6 +34,8 @@ export default function SettingsModal({ isOpen, onClose, onMenuItemClick }: Sett
     { id: 'settings', icon: '⚙️', label: t('settings.menu.settings') },
     { id: 'feedback', icon: '✉️', label: t('settings.menu.feedback') },
     { id: 'statistics', icon: '📊', label: t('settings.menu.statistics') },
+    // "Готово" (выполненные желания) переносим в настройки, на 3-м экране кнопки больше нет
+    { id: 'completed', icon: '✅', label: t('settings.menu.completed') },
   ];
 
   const handleMenuItemClick = (itemId: string) => {

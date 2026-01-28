@@ -31,6 +31,7 @@ export const ru: Record<TranslationKey, string> = {
   'settings.menu.feedback': 'Обратная связь',
   'settings.menu.backup': 'Экспорт / Импорт',
   'settings.menu.statistics': 'Статистика',
+  'settings.menu.completed': 'Готово',
   'settings.menu.clear': 'Очистить все данные',
   'settings.menu.share': 'Поделиться приложением',
   'settings.share.text': 'Попробуйте LUMI — приложение для работы с мечтами',

@@ -1,7 +1,20 @@
 .life-wheel-screen {
   min-height: 100vh;
-  background: var(--bg-primary);
-  color: var(--text-primary);
+  background: linear-gradient(180deg, #6d93c8 0%, #f1a261 100%);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* На макете хедер визуально "впаян" в фон */
+.life-wheel-screen .app-header {
+  background: transparent;
+  border-bottom: none;
+  box-shadow: none;
+}
+
+.life-wheel-screen .header-logo,
+.life-wheel-screen .header-settings,
+.life-wheel-screen .header-lang-btn {
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .life-wheel-content {
@@ -10,97 +23,62 @@
   padding: 1.5rem 1rem 6rem;
 }
 
-.life-wheel-title-row {
-  display: flex;
-  gap: 1.5rem;
-  align-items: flex-start;
-  margin: 1rem 0 1.5rem;
-  flex-wrap: wrap;
-}
-
 .life-wheel-title {
   text-align: center;
-  flex: 1;
-  min-width: 200px;
+  margin: 1rem 0 1.5rem;
 }
 
 .life-wheel-title-main {
-  font-size: 0.95rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: var(--text-primary);
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
 }
 
 .life-wheel-title-sub {
   margin-top: 0.4rem;
-  font-size: 0.85rem;
-  font-weight: 400;
-  color: var(--text-tertiary);
-}
-
-.life-wheel-completed-button {
-  appearance: none;
-  border: 1px solid #d4af37;
-  background: var(--bg-card);
-  color: #d4af37;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 500;
-  padding: 0.35rem 0.55rem;
-  border-radius: 10px;
-  cursor: pointer;
-  white-space: nowrap;
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s, color 0.2s;
-}
-
-.life-wheel-completed-button:hover {
-  background: rgba(212, 175, 55, 0.1);
-}
-
-@media (max-width: 768px) {
-  .life-wheel-title-row {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .life-wheel-completed-button {
-    align-self: center;
-  }
+  color: rgba(255, 255, 255, 0.78);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
 }
 
 .life-wheel-wrapper {
   display: flex;
   justify-content: center;
-  margin: 1rem 0 1.5rem;
+  margin: 0.75rem 0 1.2rem;
 }
 
 .life-wheel-svg {
   touch-action: none;
+  width: min(340px, 92vw);
+  height: auto;
+  overflow: visible; /* чтобы подписи вокруг колеса не обрезались */
+  display: block;
 }
 
 .life-wheel-all-button {
   appearance: none;
-  border: 1px solid var(--border-color);
-  background: var(--bg-card);
-  color: var(--text-primary);
-  font-size: 0.8rem;
-  font-weight: 500;
-  padding: 0.35rem 0.55rem;
-  border-radius: 10px;
+  border: 2px solid rgba(75, 99, 166, 0.95);
+  background: rgba(255, 255, 255, 0.72);
+  color: rgba(75, 99, 166, 0.98);
+  font-size: 0.9rem;
+  font-weight: 800;
+  padding: 1.05rem 1rem;
+  border-radius: 14px;
   cursor: pointer;
   white-space: nowrap;
-  /* Match height with the primary "create" button in the same grid row */
-  align-self: stretch;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
 .life-wheel-all-button:hover {
-  background: var(--bg-hover);
+  background: rgba(255, 255, 255, 0.82);
 }
 
 .life-wheel-label-group {
@@ -112,34 +90,71 @@
 }
 
 .life-wheel-label {
-  font-size: 11px;
-  fill: var(--text-tertiary);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  fill: rgba(255, 255, 255, 0.72);
   user-select: none;
   pointer-events: none; /* чтобы тапы проходили в эллипс, а не в текст */
+  /* без "выпирающей" обводки — ближе к референсу */
 }
 
 .life-wheel-ring {
   fill: none;
-  stroke: color-mix(in srgb, var(--border-color) 70%, transparent);
-  stroke-width: 1;
+  stroke: rgba(255, 255, 255, 0.22);
+  stroke-width: 1.1;
 }
 
 .life-wheel-divider {
-  stroke: color-mix(in srgb, var(--border-color) 70%, transparent);
-  stroke-width: 1;
+  stroke: rgba(255, 255, 255, 0.45);
+  stroke-width: 2.2;
+  stroke-linecap: round;
 }
 
 .life-wheel-outline {
   fill: none;
-  stroke: color-mix(in srgb, var(--border-color) 85%, transparent);
-  stroke-width: 1.2;
+  stroke: rgba(255, 255, 255, 0.35);
+  stroke-width: 1.6;
+}
+
+.life-wheel-glow {
+  fill: rgba(255, 255, 255, 0.12);
+  stroke: rgba(255, 255, 255, 0.18);
+  stroke-width: 1;
+}
+
+.life-wheel-center-bg {
+  fill: rgba(255, 255, 255, 0.85);
+  stroke: rgba(255, 255, 255, 0.9);
+  stroke-width: 1;
+}
+
+.life-wheel-cards-title {
+  margin-top: 0.75rem;
+  text-align: center;
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+}
+
+.life-wheel-cards-sub {
+  margin-top: 0.35rem;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.78);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
 }
 
 .life-wheel-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.9rem;
-  margin-top: 1rem;
+  margin-top: 1.15rem;
 }
 
 .life-area-tile {
@@ -151,28 +166,32 @@
 }
 
 .life-area-label {
-  font-size: 0.75rem;
-  color: var(--text-tertiary);
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.82);
   margin: 0 0 0.35rem;
-  font-weight: 400;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.life-area-square {
-  border-radius: 10px;
-  height: 54px;
+.life-area-rect {
+  border-radius: 14px;
+  height: 58px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.22);
 }
 
 .life-area-count {
   font-size: 1.1rem;
-  font-weight: 700;
+  font-weight: 900;
   color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.22);
 }
 
 .life-wheel-bottom {
@@ -182,33 +201,36 @@
   transform: translateX(-50%);
   width: 100%;
   max-width: 600px;
-  background: var(--bg-primary);
-  border-top: 1px solid var(--border-color);
-  padding: 1rem 1rem;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+  background: transparent;
+  border-top: none;
+  padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom));
+  box-shadow: none;
 }
 
 .life-wheel-bottom-row {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
   align-items: center;
 }
 
 .life-wheel-create {
   width: 100%;
-  padding: 1.125rem 2rem;
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--button-text);
-  background: var(--button-bg);
+  padding: 1.05rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.98);
+  background: rgba(75, 99, 166, 0.95);
   border: none;
-  border-radius: 10px;
+  border-radius: 14px;
   cursor: pointer;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.14);
 }
 
 .life-wheel-create:hover {
-  background: var(--button-bg-hover);
+  background: rgba(75, 99, 166, 1);
 }
 
 @media (max-width: 480px) {
@@ -220,8 +242,8 @@
     gap: 0.75rem;
   }
 
-  .life-area-square {
-    height: 52px;
+  .life-area-rect {
+    height: 56px;
   }
 }
 

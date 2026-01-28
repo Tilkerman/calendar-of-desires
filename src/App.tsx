@@ -172,6 +172,9 @@ function App() {
       case 'statistics':
         setCurrentView('statistics');
         break;
+      case 'completed':
+        setCurrentView('completed');
+        break;
     }
   };
 
@@ -248,9 +251,6 @@ function App() {
           onShowAllDesires={(area) => {
             setListAreaFilter(area ?? null);
             setCurrentView('list');
-          }}
-          onShowCompleted={() => {
-            setCurrentView('completed');
           }}
           onSettingsClick={handleSettingsClick}
         />
