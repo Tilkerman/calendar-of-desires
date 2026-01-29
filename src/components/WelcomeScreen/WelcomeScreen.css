@@ -90,10 +90,13 @@
   margin: 0 auto;
 }
 
-.welcome-mandala svg {
-  width: clamp(180px, 45vw, 220px);
-  height: clamp(180px, 45vw, 220px);
-  color: #ffffff;
+.welcome-mandala-img {
+  width: clamp(180px, 45vw, 260px);
+  height: auto;
+  display: block;
+  /* белый/светло-серый, мягкий */
+  filter: brightness(0) invert(1);
+  opacity: 0.86;
 }
 
 /* Subtitle */
@@ -155,9 +158,8 @@
     padding-right: 2rem;
   }
 
-  .welcome-mandala svg {
-    width: 220px;
-    height: 220px;
+  .welcome-mandala-img {
+    width: 260px;
   }
 }
 
@@ -168,9 +170,8 @@
     margin-top: 24px;
   }
 
-  .welcome-mandala svg {
+  .welcome-mandala-img {
     width: 180px;
-    height: 180px;
   }
 
   .welcome-subtitle-line {
