@@ -95,7 +95,7 @@
   height: auto;
   display: block;
   /* белый/светло-серый, мягкий */
-  filter: brightness(0) invert(1);
+  filter: none;
   opacity: 0.86;
 }
 
