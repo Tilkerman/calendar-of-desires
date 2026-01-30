@@ -32,22 +32,26 @@ export default function IntroScreen({ onGo }: IntroScreenProps) {
       </div>
 
       <main className="intro-content">
-        <h1 className="intro-title">{t('intro.title')}</h1>
+        <div className="intro-upper">
+          <h1 className="intro-title">{t('intro.title')}</h1>
 
-        <ul className="intro-steps" aria-label={t('tutorial.welcome.title')}>
-          <li className="intro-step">
-            <span className="intro-checkbox" aria-hidden="true" />
-            <span className="intro-step-text">{t('intro.step1')}</span>
-          </li>
-          <li className="intro-step">
-            <span className="intro-checkbox" aria-hidden="true" />
-            <span className="intro-step-text">{t('intro.step2')}</span>
-          </li>
-          <li className="intro-step">
-            <span className="intro-checkbox" aria-hidden="true" />
-            <span className="intro-step-text">{t('intro.step3')}</span>
-          </li>
-        </ul>
+          <div className="intro-steps-wrap" aria-label={t('tutorial.welcome.title')}>
+            <ul className="intro-steps">
+              <li className="intro-step">
+                <span className="intro-checkbox" aria-hidden="true" />
+                <span className="intro-step-text">{t('intro.step1')}</span>
+              </li>
+              <li className="intro-step">
+                <span className="intro-checkbox" aria-hidden="true" />
+                <span className="intro-step-text">{t('intro.step2')}</span>
+              </li>
+              <li className="intro-step">
+                <span className="intro-checkbox" aria-hidden="true" />
+                <span className="intro-step-text">{t('intro.step3')}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
 
         <div className="intro-mandala" aria-hidden="true">
           <img className="intro-mandala-img" src={mandalaSvg} alt="" draggable={false} loading="eager" />
