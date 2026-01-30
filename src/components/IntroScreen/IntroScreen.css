@@ -71,13 +71,15 @@
 
 .intro-upper {
   width: 100%;
-  display: flex;
-  flex-direction: column;
   flex: 1;
+  display: grid;
+  grid-template-rows: auto 1fr auto; /* title | centered steps | mandala */
+  align-items: center;
+  padding-top: 6px;
 }
 
 .intro-title {
-  margin: 14px 0 0;
+  margin: 0;
   color: rgba(255, 255, 255, 0.92);
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -88,11 +90,10 @@
 }
 
 .intro-steps-wrap {
-  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 8px;
+  padding-top: 0;
 }
 
 .intro-steps {
@@ -140,7 +141,7 @@
   display: flex;
   justify-content: center;
   /* сдвигаем мандалу чуть ниже середины, не трогая кнопку */
-  margin-top: clamp(44px, 9.5vh, 108px);
+  margin-top: 0;
 }
 
 .intro-mandala-img {
