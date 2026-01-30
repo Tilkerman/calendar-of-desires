@@ -177,6 +177,9 @@
   display: grid;
   grid-template-rows: 1fr auto; /* space for centered footer | fixed button row */
   flex: 1;
+  /* нижний отступ (safe-area) держим на контейнере,
+     чтобы он НЕ искажал "центр между мандалой и кнопкой" */
+  padding-bottom: calc(14px + env(safe-area-inset-bottom));
 }
 
 /* центрируем фразу по вертикали между мандалой и кнопкой */
@@ -185,9 +188,7 @@
   align-items: center;
   justify-content: center;
   padding: 0 6px;
-  /* центрируем фразу между мандалой и верхом кнопки:
-     т.к. у блока кнопки есть верхний зазор, сдвигаем фразу на половину этого зазора */
-  transform: translateY(calc(var(--intro-bottom-top-gap) / 2));
+  transform: none;
 }
 
 .intro-bottom {
@@ -195,7 +196,8 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  padding: var(--intro-bottom-top-gap) 0 calc(14px + env(safe-area-inset-bottom));
+  /* оставляем верхний зазор над кнопкой, но убираем нижний — он теперь на .intro-lower */
+  padding: var(--intro-bottom-top-gap) 0 0;
 }
 
 .intro-go {
