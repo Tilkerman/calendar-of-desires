@@ -110,7 +110,8 @@
   min-height: 0; /* allow grid child to shrink */
   overflow-y: auto; /* allow reaching bottom row of tiles */
   -webkit-overflow-scrolling: touch;
-  padding: 0.35rem 0.9rem 1rem;
+  /* запас под фиксированный нижний бар, чтобы контент не перекрывался */
+  padding: 0.35rem 0.9rem calc(92px + env(safe-area-inset-bottom));
 }
 
 .life-wheel-title {
@@ -291,13 +292,16 @@
 }
 
 .life-wheel-bottom {
-  position: sticky;
+  position: fixed;
+  left: 0;
+  right: 0;
   bottom: 0;
   width: 100%;
   background: #111; /* non-transparent */
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 -10px 24px rgba(0, 0, 0, 0.35);
-  padding: 0.75rem 0.9rem calc(0.85rem + env(safe-area-inset-bottom));
+  /* чуть ниже: уменьшаем нижний padding (кроме safe-area) */
+  padding: 0.6rem 0.9rem calc(0.55rem + env(safe-area-inset-bottom));
 }
 
 .life-wheel-bottom-row {
