@@ -67,19 +67,19 @@
   padding: 14px 0 0;
   gap: 18px;
   text-align: center;
+  /* single source of truth for the space above mandala */
+  --intro-mandala-gap: clamp(44px, 9.5vh, 108px);
 }
 
 .intro-upper {
   width: 100%;
+  display: flex;
+  flex-direction: column;
   flex: 1;
-  display: grid;
-  grid-template-rows: auto 1fr auto; /* title | centered steps | mandala */
-  align-items: center;
-  padding-top: 6px;
 }
 
 .intro-title {
-  margin: 0;
+  margin: 14px 0 0;
   color: rgba(255, 255, 255, 0.92);
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -90,10 +90,13 @@
 }
 
 .intro-steps-wrap {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   padding-top: 0;
+  /* центрируем список между заголовком и мандалой, не двигая саму мандалу */
+  transform: translateY(calc(var(--intro-mandala-gap) * 0.5));
 }
 
 .intro-steps {
@@ -141,7 +144,7 @@
   display: flex;
   justify-content: center;
   /* сдвигаем мандалу чуть ниже середины, не трогая кнопку */
-  margin-top: clamp(18px, 4vh, 44px);
+  margin-top: var(--intro-mandala-gap);
 }
 
 .intro-mandala-img {
