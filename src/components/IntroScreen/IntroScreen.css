@@ -140,7 +140,7 @@
   display: flex;
   justify-content: center;
   /* сдвигаем мандалу чуть ниже середины, не трогая кнопку */
-  margin-top: clamp(44px, 9.5vh, 108px);
+  margin-top: clamp(56px, 11vh, 128px);
 }
 
 .intro-mandala-img {
