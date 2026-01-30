@@ -122,20 +122,20 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.9rem 2.4rem;
-  min-height: 44px;
+  height: 61px;
+  min-height: 61px;
+  padding: 0 47px;
   cursor: pointer;
-  width: min(280px, 78vw);
-  border: 2px solid rgba(255, 255, 255, 0.85);
+  width: min(178px, 72vw);
+  border: 1px solid #ffffff;
   background: #dbdbdb;
-  /* разное скругление углов как на референсе */
-  /* TL, TR, BR, BL */
-  border-radius: 8px 34px 8px 34px;
+  /* Figma: TL 6, TR 15, BR 6, BL 15 */
+  border-radius: 6px 15px 6px 15px;
   margin-bottom: calc(env(safe-area-inset-bottom, 0) + 2rem);
   transition: transform 0.1s ease, filter 0.15s ease, background 0.15s ease;
   font-family: inherit;
   -webkit-tap-highlight-color: transparent;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+  box-shadow: none;
 }
 
 .welcome-button:hover {
@@ -150,16 +150,16 @@
 .welcome-button:focus-visible {
   outline: 2px solid rgba(255, 255, 255, 0.85);
   outline-offset: 4px;
-  border-radius: 10px 36px 10px 36px;
+  border-radius: 8px 17px 8px 17px;
 }
 
 .welcome-button-text {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
+  font-size: clamp(18px, 4.6vw, 24px);
   font-weight: 500;
-  color: #1a1a1a;
+  color: #4a4a4a;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   pointer-events: none;
@@ -195,6 +195,6 @@
   }
 
   .welcome-button {
-    width: min(240px, 84vw);
+    width: min(178px, 84vw);
   }
 }
