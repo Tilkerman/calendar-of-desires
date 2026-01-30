@@ -139,7 +139,7 @@
 
 .life-wheel-svg {
   touch-action: none;
-  width: clamp(260px, 68vw, 360px);
+  width: clamp(280px, 74vw, 390px);
   height: auto;
   overflow: visible; /* чтобы подписи вокруг колеса не обрезались */
   display: block;
