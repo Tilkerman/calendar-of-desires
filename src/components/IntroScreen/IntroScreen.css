@@ -93,6 +93,8 @@
   align-items: center;
   justify-content: center;
   padding-top: 8px;
+  /* чуть опускаем список, но он всё равно остаётся "посередине" в своём слоте */
+  transform: translateY(10px);
 }
 
 .intro-steps {
@@ -140,7 +142,7 @@
   display: flex;
   justify-content: center;
   /* сдвигаем мандалу чуть ниже середины, не трогая кнопку */
-  margin-top: clamp(36px, 8.5vh, 92px);
+  margin-top: clamp(44px, 9.5vh, 108px);
 }
 
 .intro-mandala-img {
@@ -179,7 +181,8 @@
   align-items: center;
   justify-content: center;
   padding: 0 6px;
-  transform: translateY(10px);
+  /* чуть ниже, оставаясь по центру между мандалой и кнопкой */
+  transform: translateY(18px);
 }
 
 .intro-bottom {
