@@ -113,12 +113,12 @@
   overflow-y: auto; /* allow reaching bottom row of tiles */
   -webkit-overflow-scrolling: touch;
   /* запас под фиксированные header и bottom bar, чтобы контент не перекрывался */
-  padding: calc(env(safe-area-inset-top, 0) + 150px) 0.9rem calc(110px + env(safe-area-inset-bottom));
+  padding: calc(env(safe-area-inset-top, 0) + 85px) 0.9rem calc(110px + env(safe-area-inset-bottom));
 }
 
 .life-wheel-title {
   text-align: center;
-  margin: 0.2rem 0 0.85rem;
+  margin: 0.5rem 0 0.6rem; /* надпись сразу под header, небольшой отступ до колеса */
 }
 
 .life-wheel-title-main {
@@ -142,7 +142,7 @@
 .life-wheel-wrapper {
   display: flex;
   justify-content: center;
-  margin: 0;
+  margin: 0.3rem 0 0; /* немного опускаем колесо */
   min-height: 0;
 }
 
