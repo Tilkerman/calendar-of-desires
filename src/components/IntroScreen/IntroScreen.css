@@ -74,7 +74,10 @@
   display: grid;
   grid-template-rows: auto 1fr auto 1fr auto; /* title | spacer | steps | spacer | mandala */
   align-items: center;
-  flex: 1.15; /* чуть больше веса верхней части -> мандала ниже */
+  /* Даём верхнему блоку больше высоты, чтобы:
+     - spacer-строки 1fr/1fr реально расширились и список стал ровно по центру между заголовком и мандалой
+     - мандала опустилась ниже середины без padding/transform */
+  flex: 1.55;
 }
 
 .intro-title {
