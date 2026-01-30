@@ -93,6 +93,8 @@
   align-items: center;
   justify-content: center;
   padding-top: 8px;
+  /* центрируем список между заголовком и мандалой, учитывая отступ мандалы сверху */
+  transform: translateY(calc(clamp(64px, 12vh, 140px) * 0.5));
 }
 
 .intro-steps {
