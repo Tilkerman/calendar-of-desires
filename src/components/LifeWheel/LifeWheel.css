@@ -139,7 +139,7 @@
 
 .life-wheel-svg {
   touch-action: none;
-  width: clamp(300px, 80vw, 430px);
+  width: clamp(330px, 86vw, 480px);
   height: auto;
   overflow: visible; /* чтобы подписи вокруг колеса не обрезались */
   display: block;
@@ -188,25 +188,25 @@
 
 .life-wheel-ring {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.22);
+  stroke: rgba(0, 0, 0, 0.18);
   stroke-width: 1.1;
 }
 
 .life-wheel-divider {
-  stroke: rgba(255, 255, 255, 0.45);
+  stroke: rgba(0, 0, 0, 0.4);
   stroke-width: 2.2;
   stroke-linecap: round;
 }
 
 .life-wheel-outline {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.35);
+  stroke: rgba(0, 0, 0, 0.25);
   stroke-width: 1.6;
 }
 
 .life-wheel-glow {
-  fill: rgba(255, 255, 255, 0.12);
-  stroke: rgba(255, 255, 255, 0.18);
+  fill: rgba(255, 255, 255, 0.92);
+  stroke: rgba(255, 255, 255, 0.65);
   stroke-width: 1;
 }
 

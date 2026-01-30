@@ -174,11 +174,11 @@ export default function LifeWheel({
           >
             <defs>
               <filter id="wheelGlow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="10" result="blur" />
+                <feGaussianBlur stdDeviation="14" result="blur" />
                 <feColorMatrix
                   in="blur"
                   type="matrix"
-                  values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.45 0"
+                  values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.7 0"
                   result="glow"
                 />
                 <feMerge>
@@ -298,7 +298,6 @@ export default function LifeWheel({
         </div>
 
         <div className="life-wheel-cards-title">{t('wheel.cardsTitle')}</div>
-        <div className="life-wheel-cards-sub">{t('wheel.cardsHint')}</div>
 
         <div className="life-wheel-grid">
           {AREAS.map((area) => (
