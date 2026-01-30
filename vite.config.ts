@@ -62,7 +62,10 @@ export default defineConfig(({ mode }) => {
         clientsClaim: true,
         skipWaiting: true,
         cleanupOutdatedCaches: true,
-        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        // IMPORTANT: don't precache index.html.
+        // Otherwise iOS/PWA may keep serving a stale HTML after deploy (points to old hashed assets) -> "white screen".
+        globPatterns: ['**/*.{js,css,ico,png,svg,webmanifest}'],
+        globIgnores: ['**/index.html'],
         runtimeCaching: [
           // IMPORTANT for GitHub Pages: avoid serving a stale cached HTML after deploy.
           // This is the typical cause of "white screen" (HTML points to old hashed assets).
