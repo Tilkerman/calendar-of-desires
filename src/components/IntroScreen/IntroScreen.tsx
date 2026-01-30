@@ -1,41 +1,35 @@
 import './IntroScreen.css';
 import { useI18n } from '../../i18n';
-import LanguageToggle from '../LanguageToggle/LanguageToggle';
-import mandalaPng from '../../assets/Мандала.png';
-import logoMark from '../../assets/group-29.svg';
-import welcomeButton from '../../assets/welcome-button.svg';
+import mandalaSvg from '../../assets/mandala.svg';
 
 interface IntroScreenProps {
   onGo: () => void;
   onSettingsClick?: () => void;
 }
 
-export default function IntroScreen({ onGo, onSettingsClick }: IntroScreenProps) {
-  const { t } = useI18n();
+export default function IntroScreen({ onGo }: IntroScreenProps) {
+  const { t, locale, setLocale } = useI18n();
 
   return (
     <div className="intro-screen">
-      <header className="intro-header">
-        <div className="intro-header-left">
-          <img className="intro-header-logo" src={logoMark} alt="LUMI" draggable={false} />
-        </div>
-        <div className="intro-header-center" />
-        <div className="intro-header-right">
-          <LanguageToggle />
-          <button
-            type="button"
-            className="intro-burger"
-            onClick={onSettingsClick}
-            aria-label={t('header.settings')}
-          >
-            <span className="intro-burger-icon" aria-hidden="true">
-              <span className="intro-burger-line" />
-              <span className="intro-burger-line" />
-              <span className="intro-burger-line" />
-            </span>
-          </button>
-        </div>
-      </header>
+      {/* Language switcher (must be centered like Welcome) */}
+      <div className="intro-lang-switcher">
+        <button
+          type="button"
+          className={`intro-lang-btn ${locale === 'ru' ? 'active' : ''}`}
+          onClick={() => setLocale('ru')}
+        >
+          RU
+        </button>
+        <span className="intro-lang-separator">|</span>
+        <button
+          type="button"
+          className={`intro-lang-btn ${locale === 'en' ? 'active' : ''}`}
+          onClick={() => setLocale('en')}
+        >
+          EN
+        </button>
+      </div>
 
       <main className="intro-content">
         <h1 className="intro-title">{t('intro.title')}</h1>
@@ -56,14 +50,18 @@ export default function IntroScreen({ onGo, onSettingsClick }: IntroScreenProps)
         </ul>
 
         <div className="intro-mandala" aria-hidden="true">
-          <img className="intro-mandala-img" src={mandalaPng} alt="" draggable={false} loading="eager" />
+          <img className="intro-mandala-img" src={mandalaSvg} alt="" draggable={false} loading="eager" />
         </div>
 
         <p className="intro-footer-text">{t('intro.footer')}</p>
 
         <div className="intro-bottom">
-          <button className="intro-go" onClick={onGo} aria-label={t('intro.go')} type="button">
-            <img className="intro-go-bg" src={welcomeButton} alt="" aria-hidden="true" draggable={false} />
+          <button
+            className="intro-go"
+            onClick={onGo}
+            aria-label={t('intro.go')}
+            type="button"
+          >
             <span className="intro-go-text">{t('intro.go')}</span>
           </button>
         </div>
