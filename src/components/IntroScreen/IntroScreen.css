@@ -75,8 +75,6 @@
   grid-template-rows: auto 1fr auto 1fr auto; /* title | spacer | steps | spacer | mandala */
   align-items: center;
   flex: 1.15; /* чуть больше веса верхней части -> мандала ниже */
-  /* фиксируем вертикальную "планку" смещения мандалы (НЕ трогаем кнопку/языки/тексты) */
-  --intro-mandala-pad: clamp(64px, 12vh, 140px);
 }
 
 .intro-title {
@@ -142,8 +140,9 @@
 .intro-mandala {
   display: flex;
   justify-content: center;
-  /* держим мандалу "чуть ниже середины" */
-  padding-top: var(--intro-mandala-pad);
+  /* Мандалу НЕ сдвигаем padding'ом внутри grid-строки:
+     иначе центр "между заголовком и мандалой" считается неверно и список липнет к заголовку. */
+  padding-top: 0;
 }
 
 .intro-mandala-img {
