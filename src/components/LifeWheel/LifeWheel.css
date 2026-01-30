@@ -1,9 +1,11 @@
 .life-wheel-screen {
-  min-height: 100svh;
-  height: auto;
+  min-height: 100vh;
+  height: 100svh;
+  display: grid;
+  grid-template-rows: auto 1fr auto; /* header | scrollable main | bottom bar */
   background: #0b0b0c;
   color: rgba(255, 255, 255, 0.95);
-  /* Важно: не ставим overflow hidden на родителя — это ломает sticky при скролле в Safari */
+  overflow: hidden; /* scroll lives in .life-wheel-content */
 }
 
 /* Sticky header: logo left, language center, burger right */
@@ -105,7 +107,10 @@
   max-width: 600px;
   margin: 0 auto;
   width: 100%;
-  padding: 0.35rem 0.9rem calc(108px + env(safe-area-inset-bottom)); /* место под фикс. нижний бар */
+  min-height: 0; /* allow grid child to shrink */
+  overflow-y: auto; /* allow reaching bottom row of tiles */
+  -webkit-overflow-scrolling: touch;
+  padding: 0.35rem 0.9rem 1rem;
 }
 
 .life-wheel-title {
@@ -140,7 +145,7 @@
 .life-wheel-svg {
   /* Не блокируем вертикальный скролл на мобиле (иначе страница "плохо скроллится" над колесом) */
   touch-action: pan-y;
-  width: clamp(360px, 92vw, 520px);
+  width: clamp(380px, 98vw, 560px);
   height: auto;
   overflow: visible; /* чтобы подписи вокруг колеса не обрезались */
   display: block;
@@ -286,9 +291,7 @@
 }
 
 .life-wheel-bottom {
-  position: fixed;
-  left: 0;
-  right: 0;
+  position: sticky;
   bottom: 0;
   width: 100%;
   background: #111; /* non-transparent */
