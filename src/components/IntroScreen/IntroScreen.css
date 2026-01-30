@@ -75,6 +75,8 @@
   grid-template-rows: auto 1fr auto 1fr auto; /* title | spacer | steps | spacer | mandala */
   align-items: center;
   flex: 1.15; /* чуть больше веса верхней части -> мандала ниже */
+  /* фиксируем вертикальную "планку" смещения мандалы (НЕ трогаем кнопку/языки/тексты) */
+  --intro-mandala-pad: clamp(64px, 12vh, 140px);
 }
 
 .intro-title {
@@ -94,6 +96,9 @@
   justify-content: center;
   padding-top: 0;
   transform: none;
+  /* список ровно посередине между заголовком и мандалой:
+     мандала имеет верхний паддинг (см. .intro-mandala), поэтому компенсируем половину этого паддинга */
+  transform: translateY(calc(var(--intro-mandala-pad) / 2 + 8px));
 }
 
 .intro-steps {
@@ -141,7 +146,7 @@
   display: flex;
   justify-content: center;
   /* держим мандалу "чуть ниже середины" */
-  padding-top: clamp(64px, 12vh, 140px);
+  padding-top: var(--intro-mandala-pad);
 }
 
 .intro-mandala-img {
