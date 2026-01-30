@@ -1,7 +1,6 @@
 .intro-screen {
   min-height: 100svh;
   height: 100svh;
-  --intro-bottom-top-gap: 12px; /* зазор над кнопкой (нужен для точного центрирования фразы) */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -73,7 +72,7 @@
 .intro-upper {
   width: 100%;
   display: grid;
-  grid-template-rows: auto 1fr auto 1fr auto; /* title | spacer | steps | spacer | mandala */
+  grid-template-rows: auto 1fr auto 1fr; /* title | spacer | steps | spacer */
   align-items: center;
   flex: 1.15; /* чуть больше веса верхней части -> мандала ниже */
   /* фиксируем вертикальную "планку" смещения мандалы (НЕ трогаем кнопку/языки/тексты) */
@@ -97,9 +96,6 @@
   justify-content: center;
   padding-top: 0;
   transform: none;
-  /* список ровно посередине между заголовком и мандалой:
-     мандала имеет верхний паддинг (см. .intro-mandala), поэтому компенсируем половину этого паддинга */
-  transform: translateY(calc(var(--intro-mandala-pad) / 2 + 8px));
 }
 
 .intro-steps {
@@ -172,23 +168,13 @@
   font-size: 14px;
 }
 
-.intro-lower {
+.intro-mid {
   width: 100%;
-  display: grid;
-  grid-template-rows: 1fr auto; /* space for centered footer | fixed button row */
   flex: 1;
-  /* нижний отступ (safe-area) держим на контейнере,
-     чтобы он НЕ искажал "центр между мандалой и кнопкой" */
-  padding-bottom: calc(14px + env(safe-area-inset-bottom));
-}
-
-/* центрируем фразу по вертикали между мандалой и кнопкой */
-.intro-footer-wrap {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 6px;
-  transform: none;
 }
 
 .intro-bottom {
@@ -196,8 +182,7 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  /* оставляем верхний зазор над кнопкой, но убираем нижний — он теперь на .intro-lower */
-  padding: var(--intro-bottom-top-gap) 0 0;
+  padding: 12px 0 calc(14px + env(safe-area-inset-bottom));
 }
 
 .intro-go {
