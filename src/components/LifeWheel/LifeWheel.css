@@ -111,7 +111,7 @@
   overflow-y: auto; /* allow reaching bottom row of tiles */
   -webkit-overflow-scrolling: touch;
   /* запас под фиксированный нижний бар, чтобы контент не перекрывался */
-  padding: 0.35rem 0.9rem calc(92px + env(safe-area-inset-bottom));
+  padding: 0.35rem 0.9rem calc(100px + env(safe-area-inset-bottom));
 }
 
 .life-wheel-title {
@@ -154,8 +154,8 @@
 
 .life-wheel-all-button {
   width: 100%;
-  height: 61px;
-  min-height: 61px;
+  height: 54px;
+  min-height: 54px;
   padding: 0 18px;
   appearance: none;
   border: 1px solid rgba(219, 219, 219, 0.95);
@@ -300,8 +300,8 @@
   background: #111; /* non-transparent */
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 -10px 24px rgba(0, 0, 0, 0.35);
-  /* чуть ниже: уменьшаем нижний padding (кроме safe-area) */
-  padding: 0.6rem 0.9rem calc(0.55rem + env(safe-area-inset-bottom));
+  /* уменьшаем нижний бар: меньше padding и высота кнопок */
+  padding: 0.45rem 0.9rem calc(0.4rem + env(safe-area-inset-bottom));
 }
 
 .life-wheel-bottom-row {
@@ -315,8 +315,8 @@
 
 .life-wheel-create {
   width: 100%;
-  height: 61px;
-  min-height: 61px;
+  height: 54px;
+  min-height: 54px;
   padding: 0 18px;
   font-size: 0.86rem;
   font-weight: 900;
