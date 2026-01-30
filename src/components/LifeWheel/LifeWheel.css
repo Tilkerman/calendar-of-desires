@@ -12,7 +12,7 @@
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  padding: calc(env(safe-area-inset-top, 0) + 0.9rem) 1rem 0.75rem;
+  padding: calc(env(safe-area-inset-top, 0) + 0.55rem) 0.85rem 0.5rem;
   background: rgba(11, 11, 12, 0.72);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -23,7 +23,7 @@
 }
 
 .life-wheel-logo {
-  width: 86px;
+  width: 72px;
   height: auto;
   display: block;
   opacity: 0.92;
@@ -76,8 +76,8 @@
   appearance: none;
   border: 0;
   background: transparent;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 10px;
   cursor: pointer;
   display: inline-flex;
@@ -92,8 +92,8 @@
 }
 
 .life-wheel-burger-line {
-  width: 32px;
-  height: 5px;
+  width: 28px;
+  height: 4px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.92);
   display: block;
@@ -102,20 +102,21 @@
 .life-wheel-content {
   max-width: 600px;
   margin: 0 auto;
-  padding: 0.75rem 1rem calc(6.25rem + env(safe-area-inset-bottom));
+  padding: 0.35rem 1rem calc(6.25rem + env(safe-area-inset-bottom));
 }
 
 .life-wheel-title {
   text-align: center;
-  margin: 0.5rem 0 1.25rem;
+  margin: 0.2rem 0 0.85rem;
 }
 
 .life-wheel-title-main {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 900;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.92);
+  white-space: nowrap; /* одна строка */
 }
 
 .life-wheel-title-sub {
@@ -128,7 +129,7 @@
 .life-wheel-wrapper {
   display: flex;
   justify-content: center;
-  margin: 0.25rem 0 1.2rem;
+  margin: 0 0 1.05rem;
 }
 
 .life-wheel-svg {
