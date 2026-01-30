@@ -128,6 +128,7 @@
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.92);
   line-height: 1.15;
+  white-space: nowrap; /* в одну строку без переносов */
 }
 
 .life-wheel-title-sub {
