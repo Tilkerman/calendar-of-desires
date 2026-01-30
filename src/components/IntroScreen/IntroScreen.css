@@ -173,14 +173,13 @@
 
 .intro-lower {
   width: 100%;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: 1fr auto; /* space for centered footer | fixed button row */
   flex: 1;
 }
 
 /* центрируем фразу по вертикали между мандалой и кнопкой */
 .intro-footer-wrap {
-  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
