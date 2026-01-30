@@ -93,8 +93,6 @@
   align-items: center;
   justify-content: center;
   padding-top: 8px;
-  /* чуть опускаем список, но он всё равно остаётся "посередине" в своём слоте */
-  transform: translateY(10px);
 }
 
 .intro-steps {

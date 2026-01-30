@@ -51,10 +51,10 @@ export default function IntroScreen({ onGo }: IntroScreenProps) {
               </li>
             </ul>
           </div>
-        </div>
 
-        <div className="intro-mandala" aria-hidden="true">
-          <img className="intro-mandala-img" src={mandalaSvg} alt="" draggable={false} loading="eager" />
+          <div className="intro-mandala" aria-hidden="true">
+            <img className="intro-mandala-img" src={mandalaSvg} alt="" draggable={false} loading="eager" />
+          </div>
         </div>
 
         <div className="intro-lower">
