@@ -130,7 +130,7 @@
   background: #dbdbdb;
   /* разное скругление углов как на референсе */
   /* TL, TR, BR, BL */
-  border-radius: 14px 26px 14px 26px;
+  border-radius: 8px 34px 8px 34px;
   margin-bottom: calc(env(safe-area-inset-bottom, 0) + 2rem);
   transition: transform 0.1s ease, filter 0.15s ease, background 0.15s ease;
   font-family: inherit;
@@ -150,7 +150,7 @@
 .welcome-button:focus-visible {
   outline: 2px solid rgba(255, 255, 255, 0.85);
   outline-offset: 4px;
-  border-radius: 16px 28px 16px 28px;
+  border-radius: 10px 36px 10px 36px;
 }
 
 .welcome-button-text {
