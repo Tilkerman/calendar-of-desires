@@ -2,16 +2,18 @@
   min-height: 100vh;
   height: 100svh;
   display: grid;
-  grid-template-rows: auto 1fr auto; /* header | scrollable main | bottom bar */
+  grid-template-rows: 1fr; /* только scrollable main, header и bottom fixed */
   background: #0b0b0c;
   color: rgba(255, 255, 255, 0.95);
   overflow: hidden; /* scroll lives in .life-wheel-content */
 }
 
-/* Sticky header: logo left, language center, burger right */
+/* Fixed header: logo left, language center, burger right */
 .life-wheel-header {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 20;
   display: grid;
   grid-template-columns: auto 1fr auto;
@@ -110,8 +112,8 @@
   min-height: 0; /* allow grid child to shrink */
   overflow-y: auto; /* allow reaching bottom row of tiles */
   -webkit-overflow-scrolling: touch;
-  /* запас под фиксированный нижний бар, чтобы контент не перекрывался */
-  padding: 0.35rem 0.9rem calc(100px + env(safe-area-inset-bottom));
+  /* запас под фиксированные header и bottom bar, чтобы контент не перекрывался */
+  padding: calc(env(safe-area-inset-top, 0) + 85px) 0.9rem calc(110px + env(safe-area-inset-bottom));
 }
 
 .life-wheel-title {
