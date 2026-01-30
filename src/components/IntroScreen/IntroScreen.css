@@ -125,7 +125,7 @@
   display: flex;
   justify-content: center;
   /* сдвигаем мандалу чуть ниже середины, не трогая кнопку */
-  margin-top: clamp(18px, 5vh, 44px);
+  margin-top: clamp(28px, 7vh, 72px);
 }
 
 .intro-mandala-img {
@@ -139,7 +139,7 @@
 }
 
 .intro-footer-text {
-  margin: clamp(10px, 3.5vh, 28px) 0 0;
+  margin: 0;
   text-align: center;
   color: rgba(255, 255, 255, 0.78);
   text-transform: uppercase;
@@ -148,6 +148,22 @@
   white-space: pre-line;
   font-weight: 500;
   font-size: 14px;
+}
+
+.intro-lower {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* центрируем фразу по вертикали между мандалой и кнопкой */
+.intro-footer-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
 }
 
 .intro-bottom {

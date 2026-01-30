@@ -53,17 +53,21 @@ export default function IntroScreen({ onGo }: IntroScreenProps) {
           <img className="intro-mandala-img" src={mandalaSvg} alt="" draggable={false} loading="eager" />
         </div>
 
-        <p className="intro-footer-text">{t('intro.footer')}</p>
+        <div className="intro-lower">
+          <div className="intro-footer-wrap">
+            <p className="intro-footer-text">{t('intro.footer')}</p>
+          </div>
 
-        <div className="intro-bottom">
-          <button
-            className="intro-go"
-            onClick={onGo}
-            aria-label={t('intro.go')}
-            type="button"
-          >
-            <span className="intro-go-text">{t('intro.go')}</span>
-          </button>
+          <div className="intro-bottom">
+            <button
+              className="intro-go"
+              onClick={onGo}
+              aria-label={t('intro.go')}
+              type="button"
+            >
+              <span className="intro-go-text">{t('intro.go')}</span>
+            </button>
+          </div>
         </div>
       </main>
     </div>
