@@ -47,8 +47,13 @@ export default function WelcomeScreen({ onStart }: WelcomeScreenProps) {
       </div>
 
       {/* Primary button */}
-      <button onClick={onStart} className="welcome-button">
-        {t('welcome.button')}
+      <button
+        onClick={onStart}
+        className="welcome-button"
+        type="button"
+        aria-label={t('welcome.button')}
+      >
+        <span className="welcome-button-text">{t('welcome.button')}</span>
       </button>
     </div>
   );
