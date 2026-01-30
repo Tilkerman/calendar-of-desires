@@ -113,7 +113,7 @@
   overflow-y: auto; /* allow reaching bottom row of tiles */
   -webkit-overflow-scrolling: touch;
   /* запас под фиксированные header и bottom bar, чтобы контент не перекрывался */
-  padding: calc(env(safe-area-inset-top, 0) + 110px) 0.9rem calc(130px + env(safe-area-inset-bottom));
+  padding: calc(env(safe-area-inset-top, 0) + 140px) 0.9rem calc(130px + env(safe-area-inset-bottom));
 }
 
 .life-wheel-title {
