@@ -1,6 +1,7 @@
 import './WelcomeScreen.css';
 import { useI18n } from '../../i18n';
 import mandalaSvg from '../../assets/mandala.svg';
+import logoMark from '../../assets/group-29.svg';
 
 interface WelcomeScreenProps {
   onStart: () => void;
@@ -32,7 +33,7 @@ export default function WelcomeScreen({ onStart }: WelcomeScreenProps) {
       </div>
 
       {/* Logo */}
-      <h1 className="welcome-logo">{t('welcome.title')}</h1>
+      <img className="welcome-logo-img" src={logoMark} alt={t('welcome.title')} draggable={false} />
 
       {/* Mandala */}
       <div className="welcome-mandala" aria-hidden="true">

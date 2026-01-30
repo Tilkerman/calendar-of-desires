@@ -68,15 +68,12 @@
 }
 
 /* Logo */
-.welcome-logo {
-  font-size: clamp(48px, 12vw, 60px);
-  font-weight: 700;
-  line-height: 1;
-  margin: 0;
-  margin-top: clamp(24px, 6vw, 32px);
-  color: #ffffff;
-  text-align: center;
-  letter-spacing: 0.02em;
+.welcome-logo-img {
+  width: min(196px, 70vw);
+  height: auto;
+  display: block;
+  margin-top: clamp(18px, 5vw, 28px);
+  opacity: 0.92;
 }
 
 /* Mandala */
@@ -165,9 +162,9 @@
 
 /* Small mobile */
 @media (max-width: 360px) {
-  .welcome-logo {
-    font-size: 48px;
-    margin-top: 24px;
+  .welcome-logo-img {
+    width: min(180px, 70vw);
+    margin-top: 18px;
   }
 
   .welcome-mandala-img {
