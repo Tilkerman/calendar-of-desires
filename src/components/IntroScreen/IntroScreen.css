@@ -65,12 +65,12 @@
   flex-direction: column;
   align-items: center;
   padding: 14px 0 0;
-  gap: 16px;
+  gap: 22px;
   text-align: center;
 }
 
 .intro-title {
-  margin: 10px 0 4px;
+  margin: 14px 0 0;
   color: rgba(255, 255, 255, 0.92);
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -80,26 +80,10 @@
   white-space: pre-line;
 }
 
-.intro-mandala {
-  display: flex;
-  justify-content: center;
-  margin-top: 2px;
-}
-
-.intro-mandala-img {
-  width: min(170px, 46vw);
-  height: auto;
-  object-fit: contain;
-  filter: none;
-  opacity: 0.55;
-  user-select: none;
-  pointer-events: none;
-}
-
 .intro-steps {
   list-style: none;
   padding: 0;
-  margin: 4px 0 0;
+  margin: 10px 0 0;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -137,8 +121,25 @@
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.10);
 }
 
+.intro-mandala {
+  display: flex;
+  justify-content: center;
+  /* сдвигаем мандалу чуть ниже середины, не трогая кнопку */
+  margin-top: clamp(18px, 5vh, 44px);
+}
+
+.intro-mandala-img {
+  width: min(170px, 46vw);
+  height: auto;
+  object-fit: contain;
+  filter: none;
+  opacity: 0.55;
+  user-select: none;
+  pointer-events: none;
+}
+
 .intro-footer-text {
-  margin: 2px 0 0;
+  margin: clamp(10px, 3.5vh, 28px) 0 0;
   text-align: center;
   color: rgba(255, 255, 255, 0.78);
   text-transform: uppercase;
