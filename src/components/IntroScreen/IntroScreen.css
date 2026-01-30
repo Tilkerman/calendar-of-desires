@@ -1,6 +1,7 @@
 .intro-screen {
   min-height: 100svh;
   height: 100svh;
+  --intro-bottom-top-gap: 12px; /* зазор над кнопкой (нужен для точного центрирования фразы) */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -184,6 +185,9 @@
   align-items: center;
   justify-content: center;
   padding: 0 6px;
+  /* центрируем фразу между мандалой и верхом кнопки:
+     т.к. у блока кнопки есть верхний зазор, сдвигаем фразу на половину этого зазора */
+  transform: translateY(calc(var(--intro-bottom-top-gap) / 2));
 }
 
 .intro-bottom {
@@ -191,7 +195,7 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  padding: 12px 0 calc(14px + env(safe-area-inset-bottom));
+  padding: var(--intro-bottom-top-gap) 0 calc(14px + env(safe-area-inset-bottom));
 }
 
 .intro-go {
