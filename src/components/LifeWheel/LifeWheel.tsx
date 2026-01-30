@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { LifeArea } from '../../types';
 import { desireService, lifeAreaService } from '../../services/db';
-import Header from '../Header/Header';
 import './LifeWheel.css';
 import { useI18n } from '../../i18n';
 import mandalaPng from '../../assets/Мандала.png';
+import logoMark from '../../assets/group-29.svg';
 
 const AREAS: LifeArea[] = ['health', 'love', 'growth', 'family', 'home', 'work', 'hobby', 'finance'];
 
@@ -46,7 +46,7 @@ export default function LifeWheel({
   onShowAllDesires: (area?: LifeArea) => void;
   onSettingsClick?: () => void;
 }) {
-  const { t } = useI18n();
+  const { t, locale, setLocale } = useI18n();
   const [scores, setScores] = useState<Record<LifeArea, number>>(() => {
     const init = {} as Record<LifeArea, number>;
     for (const a of AREAS) init[a] = 0;
@@ -119,10 +119,46 @@ export default function LifeWheel({
 
   return (
     <div className="life-wheel-screen">
-      <Header 
-        onLogoClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
-        onSettingsClick={onSettingsClick}
-      />
+      <header className="life-wheel-header">
+        <div className="life-wheel-header-left">
+          <img className="life-wheel-logo" src={logoMark} alt={t('header.appName')} draggable={false} />
+        </div>
+
+        <div className="life-wheel-header-center">
+          <div className="life-wheel-lang-switcher" aria-label={t('header.langLabel')}>
+            <button
+              type="button"
+              className={`life-wheel-lang-btn ${locale === 'ru' ? 'active' : ''}`}
+              onClick={() => setLocale('ru')}
+            >
+              RU
+            </button>
+            <span className="life-wheel-lang-separator">|</span>
+            <button
+              type="button"
+              className={`life-wheel-lang-btn ${locale === 'en' ? 'active' : ''}`}
+              onClick={() => setLocale('en')}
+            >
+              EN
+            </button>
+          </div>
+        </div>
+
+        <div className="life-wheel-header-right">
+          <button
+            type="button"
+            className="life-wheel-burger"
+            onClick={onSettingsClick}
+            aria-label={t('header.settings')}
+          >
+            <span className="life-wheel-burger-icon" aria-hidden="true">
+              <span className="life-wheel-burger-line" />
+              <span className="life-wheel-burger-line" />
+              <span className="life-wheel-burger-line" />
+            </span>
+          </button>
+        </div>
+      </header>
 
       <div className="life-wheel-content">
         <div className="life-wheel-title">
