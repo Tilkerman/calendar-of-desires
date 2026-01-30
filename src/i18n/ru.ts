@@ -223,7 +223,7 @@ export const ru: Record<TranslationKey, string> = {
   'desires.contact7days': 'Контакт за 7 дней:',
 
   // Wheel
-  'wheel.title': 'ОЦЕНИ КАЖДУЮ СФЕРУ ЖИЗНИ ОТ 1 ДО 10',
+  'wheel.title': 'ОЦЕНИ СФЕРЫ ТВОЕЙ ЖИЗНИ ОТ 1 ДО 10',
   'wheel.subtitle': 'Выдели столько делений, насколько\nоцениваешь сферу (максимум 10)',
   'wheel.cardsTitle': 'ЗАПОЛНИ КАРТОЧКИ ЖЕЛАНИЙ\nПО КАЖДОЙ СФЕРЕ',
   'wheel.cardsHint': 'Загружай вдохновляющие картинки и описывай шаги',
