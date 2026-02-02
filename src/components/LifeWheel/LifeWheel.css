@@ -156,7 +156,7 @@
 .life-wheel-svg {
   /* Не блокируем вертикальный скролл на мобиле (иначе страница "плохо скроллится" над колесом) */
   touch-action: pan-y;
-  width: clamp(516px, 98vw, 732px);
+  width: clamp(516px, 95vw, 850px);
   height: auto;
   overflow: visible; /* чтобы подписи вокруг колеса не обрезались */
   display: block;
