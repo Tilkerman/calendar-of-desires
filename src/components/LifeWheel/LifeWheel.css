@@ -1,8 +1,8 @@
 .life-wheel-screen {
   min-height: 100vh;
   height: 100svh;
-  display: grid;
-  grid-template-rows: 1fr; /* только scrollable main, header и bottom fixed */
+  display: flex;
+  flex-direction: column;
   background: #0b0b0c;
   color: rgba(255, 255, 255, 0.95);
   overflow: hidden; /* scroll lives in .life-wheel-content */
@@ -105,15 +105,22 @@
   display: block;
 }
 
+.life-wheel-header-spacer {
+  height: calc(env(safe-area-inset-top, 0) + 0.55rem + 72px + 0.5rem + 1px);
+  flex-shrink: 0;
+  width: 100%;
+}
+
 .life-wheel-content {
   max-width: 600px;
   margin: 0 auto;
   width: 100%;
-  min-height: 0; /* allow grid child to shrink */
+  flex: 1;
+  min-height: 0; /* allow flex child to shrink */
   overflow-y: auto; /* allow reaching bottom row of tiles */
   -webkit-overflow-scrolling: touch;
   /* запас под фиксированные header и bottom bar, чтобы контент не перекрывался */
-  padding: calc(env(safe-area-inset-top, 0) + 120px) 0.9rem calc(130px + env(safe-area-inset-bottom));
+  padding: 0.5rem 0.9rem calc(130px + env(safe-area-inset-bottom));
 }
 
 .life-wheel-title {
@@ -339,7 +346,9 @@
 
 @media (max-width: 480px) {
   .life-wheel-content {
-    padding: 0.35rem 0.85rem 0.35rem;
+    padding-left: 0.85rem;
+    padding-right: 0.85rem;
+    padding-bottom: calc(130px + env(safe-area-inset-bottom));
   }
 
   .life-wheel-grid {

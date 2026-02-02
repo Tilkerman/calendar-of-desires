@@ -160,6 +160,8 @@ export default function LifeWheel({
         </div>
       </header>
 
+      <div className="life-wheel-header-spacer" />
+
       <div className="life-wheel-content">
         <div className="life-wheel-title">
           <div className="life-wheel-title-main">{t('wheel.title')}</div>
