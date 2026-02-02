@@ -125,7 +125,7 @@
 
 .life-wheel-title {
   text-align: center;
-  margin: 0 0 1rem; /* надпись сразу под header, отступ до колеса */
+  margin: 0 0 0.4rem; /* надпись сразу под header, отступ до колеса */
 }
 
 .life-wheel-title-main {
@@ -149,14 +149,14 @@
 .life-wheel-wrapper {
   display: flex;
   justify-content: center;
-  margin: 0.8rem 0 0; /* опускаем колесо ниже надписи */
+  margin: 0.3rem 0 0; /* опускаем колесо ниже надписи */
   min-height: 0;
 }
 
 .life-wheel-svg {
   /* Не блокируем вертикальный скролл на мобиле (иначе страница "плохо скроллится" над колесом) */
   touch-action: pan-y;
-  width: clamp(430px, 98vw, 610px);
+  width: clamp(516px, 98vw, 732px);
   height: auto;
   overflow: visible; /* чтобы подписи вокруг колеса не обрезались */
   display: block;
@@ -234,7 +234,7 @@
 }
 
 .life-wheel-cards-title {
-  margin-top: 0.75rem;
+  margin-top: 0.3rem;
   margin-bottom: 0.6rem; /* отлепляем от плиток */
   text-align: center;
   font-size: clamp(0.72rem, 3.1vw, 0.9rem);
