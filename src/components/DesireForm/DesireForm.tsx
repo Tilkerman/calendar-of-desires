@@ -3,7 +3,7 @@ import type { Desire, DesireImage, LifeArea, ActionItem } from '../../types';
 import { desireService, actionItemService } from '../../services/db';
 import './DesireForm.css';
 import { useI18n } from '../../i18n';
-import HeaderActions from '../Header/HeaderActions';
+import Header from '../Header/Header';
 
 interface DesireFormProps {
   onSave: (desireId?: string) => void;
@@ -28,7 +28,6 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const titleInputRef = useRef<HTMLInputElement>(null);
-  const formHeaderRef = useRef<HTMLElement>(null);
   
   // Состояние для шагов (action items)
   const [actionItems, setActionItems] = useState<ActionItem[]>([]);
@@ -63,11 +62,9 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
       // Сначала скроллим в самый верх страницы (к началу документа)
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
-      // Затем скроллим к заголовку формы или полю названия
+      // Затем скроллим к полю названия
       window.setTimeout(() => {
-        if (formHeaderRef.current) {
-          formHeaderRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else if (titleInputRef.current) {
+        if (titleInputRef.current) {
           titleInputRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }, 200);
@@ -124,7 +121,7 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (images.length >= 6) {
+    if (images.length >= 3) {
       alert(t('form.visual.max'));
       return;
     }
@@ -336,29 +333,24 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
     }
   };
 
+  const handleLogoClick = () => {
+    if (onBack) return onBack();
+  };
+
   return (
     <div className="desire-form-container">
-      {/* Шапка экрана (sticky) */}
-      <header ref={formHeaderRef} className="desire-form-header">
-        {onBack && (
-          <button
-            type="button"
-            onClick={onBack}
-            className="desire-form-back-button"
-            aria-label={t('common.back')}
-          >
-            <span className="back-arrow">←</span>
-            <span className="back-text">{t('common.back')}</span>
-          </button>
-        )}
-        {!initialDesire && (
-          <h1 className="desire-form-header-title">{t('form.newTitle')}</h1>
-        )}
-        {initialDesire && (
-          <h1 className="desire-form-header-title">{t('form.editTitle')}</h1>
-        )}
-        <HeaderActions onSettingsClick={onSettingsClick} />
-      </header>
+      {/* Шапка с главной страницы */}
+      <Header
+        leftSlot={
+          onBack ? (
+            <button type="button" className="desires-list-back" onClick={onBack}>
+              ← {t('common.back')}
+            </button>
+          ) : null
+        }
+        onLogoClick={handleLogoClick}
+        onSettingsClick={onSettingsClick}
+      />
       
       <form className="desire-form" onSubmit={handleSubmit}>
         {error && (
@@ -393,7 +385,7 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
             accept="image/*"
             onChange={handleImageChange}
             style={{ display: 'none' }}
-            disabled={images.length >= 6}
+            disabled={images.length >= 3}
           />
           <div className="image-upload-grid">
             {images.map((image) => (
@@ -409,7 +401,7 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
                 </button>
               </div>
             ))}
-            {images.length < 6 && (
+            {images.length < 3 && (
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
@@ -453,6 +445,32 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
         <div className="form-group">
           <label>{t('form.actionItems.label')}</label>
           <p className="form-label-hint">{t('form.actionItems.hint')}</p>
+          
+          {/* Поле для добавления нового шага */}
+          <div className="action-item-add">
+            <input
+              type="text"
+              className="action-item-input"
+              value={newActionItemText}
+              onChange={(e) => handleNewActionItemTextChange(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleAddActionItem();
+                }
+              }}
+              placeholder={t('form.actionItems.placeholder')}
+            />
+            <button
+              type="button"
+              className="action-item-add-btn"
+              onClick={handleAddActionItem}
+              disabled={!newActionItemText.trim()}
+              title={t('form.actionItems.add')}
+            >
+              +
+            </button>
+          </div>
           
           {/* Список существующих шагов */}
           {actionItems.length > 0 && (
@@ -520,37 +538,6 @@ export default function DesireForm({ onSave, initialDesire, onBack, presetArea, 
                 </div>
               ))}
             </div>
-          )}
-          
-          {/* Поле для добавления нового шага */}
-          <div className="action-item-add">
-            <input
-              type="text"
-              className="action-item-input"
-              value={newActionItemText}
-              onChange={(e) => handleNewActionItemTextChange(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  handleAddActionItem();
-                }
-              }}
-              placeholder={t('form.actionItems.placeholder')}
-            />
-            <button
-              type="button"
-              className="action-item-add-btn"
-              onClick={handleAddActionItem}
-              disabled={!newActionItemText.trim()}
-              title={t('form.actionItems.add')}
-            >
-              +
-            </button>
-          </div>
-          {newActionItemText.trim() && (
-            <p className="form-hint" style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary, #666666)' }}>
-              {t('form.actionItems.autoSaveHint')}
-            </p>
           )}
         </div>
 

@@ -5,7 +5,7 @@ import ImageGallery from '../ImageGallery/ImageGallery';
 import { formatDate, getTodayDateString } from '../../utils/date';
 import './DesireDetail.css';
 import { useI18n } from '../../i18n';
-import HeaderActions from '../Header/HeaderActions';
+import Header from '../Header/Header';
 
 interface DesireDetailProps {
   desireId: string;
@@ -251,17 +251,22 @@ export default function DesireDetail({ desireId, onBack, onSettingsClick, onEdit
     return null;
   }
 
+  const handleLogoClick = () => {
+    onBack();
+  };
+
   return (
     <div className="desire-detail">
-      {/* Шапка экрана желания */}
-      <header className="desire-detail-header">
-        <button className="desire-detail-back" onClick={onBack} aria-label={t('common.back')}>
-          <span className="back-arrow">←</span>
-          <span className="back-text">{t('common.back')}</span>
-        </button>
-        <h1 className="desire-detail-title">{desire.title}</h1>
-        <HeaderActions onSettingsClick={onSettingsClick} />
-      </header>
+      {/* Шапка с главной страницы */}
+      <Header
+        leftSlot={
+          <button type="button" className="desires-list-back" onClick={onBack}>
+            ← {t('common.back')}
+          </button>
+        }
+        onLogoClick={handleLogoClick}
+        onSettingsClick={onSettingsClick}
+      />
 
       {/* Визуальный якорь - галерея изображений */}
       {(() => {

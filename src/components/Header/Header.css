@@ -2,200 +2,122 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: var(--bg-primary);
-  border-bottom: 1px solid var(--border-color);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  background: #ffffff; /* Белый фон */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
 }
 
 .header-content {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  padding: calc(env(safe-area-inset-top, 0) + 0.55rem) 0.85rem 0.5rem;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .header-left {
+  justify-self: start;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   min-width: 0;
 }
 
-.header-logo {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-  margin: -0.5rem;
-  border-radius: 0.5rem;
-  transition: background-color 0.2s;
-  color: var(--text-primary);
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.header-logo:hover {
-  background: var(--bg-hover);
-}
-
-.logo-icon {
-  font-size: 1.5rem;
-}
-
-.logo-icon-img {
-  width: 1.5rem;
-  height: 1.5rem;
-  object-fit: contain;
-  opacity: 0.95;
-  flex-shrink: 0;
-}
-
-.logo-text {
-  font-size: 1rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.logo-text-hidden {
-  display: none;
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-/* Переключатель языка */
-.header-lang {
-  display: inline-flex;
-  align-items: center;
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-  overflow: hidden;
-  background: var(--bg-card);
-}
-
-.header-lang-btn {
+.header-logo-btn {
   appearance: none;
   border: 0;
   background: transparent;
-  color: var(--text-primary);
-  padding: 0.35rem 0.55rem;
-  font-weight: 700;
-  font-size: 0.85rem;
+  padding: 0;
   cursor: pointer;
-  line-height: 1;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.header-logo-img {
+  width: 72px;
+  height: auto;
+  display: block;
+  opacity: 0.92;
+}
+
+.header-center {
+  justify-self: center;
+}
+
+.header-lang-switcher {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.header-lang-btn {
+  background: none;
+  border: none;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  transition: color 0.15s ease;
+  font-family: inherit;
 }
 
 .header-lang-btn:hover {
-  background: var(--bg-hover);
+  color: rgba(0, 0, 0, 0.8);
 }
 
 .header-lang-btn.active {
-  background: var(--button-bg);
-  color: var(--button-text);
+  color: rgba(0, 0, 0, 1);
 }
 
-/* Toggle Switch для темы */
-.theme-toggle-switch {
-  position: relative;
-  width: 56px;
-  height: 32px;
-  border: none;
-  border-radius: 16px;
+.header-lang-separator {
+  color: rgba(0, 0, 0, 0.4);
+  font-size: 12px;
+  user-select: none;
+}
+
+.header-right {
+  justify-self: end;
+}
+
+.header-burger {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
   cursor: pointer;
-  padding: 0;
-  transition: background-color 0.3s ease;
-  outline: none;
-  flex-shrink: 0;
-}
-
-.theme-toggle-light {
-  background: #e0e0e0;
-}
-
-.theme-toggle-dark {
-  background: #5a7ba7; /* Мuted blue как в описании */
-}
-
-.theme-toggle-switch:hover {
-  opacity: 0.9;
-}
-
-.theme-toggle-switch:active {
-  transform: scale(0.95);
-}
-
-.theme-toggle-slider {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  -webkit-tap-highlight-color: transparent;
 }
 
-.theme-toggle-light .theme-toggle-slider {
-  transform: translateX(0);
-  background: #ffffff;
+.header-burger-icon {
+  display: grid;
+  gap: 6px;
 }
 
-.theme-toggle-dark .theme-toggle-slider {
-  transform: translateX(24px);
-  background: #3a4a6a; /* Темно-синий для кнопки в темной теме */
-}
-
-.theme-toggle-icon {
-  font-size: 14px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.1));
-}
-
-/* Настройки */
-.header-settings {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  transition: background-color 0.2s;
-  font-size: 1.25rem;
-  width: 2.5rem;
-  height: 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-primary);
-}
-
-.header-settings:hover {
-  background: var(--bg-hover);
+.header-burger-line {
+  width: 28px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.92);
+  display: block;
 }
 
 /* Адаптивность */
 @media (max-width: 768px) {
   .header-content {
-    padding: 0.75rem 1rem;
+    padding: calc(env(safe-area-inset-top, 0) + 0.55rem) 0.85rem 0.5rem;
   }
 
-  .logo-icon-img {
-    width: 1.25rem;
-    height: 1.25rem;
+  .header-logo-img {
+    width: 60px;
   }
 }
 
