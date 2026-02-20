@@ -1,12 +1,12 @@
 .desire-detail {
   min-height: 100vh;
-  background: #f5a872; /* Мягкий приглушенный оранжевый */
+  background: var(--bg-primary); /* Вернули базовый фон (белый в светлой теме) */
   color: var(--text-primary);
 }
 
-/* Шапка того же цвета, что и фон */
+/* Шапка должна совпадать с базовой темой (раньше здесь был принудительный оранжевый) */
 .desire-detail .app-header {
-  background: #f5a872; /* Мягкий приглушенный оранжевый */
+  background: var(--bg-primary);
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 

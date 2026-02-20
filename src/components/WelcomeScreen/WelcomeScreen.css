@@ -74,6 +74,10 @@
   display: block;
   margin-top: clamp(18px, 5vw, 28px);
   opacity: 0.92;
+  /* Чуть отделяем от тёмного фона */
+  filter:
+    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.55))
+    drop-shadow(0 0 1px rgba(255, 255, 255, 0.15));
 }
 
 /* Mandala */

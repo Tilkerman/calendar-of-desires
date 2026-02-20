@@ -38,6 +38,8 @@
   height: auto;
   display: block;
   opacity: 0.92;
+  /* Лёгкая тень для читаемости на светлом фоне (лучше, чем box-shadow для SVG с прозрачностью) */
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.22));
 }
 
 .header-center {
